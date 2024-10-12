@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class AdventureDeck {
     private List<Card> deck; // full set of cards in the deck
@@ -44,7 +45,14 @@ public class AdventureDeck {
     // Method to draw cards
     public List<Card> drawCards(int numberOfCards) {
         List<Card> drawnCards = new ArrayList<>();
-        //needs code later
+        Random random = new Random();
+
+        for (int i = 0; i < numberOfCards; i++) {
+            if (!deck.isEmpty()) {
+                int index = random.nextInt(deck.size());
+                drawnCards.add(deck.remove(index)); // Draw a card and remove it from the deck
+            }
+        }
         return drawnCards;
     }
 
