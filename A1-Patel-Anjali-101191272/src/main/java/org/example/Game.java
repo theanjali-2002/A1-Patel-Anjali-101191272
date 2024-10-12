@@ -31,6 +31,8 @@ public class Game {
         players.add(new Player("P4"));
     }
 
+    public void distributeAdventureCards() {}
+
     // Getters for testing
     public AdventureDeck getAdventureDeck() {
         return adventureDeck;
@@ -50,6 +52,7 @@ public class Game {
         Game game = new Game(); // Create a new instance of the Game class
         game.initializeGameEnvironment();
         game.initializePlayers();
+        game.distributeAdventureCards();
 
         // Other game logic code later
     }

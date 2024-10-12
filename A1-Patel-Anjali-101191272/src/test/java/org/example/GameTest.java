@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
@@ -54,6 +56,20 @@ public class GameTest {
         assertEquals("P2", game.getPlayers().get(1).getName(), "Player 2 should be named P2.");
         assertEquals("P3", game.getPlayers().get(2).getName(), "Player 3 should be named P3.");
         assertEquals("P4", game.getPlayers().get(3).getName(), "Player 4 should be named P4.");
+    }
+
+    @Test
+    @DisplayName("R-Test-07: Distribute 12 adventure cards to each player.")
+    public void RESP_07_test_02() {
+        game.distributeAdventureCards(); // Distribute 12 adventure cards to each player
+
+        List<Player> players = game.getPlayers(); // Get the list of players
+
+        // Assert that each player has 12 cards in their hand
+        for (Player player : players) {
+            assertEquals(12, player.getHand().size(),
+                    "Player " + player.getName() + " should have 12 cards in their hand.");
+        }
     }
 
 }
