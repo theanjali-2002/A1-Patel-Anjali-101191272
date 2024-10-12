@@ -4,6 +4,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Game {
@@ -31,7 +32,15 @@ public class Game {
         players.add(new Player("P4"));
     }
 
-    public void distributeAdventureCards() {}
+    public void distributeAdventureCards() {
+        final int CARDS_PER_PLAYER = 12;
+
+        // Distributing cards to each player
+        for (Player player : players) {
+            List<Card> cardsToDistribute = adventureDeck.drawCards(CARDS_PER_PLAYER); // Draw cards from the deck
+            player.receiveCards(cardsToDistribute); // Distribute the drawn cards to the player
+        }
+    }
 
     // Getters for testing
     public AdventureDeck getAdventureDeck() {

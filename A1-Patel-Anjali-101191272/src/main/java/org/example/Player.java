@@ -19,7 +19,9 @@ public class Player {
 
     // Add cards to the player's hand
     public void receiveCards(List<Card> cards) {
-        //code later
+        if (cards != null && !cards.isEmpty()) {
+            hand.addAll(cards); // Add the received cards to the player's hand
+        }
     }
 
     public List<Card> getHand() {
