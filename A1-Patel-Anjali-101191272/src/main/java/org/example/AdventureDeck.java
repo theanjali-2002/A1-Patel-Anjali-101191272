@@ -23,7 +23,7 @@ public class AdventureDeck {
 
         for (int i = 0; i < foeValues.length; i++) {
             for (int j = 0; j < foeCounts[i]; j++) {
-                deck.add(new Card("F", foeValues[i]));
+                deck.add(new Card("F", foeValues[i], "Foe"));
             }
         }
     }
@@ -36,7 +36,7 @@ public class AdventureDeck {
 
         for (int i = 0; i < weaponValues.length; i++) {
             for (int j = 0; j < weaponCounts[i]; j++) {
-                deck.add(new Card(weaponTypes[i], weaponValues[i]));
+                deck.add(new Card(weaponTypes[i], weaponValues[i], "Weapon"));
             }
         }
     }
@@ -48,7 +48,7 @@ public class AdventureDeck {
     public int countFoeCards() {
         int count = 0;
         for (Card card : deck) {
-            if (card.getType().equals("F")) {
+            if ("Foe".equals(card.getCategory())) {
                 count++;
             }
         }
@@ -58,7 +58,7 @@ public class AdventureDeck {
     public int countWeaponCards() {
         int count = 0;
         for (Card card : deck) {
-            if (!card.getType().equals("F")) {  // Anything not a Foe is a Weapon
+            if ("Weapon".equals(card.getCategory())) {  // Anything not a Foe is a Weapon
                 count++;
             }
         }

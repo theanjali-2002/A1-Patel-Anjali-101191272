@@ -17,6 +17,7 @@ public class Game {
     // Methods to initialize the game environment
     public void initializeGameEnvironment() {
         adventureDeck.setupDeck(); // RESP-02 Set up the adventure deck
+        eventDeck.setupDeck(); // RESP-03 Set up the event deck
     }
 
     // Getters for testing
