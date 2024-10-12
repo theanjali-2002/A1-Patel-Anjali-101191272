@@ -25,7 +25,10 @@ public class Game {
     }
 
     public void initializePlayers() {
-        //code later
+        players.add(new Player("P1"));
+        players.add(new Player("P2"));
+        players.add(new Player("P3"));
+        players.add(new Player("P4"));
     }
 
     // Getters for testing
