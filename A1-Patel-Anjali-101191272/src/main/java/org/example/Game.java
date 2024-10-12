@@ -45,11 +45,11 @@ public class Game {
     }
 
     public void nextPlayer() {
-        //code later
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
 
     public Player getCurrentPlayer() {
-        return players.get(1);
+        return players.get(currentPlayerIndex);
     }
 
     // Getters for testing
