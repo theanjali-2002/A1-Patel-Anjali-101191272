@@ -1,24 +1,24 @@
 package org.example;
 
 public class Card {
-    private String name;   // "F5", "S10", "H10", etc.
+    private String type;   // Just "F", "D", "S", etc. (for card type, Foe, or Weapon)
     private int value;     // Card value, e.g., 5, 10, 15, 20
 
-    public Card(String name, int value) {
-        this.name = name;
+    public Card(String type, int value) {
+        this.type = type;
         this.value = value;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public int getValue() {
         return value;
     }
 
+    public String getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
-        return name;  // Example: "F5", "D5", "S10", "H10", etc.
+        return type;  // Example: "F5", "D5", "S10", "H10", etc.
     }
 }

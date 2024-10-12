@@ -23,4 +23,14 @@ public class GameTest {
         assertEquals(0, game.getPlayerCount(), "Initial player count should be 0"); // make sure no players are set up yet
     }
 
+    @Test
+    @DisplayName("R-Test-02: Setup adventure deck") //Adventure deck has 100 cards after game initialization.
+    public void RESP_02_test_02() {
+        game.initializeGameEnvironment();
+
+        // Ensure the AdventureDeck has exactly 100 cards after initialization
+        AdventureDeck adventureDeck = game.getAdventureDeck();
+        assertEquals(100, adventureDeck.getTotalCards(), "The total number of cards in the AdventureDeck should be 100.");
+    }
+
 }
