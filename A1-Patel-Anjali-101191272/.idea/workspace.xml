@@ -7,7 +7,7 @@
     <list default="true" id="bbab3710-ec0c-4ee6-b1b3-deb0896ef8da" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +43,7 @@
     "Application.Main.executor": "Run",
     "JUnit.AdventureDeckTest.RESP_02_test_01.executor": "Run",
     "JUnit.AdventureDeckTest.executor": "Run",
+    "JUnit.All in A1-Patel-Anjali-101191272.executor": "Run",
     "JUnit.EventDeckTest.RESP_03_test_01.executor": "Run",
     "JUnit.EventDeckTest.executor": "Run",
     "JUnit.GameTest.RESP_01_test_01.executor": "Run",
@@ -53,6 +54,7 @@
     "JUnit.PlayerTest.executor": "Run",
     "JUnit.UserInterfaceTest.RESP_05_test_01.executor": "Run",
     "JUnit.UserInterfaceTest.executor": "Run",
+    "JUnit.org.example in A1-Patel-Anjali-101191272.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
@@ -69,7 +71,7 @@
       <recent name="org.example" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Game">
+  <component name="RunManager" selected="JUnit.GameTest">
     <configuration name="Game" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.Game" />
       <module name="A1-Patel-Anjali-101191272" />
@@ -83,17 +85,10 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AdventureDeckTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="All in A1-Patel-Anjali-101191272" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.AdventureDeckTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -128,7 +123,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserInterfaceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="org.example in A1-Patel-Anjali-101191272" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
         <pattern>
@@ -137,19 +132,18 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.UserInterfaceTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="package" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Game" />
         <item itemvalue="JUnit.GameTest" />
+        <item itemvalue="JUnit.org.example in A1-Patel-Anjali-101191272" />
+        <item itemvalue="JUnit.All in A1-Patel-Anjali-101191272" />
+        <item itemvalue="Application.Game" />
         <item itemvalue="JUnit.PlayerTest" />
-        <item itemvalue="JUnit.AdventureDeckTest" />
-        <item itemvalue="JUnit.UserInterfaceTest" />
       </list>
     </recent_temporary>
   </component>

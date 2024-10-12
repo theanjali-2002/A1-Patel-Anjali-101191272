@@ -11,12 +11,14 @@ public class Game {
     private AdventureDeck adventureDeck;
     private EventDeck eventDeck;
     private List<Player> players;
+    private int currentPlayerIndex; // To track the current player
 
     // Constructor
     public Game() {
         adventureDeck = new AdventureDeck();
         eventDeck = new EventDeck();
         players = new ArrayList<>();
+        currentPlayerIndex = 0;
     }
 
     // Methods to initialize the game environment
@@ -40,6 +42,14 @@ public class Game {
             List<Card> cardsToDistribute = adventureDeck.drawCards(CARDS_PER_PLAYER); // Draw cards from the deck
             player.receiveCards(cardsToDistribute); // Distribute the drawn cards to the player
         }
+    }
+
+    public void nextPlayer() {
+        //code later
+    }
+
+    public Player getCurrentPlayer() {
+        return players.get(1);
     }
 
     // Getters for testing

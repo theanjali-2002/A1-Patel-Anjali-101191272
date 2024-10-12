@@ -72,4 +72,22 @@ public class GameTest {
         }
     }
 
+    @Test
+    @DisplayName("R-Test-08: Manage current player and transition to next player.")
+    public void RESP_08_test_01() {
+        assertEquals("P1", game.getCurrentPlayer().getName(), "Current player should be P1.");
+
+        game.nextPlayer(); // Move to next player
+        assertEquals("P2", game.getCurrentPlayer().getName(), "Current player should be P2.");
+
+        game.nextPlayer(); // Move to next player
+        assertEquals("P3", game.getCurrentPlayer().getName(), "Current player should be P3.");
+
+        game.nextPlayer(); // Move to next player
+        assertEquals("P4", game.getCurrentPlayer().getName(), "Current player should be P4.");
+
+        game.nextPlayer(); // Move to next player
+        assertEquals("P1", game.getCurrentPlayer().getName(), "Current player should wrap around to P1.");
+    }
+
 }
