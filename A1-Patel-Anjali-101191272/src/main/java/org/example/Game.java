@@ -42,4 +42,16 @@ public class Game {
 
     public List<Player> getPlayers() {return players;}
 
+
+    public static void main(String[] args) {
+        UserInterface userInterface = new UserInterface(); // Initialize user interface
+        userInterface.displayGameStartMessage(true); // Display the game start message
+
+        Game game = new Game(); // Create a new instance of the Game class
+        game.initializeGameEnvironment();
+        game.initializePlayers();
+
+        // Other game logic code later
+    }
+
 }
