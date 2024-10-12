@@ -3,6 +3,7 @@ package org.example;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,9 +11,14 @@ public class GameTest {
     private Game game;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp(TestInfo testInfo) {
         game = new Game();
         game.initializeGameEnvironment();
+
+        // Check the test name and skip initializing players for RESP_01_test_01
+        if (!testInfo.getDisplayName().equals("R-Test-01: Initialization of game environment.")) {
+            game.initializePlayers(); // Initialize players for all other tests
+        }
     }
 
     @Test
@@ -20,7 +26,7 @@ public class GameTest {
     public void RESP_01_test_01() {
         assertNotNull(game.getAdventureDeck(), "Adventure deck should not be null"); // make sure adventure deck is initialized
         assertNotNull(game.getEventDeck(), "Event deck should not be null"); // make sure event deck is initialized
-        assertEquals(0, game.getPlayerCount(), "Initial player count should be 0"); // make sure no players are set up yet
+        assertEquals(0, game.getPlayers().size(), "Initial player count should be 0"); // make sure no players are set up yet
     }
 
     @Test
@@ -37,6 +43,17 @@ public class GameTest {
         // Ensure the EventDeck has exactly 17 cards after initialization
         EventDeck eventDeck = game.getEventDeck();
         assertEquals(17, eventDeck.getTotalCards(), "The total number of cards in the EventDeck should be 17.");
+    }
+
+    @Test
+    @DisplayName("R-Test-04: Setup 4 players.")
+    public void RESP_04_test_02() {
+        assertEquals(4, game.getPlayers().size(), "There should be exactly 4 players.");
+
+        assertEquals("P1", game.getPlayers().get(0).getName(), "Player 1 should be named P1.");
+        assertEquals("P2", game.getPlayers().get(1).getName(), "Player 2 should be named P2.");
+        assertEquals("P3", game.getPlayers().get(2).getName(), "Player 3 should be named P3.");
+        assertEquals("P4", game.getPlayers().get(3).getName(), "Player 4 should be named P4.");
     }
 
 }
