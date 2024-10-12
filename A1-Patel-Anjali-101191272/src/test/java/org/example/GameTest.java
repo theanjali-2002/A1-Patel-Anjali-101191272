@@ -90,4 +90,15 @@ public class GameTest {
         assertEquals("P1", game.getCurrentPlayer().getName(), "Current player should wrap around to P1.");
     }
 
+    @Test
+    @DisplayName("R-TEST-09: Display current player's hand.")
+    public void RESP_09_test_01() {
+        Player currentPlayer = game.getCurrentPlayer(); // Get the current player
+        assertNotNull(currentPlayer, "The current player should not be null.");
+
+        game.displayCurrentPlayerHand(); // Call the method to display the current player's hand
+
+        assertFalse(currentPlayer.getHand().isEmpty(),"The current player's hand should have cards.");
+    }
+
 }

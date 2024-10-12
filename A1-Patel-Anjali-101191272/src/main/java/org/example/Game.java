@@ -48,6 +48,8 @@ public class Game {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
 
+    public void displayCurrentPlayerHand() {}
+
     public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
