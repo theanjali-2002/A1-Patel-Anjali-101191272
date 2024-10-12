@@ -33,4 +33,14 @@ public class GameTest {
         assertEquals(100, adventureDeck.getTotalCards(), "The total number of cards in the AdventureDeck should be 100.");
     }
 
+    @Test
+    @DisplayName("R-Test-03: Setup event deck") //Event deck has 17 cards after game initialization.
+    public void RESP_03_test_02() {
+        game.initializeGameEnvironment();
+
+        // Ensure the EventDeck has exactly 17 cards after initialization
+        EventDeck eventDeck = game.getEventDeck();
+        assertEquals(17, eventDeck.getTotalCards(), "The total number of cards in the EventDeck should be 17.");
+    }
+
 }

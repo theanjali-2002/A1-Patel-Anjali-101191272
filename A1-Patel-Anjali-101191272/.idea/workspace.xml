@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="bbab3710-ec0c-4ee6-b1b3-deb0896ef8da" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/AdventureDeck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/AdventureDeck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Card.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/EventDeck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/EventDeck.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/EventDeckTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/EventDeckTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,10 +26,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2nIwbofy14JrgFgnVvKN8ad2g2L" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -44,8 +43,10 @@
     "Application.Main.executor": "Run",
     "JUnit.AdventureDeckTest.RESP_02_test_01.executor": "Run",
     "JUnit.AdventureDeckTest.executor": "Run",
+    "JUnit.EventDeckTest.RESP_03_test_01.executor": "Run",
     "JUnit.GameTest.RESP_01_test_01.executor": "Run",
     "JUnit.GameTest.RESP_02_test_02.executor": "Run",
+    "JUnit.GameTest.RESP_03_test_02.executor": "Run",
     "JUnit.GameTest.executor": "Run",
     "JUnit.GameTest.testInitializeGameEnvironment.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -64,22 +65,7 @@
       <recent name="org.example" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.GameTest.RESP_02_test_02">
-    <configuration name="AdventureDeckTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="A1-Patel-Anjali-101191272" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.AdventureDeckTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.GameTest.RESP_03_test_02">
     <configuration name="AdventureDeckTest.RESP_02_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
@@ -96,7 +82,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="EventDeckTest.RESP_03_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
         <pattern>
@@ -105,8 +91,9 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="org.example.EventDeckTest" />
+      <option name="METHOD_NAME" value="RESP_03_test_01" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -143,13 +130,29 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="GameTest.RESP_03_test_02" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="A1-Patel-Anjali-101191272" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
+      <option name="METHOD_NAME" value="RESP_03_test_02" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.GameTest.RESP_03_test_02" />
+        <item itemvalue="JUnit.EventDeckTest.RESP_03_test_01" />
+        <item itemvalue="JUnit.AdventureDeckTest.RESP_02_test_01" />
         <item itemvalue="JUnit.GameTest.RESP_02_test_02" />
         <item itemvalue="JUnit.GameTest.RESP_01_test_01" />
-        <item itemvalue="JUnit.AdventureDeckTest" />
-        <item itemvalue="JUnit.AdventureDeckTest.RESP_02_test_01" />
-        <item itemvalue="JUnit.GameTest" />
       </list>
     </recent_temporary>
   </component>
