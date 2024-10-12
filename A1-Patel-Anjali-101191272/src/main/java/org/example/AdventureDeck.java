@@ -41,6 +41,13 @@ public class AdventureDeck {
         }
     }
 
+    // Method to draw cards
+    public List<Card> drawCards(int numberOfCards) {
+        List<Card> drawnCards = new ArrayList<>();
+        //needs code later
+        return drawnCards;
+    }
+
     public int getTotalCards() {
         return deck.size();
     }
