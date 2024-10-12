@@ -21,11 +21,11 @@ public class Game {
 
     // Getters for testing
     public AdventureDeck getAdventureDeck() {
-        return null;
+        return adventureDeck;
     }
 
     public EventDeck getEventDeck() {
-        return null;
+        return eventDeck;
     }
 
     public int getPlayerCount() {
