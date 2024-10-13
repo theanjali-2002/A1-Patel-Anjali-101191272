@@ -16,30 +16,29 @@ public class EventDeck {
     }
 
     private void addQuestCards() {
-        // Quest cards: 3 Q2, 4 Q3, 3 Q4, 2 Q5
-        String[] questTypes = {"Q2", "Q3", "Q4", "Q5"};
-        int[] questCounts = {3, 4, 3, 2};  // number of each type of quest card
-        int[] questStages = {2, 3, 4, 5};  // stages corresponding to each quest type
+        int[] questCounts = {3, 4, 3, 2};   // Number of each quest card type
+        int[] questStages = {2, 3, 4, 5};   // Stages corresponding to each quest type
 
-        for (int i = 0; i < questTypes.length; i++) {
+        for (int i = 0; i < questStages.length; i++) {
             for (int j = 0; j < questCounts[i]; j++) {
-                deck.add(new Card(questTypes[i], questStages[i], "Quest"));
+                String cardName = "Q" + questStages[i];  // Combine type and stages for card name (e.g., "Q2", "Q3")
+                deck.add(new Card(cardName, "Q",questStages[i], "Quest"));  // Add quest card to the deck
             }
         }
     }
 
     private void addEventCards() {
         // Add 1 Plague card (-2 shields)
-        deck.add(new Card("Plague", -2, "Event"));
+        deck.add(new Card("Plague", "E", -2, "Event"));
 
-        // Add 2 Queen's favor cards (2 adventure cards)
+        // Add 2 Queen's Favor cards (2 adventure cards)
         for (int i = 0; i < 2; i++) {
-            deck.add(new Card("Queen's favor", 2, "Event"));
+            deck.add(new Card("Queen's Favor", "E", 2, "Event"));
         }
 
         // Add 2 Prosperity cards (all players draw 2 adventure cards)
         for (int i = 0; i < 2; i++) {
-            deck.add(new Card("Prosperity", 2, "Event"));
+            deck.add(new Card("Prosperity", "E", 2, "Event"));
         }
     }
 

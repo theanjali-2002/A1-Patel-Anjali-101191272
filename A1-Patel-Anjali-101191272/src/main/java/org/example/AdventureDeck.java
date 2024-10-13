@@ -22,11 +22,17 @@ public class AdventureDeck {
         int[] foeValues = {5, 10, 15, 20, 25, 30, 35, 40, 50, 70};
         int[] foeCounts = {8, 7, 8, 7, 7, 4, 4, 2, 2, 1};  // How many of each Foe card
 
+        // Add foe cards to the deck
         for (int i = 0; i < foeValues.length; i++) {
             for (int j = 0; j < foeCounts[i]; j++) {
-                deck.add(new Card("F", foeValues[i], "Foe"));
+                String cardName = "F" + foeValues[i]; // e.g., "F5", "F10"
+                //System.out.println(cardName);
+                deck.add(new Card(cardName, "F" , foeValues[i], "Foe"));
             }
         }
+
+        // Print out the added Foe cards
+        //System.out.println("Foe deck: " + deck);
     }
 
     private void addWeaponCards() {
@@ -37,9 +43,12 @@ public class AdventureDeck {
 
         for (int i = 0; i < weaponValues.length; i++) {
             for (int j = 0; j < weaponCounts[i]; j++) {
-                deck.add(new Card(weaponTypes[i], weaponValues[i], "Weapon"));
+                String cardName = weaponTypes[i] + weaponValues[i];
+                deck.add(new Card(cardName, weaponTypes[i], weaponValues[i], "Weapon"));
             }
         }
+        // Print out the added Foe cards
+        //System.out.println("Weapon deck: " + deck);
     }
 
     // Method to draw cards

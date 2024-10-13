@@ -50,8 +50,10 @@ class PlayerTest {
         // Create a list of 12 cards (mocked for testing purposes)
         List<Card> cardsToReceive = new ArrayList<>();
         for (int i = 0; i < 12; i++) {
-            cardsToReceive.add(new Card("W", 10, "Weapon")); // Example of a Weapon card
+            cardsToReceive.add(new Card("test","W", 10, "Weapon")); // Example of a Weapon card
         }
+
+        //System.out.println("receive the cards: "+cardsToReceive);
 
         // Ensure the player's hand is initially empty
         assertTrue(players.get(0).getHand().isEmpty(), "Player's hand should initially be empty.");
