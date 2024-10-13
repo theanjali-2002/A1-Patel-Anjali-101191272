@@ -5,6 +5,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Game {
@@ -49,7 +50,59 @@ public class Game {
     }
 
     public void displayCurrentPlayerHand() {
+        Player currentPlayer = getCurrentPlayer(); // Replace this with your method to get the current player
 
+        // Assuming the Player class has a method to get the hand of cards
+        List<Card> hand = currentPlayer.getHand();
+
+        // Check if the hand is empty
+        if (hand.isEmpty()) {
+            System.out.println("Current player's hand is empty - something went wrong");
+            return;
+        }
+
+        // Separate foes and weapons into different lists
+        List<Card> foes = new ArrayList<>();
+        List<Card> weapons = new ArrayList<>();
+
+        for (Card card : hand) {
+            if (card.getCategory().equals("Foe")) {
+                foes.add(card);
+            } else if (card.getCategory().equals("Weapon")) {
+                weapons.add(card);
+            }
+        }
+
+        // Sort foes by value
+        foes.sort(Comparator.comparingInt(Card::getValue));
+
+        // Sort weapons: prioritize swords before horses, then by value
+        weapons.sort(Comparator.comparing((Card card) -> {
+            // Prioritize Sword before Horse
+            if (card.getType().equals("S")) {
+                return 0; // Swords come first
+            } else if (card.getType().equals("H")) {
+                return 1; // Horses come last
+            } else {
+                return 2; // Other weapon types
+            }
+        }).thenComparingInt(Card::getValue)); // Sort by value
+
+        // Display foes
+        System.out.println("Current Player's Hand:");
+        int placeValue = 1; // Starting place value from 1
+
+        // Display sorted foes
+        for (Card card : foes) {
+            System.out.println("[" + placeValue + "] " + card.toString());
+            placeValue++;
+        }
+
+        // Display sorted weapons
+        for (Card card : weapons) {
+            System.out.println("[" + placeValue + "] " + card.toString());
+            placeValue++;
+        }
     }
 
     public Player getCurrentPlayer() {

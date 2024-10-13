@@ -5,6 +5,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -93,12 +96,60 @@ public class GameTest {
     @Test
     @DisplayName("R-TEST-09: Display current player's hand.")
     public void RESP_09_test_01() {
+        //game.distributeAdventureCards();
         Player currentPlayer = game.getCurrentPlayer(); // Get the current player
         assertNotNull(currentPlayer, "The current player should not be null.");
 
-        game.displayCurrentPlayerHand(); // Call the method to display the current player's hand
+        // Setup: Create a list of cards for testing
+        List<Card> testCards = new ArrayList<>();
+        testCards.add(new Card("F25", "F", 25, "Foe")); // Example Foe card
+        testCards.add(new Card("F50", "F", 50, "Foe")); // Example Foe card
+        testCards.add(new Card("S10", "S", 10, "Weapon")); // Example Sword card
+        testCards.add(new Card("S10", "S", 10, "Weapon")); // Another Sword card
+        testCards.add(new Card("S10", "S", 10, "Weapon")); // Another Sword card
+        testCards.add(new Card("S10", "S", 10, "Weapon")); // Another Sword card
+        testCards.add(new Card("S10", "S", 10, "Weapon")); // Another Sword card
+        testCards.add(new Card("H10", "H", 10, "Weapon")); // Example Horse card
+        testCards.add(new Card("H10", "H", 10, "Weapon")); // Another Horse card
+        testCards.add(new Card("D5", "D", 5, "Weapon")); // Example Dagger card
+        testCards.add(new Card("D5", "D", 5, "Weapon")); // Another Dagger card
+        testCards.add(new Card("L20", "L", 20, "Weapon")); // Example Lance card
 
-        assertFalse(currentPlayer.getHand().isEmpty(),"The current player's hand should have cards.");
+        // Use the receiveCards method to add cards to the player's hand
+        currentPlayer.receiveCards(testCards);
+
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Call the method to display the current player's hand
+        game.displayCurrentPlayerHand();
+
+        // Restore original System.out
+        System.setOut(originalOut);
+
+        // Verify output
+        String output = outputStream.toString();
+
+        System.out.println(output);
+
+        // Assertions: Check that the output contains the expected card order
+        assertTrue(output.contains("[1] F25"), "Output should contain F25 first.");
+        assertTrue(output.contains("[2] F50"), "Output should contain F50 second.");
+        assertTrue(output.contains("[3] S10"), "Output should contain S10.");
+        assertTrue(output.contains("[4] S10"), "Output should contain S10.");
+        assertTrue(output.contains("[5] S10"), "Output should contain S10.");
+        assertTrue(output.contains("[6] S10"), "Output should contain S10.");
+        assertTrue(output.contains("[7] S10"), "Output should contain S10.");
+        assertTrue(output.contains("[8] H10"), "Output should contain H10.");
+        assertTrue(output.contains("[9] H10"), "Output should contain H10.");
+        assertTrue(output.contains("[10] D5"), "Output should contain D5.");
+        assertTrue(output.contains("[11] D5"), "Output should contain D5.");
+        assertTrue(output.contains("[12] L20"), "Output should contain L20.");
+
+        // Also check that the current player's hand is not empty
+        assertFalse(currentPlayer.getHand().isEmpty(), "The current player's hand should have cards.");
     }
 
 }
