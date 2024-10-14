@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -150,6 +151,117 @@ public class GameTest {
 
         // Also check that the current player's hand is not empty
         assertFalse(currentPlayer.getHand().isEmpty(), "The current player's hand should have cards.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-11: Draws an Event card; No Event Cards in the Deck")
+    public void RESP_11_test_01() {
+        // Ensure the event deck is empty
+        EventDeck eventDeck = game.getEventDeck();
+        eventDeck.clearDeck();  // Clear all cards in the event deck
+
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input to press 'e'
+        ByteArrayInputStream in = new ByteArrayInputStream("e\n".getBytes());
+        System.setIn(in);
+
+        // Call the method
+        String result = game.drawEventCard();
+
+        // Restore original System.out and System.in
+        System.setOut(System.out);
+        System.setIn(System.in);
+
+        // Verify the result
+        assertNull(result, "When no cards are in the deck, the result should be null.");
+        assertTrue(outputStream.toString().contains("No event cards left in the deck!"), "The message should inform that no event cards are left.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-11: Draws an Event card; by Pressing 'e'")
+    public void RESP_11_test_02() {
+        // Prepare event deck with some cards
+        EventDeck eventDeck = game.getEventDeck();
+        List<Card> testCards = new ArrayList<>();
+        testCards.add(new Card("ECard1", "E", 1, "Event"));
+        testCards.add(new Card("QCard2", "Q", 2, "Quest"));
+        eventDeck.setDeck(testCards);
+
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input to press 'e'
+        ByteArrayInputStream in = new ByteArrayInputStream("e\n".getBytes());
+        System.setIn(in);
+
+        // Call the method
+        String result = game.drawEventCard();
+
+        // Restore original System.out and System.in
+        System.setOut(System.out);
+        System.setIn(System.in);
+
+        // Verify the result
+        assertNotNull(result, "The drawn card's category should not be null.");
+        assertTrue(result.equals("Event") || result.equals("Quest"), "The drawn card should be of type 'Event' or 'Quest'.");
+        assertTrue(outputStream.toString().contains("Drawn Card:"), "The output should indicate that a card was drawn.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-11: Draws an Event card; Quit Game by Pressing 'q'")
+    public void RESP_11_test_03() {
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input to press 'q'
+        ByteArrayInputStream in = new ByteArrayInputStream("q\n".getBytes());
+        System.setIn(in);
+
+        // Call the method
+        String result = game.drawEventCard();
+
+        // Restore original System.out and System.in
+        System.setOut(System.out);
+        System.setIn(System.in);
+
+        // Verify the result
+        assertNull(result, "When the user presses 'q', the result should be null.");
+        assertTrue(outputStream.toString().contains("Game Exiting..."), "The output should indicate that the game is exiting.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-11: Draws an Event card; Invalid Input Handling")
+    public void RESP_11_test_04() {
+        // Prepare event deck with some cards
+        EventDeck eventDeck = game.getEventDeck();
+        List<Card> testCards = new ArrayList<>();
+        testCards.add(new Card("ECard1", "E", 1, "Event"));
+        eventDeck.setDeck(testCards);
+
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input with invalid input first, then 'e'
+        ByteArrayInputStream in = new ByteArrayInputStream("x\ne\n".getBytes());
+        System.setIn(in);
+
+        // Call the method
+        String result = game.drawEventCard();
+
+        // Restore original System.out and System.in
+        System.setOut(System.out);
+        System.setIn(System.in);
+
+        // Verify the result
+        assertNotNull(result, "The drawn card's category should not be null after valid input.");
+        assertEquals("Event", result, "The drawn card should be of type 'Event'.");
+        assertTrue(outputStream.toString().contains("Invalid input!"), "The output should indicate that the first input was invalid.");
     }
 
 }

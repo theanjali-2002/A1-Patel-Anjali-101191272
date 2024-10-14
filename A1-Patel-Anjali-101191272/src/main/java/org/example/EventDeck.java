@@ -66,4 +66,19 @@ public class EventDeck {
         return count;
     }
 
+    public List<Card> getDeck() {
+        return deck;
+    }
+
+    // Method to clear all cards in the event deck
+    public void clearDeck() {
+        deck.clear();  // Removes all cards from the deck
+    }
+
+    // Method to set a specific deck (for testing purposes)
+    public void setDeck(List<Card> testCards) {
+        clearDeck();  // Ensure the deck is empty before adding new cards
+        deck.addAll(testCards);
+    }
+
 }

@@ -3,10 +3,7 @@
 //setting up decks, and controlling the flow of gameplay.
 package org.example;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class Game {
     private AdventureDeck adventureDeck;
@@ -33,7 +30,7 @@ public class Game {
         players.add(new Player("P2"));
         players.add(new Player("P3"));
         players.add(new Player("P4"));
-        System.out.println("PLayers are initialized now!");
+        //System.out.println("PLayers are initialized now!");
     }
 
     public void distributeAdventureCards() {
@@ -89,7 +86,8 @@ public class Game {
         }).thenComparingInt(Card::getValue)); // Sort by value
 
         // Display foes
-        System.out.println("Current Player's Hand:");
+        System.out.println("Hot Seat: " + currentPlayer.getName());
+        System.out.println("Current Player " + currentPlayer.getName() + "'s Hand: ");
         int placeValue = 1; // Starting place value from 1
 
         // Display sorted foes
@@ -125,6 +123,14 @@ public class Game {
     public List<Player> getPlayers() {return players;}
 
 
+    // Function to prompt player to draw a card
+    public String drawEventCard() {
+        return "nothing yet";
+        //code later
+    }
+
+
+
     public static void main(String[] args) {
         UserInterface userInterface = new UserInterface(); // Initialize user interface
         userInterface.displayGameStartMessage(true); // Display the game start message
@@ -133,6 +139,9 @@ public class Game {
         game.initializeGameEnvironment();
         game.initializePlayers();
         game.distributeAdventureCards();
+        game.displayCurrentPlayerHand();
+        //userInterface.displayPlayerTurn(game.getCurrentPlayer().getName());
+        game.drawEventCard();
 
         // Other game logic code later
     }
