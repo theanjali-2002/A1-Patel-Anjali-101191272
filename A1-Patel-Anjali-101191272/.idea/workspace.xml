@@ -8,7 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/UserInterfaceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/UserInterfaceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,10 +54,12 @@
     "JUnit.GameTest.RESP_09_test_01.executor": "Run",
     "JUnit.GameTest.executor": "Run",
     "JUnit.GameTest.testInitializeGameEnvironment.executor": "Run",
+    "JUnit.PlayerTest.RESP_04_test_01.executor": "Run",
     "JUnit.PlayerTest.RESP_07_test_01.executor": "Run",
     "JUnit.PlayerTest.executor": "Run",
     "JUnit.UserInterfaceTest.RESP_05_test_01.executor": "Run",
     "JUnit.UserInterfaceTest.RESP_10_test_01.executor": "Run",
+    "JUnit.UserInterfaceTest.RESP_10_test_02.executor": "Run",
     "JUnit.UserInterfaceTest.executor": "Run",
     "JUnit.org.example in A1-Patel-Anjali-101191272.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -77,39 +78,8 @@
       <recent name="org.example" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.UserInterfaceTest.RESP_10_test_01">
-    <configuration name="GameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="A1-Patel-Anjali-101191272" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GameTest.RESP_09_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="A1-Patel-Anjali-101191272" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
-      <option name="METHOD_NAME" value="RESP_09_test_01" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PlayerTest.RESP_07_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.org.example in A1-Patel-Anjali-101191272">
+    <configuration name="PlayerTest.RESP_04_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
         <pattern>
@@ -119,8 +89,23 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.example" />
       <option name="MAIN_CLASS_NAME" value="org.example.PlayerTest" />
-      <option name="METHOD_NAME" value="RESP_07_test_01" />
+      <option name="METHOD_NAME" value="RESP_04_test_01" />
       <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserInterfaceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="A1-Patel-Anjali-101191272" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.UserInterfaceTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -136,6 +121,22 @@
       <option name="PACKAGE_NAME" value="org.example" />
       <option name="MAIN_CLASS_NAME" value="org.example.UserInterfaceTest" />
       <option name="METHOD_NAME" value="RESP_10_test_01" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserInterfaceTest.RESP_10_test_02" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="A1-Patel-Anjali-101191272" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.UserInterfaceTest" />
+      <option name="METHOD_NAME" value="RESP_10_test_02" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -157,11 +158,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.UserInterfaceTest.RESP_10_test_01" />
-        <item itemvalue="JUnit.GameTest.RESP_09_test_01" />
         <item itemvalue="JUnit.org.example in A1-Patel-Anjali-101191272" />
-        <item itemvalue="JUnit.GameTest" />
-        <item itemvalue="JUnit.PlayerTest.RESP_07_test_01" />
+        <item itemvalue="JUnit.UserInterfaceTest" />
+        <item itemvalue="JUnit.UserInterfaceTest.RESP_10_test_02" />
+        <item itemvalue="JUnit.UserInterfaceTest.RESP_10_test_01" />
+        <item itemvalue="JUnit.PlayerTest.RESP_04_test_01" />
       </list>
     </recent_temporary>
   </component>
@@ -180,13 +181,13 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/src/test/java/org/example/UserInterfaceTest.java</url>
-          <line>115</line>
-          <properties class="org.example.UserInterfaceTest" method="RESP_10_test_01">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/UserInterface.java</url>
+          <line>56</line>
+          <properties class="org.example.UserInterface" method="displayPlayerTurn">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
-          <option name="timeStamp" value="2" />
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

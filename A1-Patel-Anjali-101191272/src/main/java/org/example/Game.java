@@ -33,6 +33,7 @@ public class Game {
         players.add(new Player("P2"));
         players.add(new Player("P3"));
         players.add(new Player("P4"));
+        System.out.println("PLayers are initialized now!");
     }
 
     public void distributeAdventureCards() {
@@ -105,6 +106,10 @@ public class Game {
     }
 
     public Player getCurrentPlayer() {
+        // Check if the players list is not empty before accessing it
+        if (players.isEmpty()) {
+            throw new IllegalStateException("No players available in the game.");
+        }
         return players.get(currentPlayerIndex);
     }
 

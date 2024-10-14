@@ -4,14 +4,17 @@ import java.util.Scanner;
 
 public class UserInterface {
     private Scanner scanner;
+    private Game game;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
+        this.game = new Game();
     }
 
     // Constructor with Scanner
     public UserInterface(Scanner scanner) {
         this.scanner = scanner;
+        this.game = new Game();
     }
 
     // Method to display game start message and instructions
@@ -51,5 +54,20 @@ public class UserInterface {
     }
 
     // Method to display the current player's turn, their hand, and ask to draw an event card
-    public void displayPlayerTurn(String playerName) {}
+    public void displayPlayerTurn(String CurrentplayerName) {
+        System.out.println("It is " + CurrentplayerName + "'s turn on the hotseat!");
+        //game.displayCurrentPlayerHand(); // Call the method from Game class to show the player's hand
+        System.out.println("Press 'e' to draw a card from the event deck...");
+
+        // Wait for player to press the space bar or 'e' key to draw a card
+        while (true) {
+            String input = scanner.nextLine().trim();
+            if ("e".equalsIgnoreCase(input)) {
+                System.out.println(CurrentplayerName + " has drawn a card from the event deck!");
+                break; // Exit the loop once valid input is received
+            } else {
+                System.out.println("Invalid input! Please press 'e' to draw a card.");
+            }
+        }
+    }
 }

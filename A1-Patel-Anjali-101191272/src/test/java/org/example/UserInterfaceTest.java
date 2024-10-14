@@ -17,9 +17,15 @@ class UserInterfaceTest {
     private UserInterface userInterface;
     private ByteArrayOutputStream outputStream;
     private PrintStream originalOut;
+    private Game game;
 
     @BeforeEach
     public void setUp() {
+        //game = new Game();
+        //game.initializeGameEnvironment();
+        //game.initializePlayers();
+        //game.distributeAdventureCards();
+
         userInterface = new UserInterface();
         outputStream = new ByteArrayOutputStream();
         originalOut = System.out;
@@ -114,10 +120,10 @@ class UserInterfaceTest {
     @Test
     @DisplayName("R-TEST-10: UI - Option to draw a card from the event deck")
     public void RESP_10_test_01() {
-        String playerName = "";
+        String playerName = "P1";
 
         // Simulate valid input (pressing space bar)
-        String simulatedInputValid = " "; // Simulate pressing space bar
+        String simulatedInputValid = "e"; // Simulate pressing space bar
         InputStream inValid = new ByteArrayInputStream(simulatedInputValid.getBytes());
         System.setIn(inValid); // Simulate input for the space key
 
@@ -125,28 +131,16 @@ class UserInterfaceTest {
         userInterface.displayPlayerTurn(playerName); // Call the method with the playerName
 
         // Expected output: Check for the correct turn message for the valid input
-        String expectedOutputValid = "P1's turn!\nPress 'Space' to draw a card.\n";
+        String expectedOutputValid = "It is P1's turn on the hotseat!\r\n" +
+                "Press 'e' to draw a card from the event deck...\r\n" +
+                "P1 has drawn a card from the event deck!\r\n";
 
         // Validate the output for the valid case
-        assertTrue(outputStream.toString().contains(expectedOutputValid), "The player's turn message is incorrect for valid input.");
-
-        // Reset the output stream before testing invalid input
-        outputStream.reset();
-
-        // Simulate invalid input ('x') followed by valid input (space)
-        String simulatedInputInvalid = "x\n "; // Simulate pressing 'x' and then space bar
-        InputStream inInvalid = new ByteArrayInputStream(simulatedInputInvalid.getBytes());
-        System.setIn(inInvalid); // Simulate input for invalid then valid
-
-        userInterface.displayPlayerTurn(playerName); // Call the method again with the same playerName
-
-        // Expected output for invalid followed by valid input
-        String expectedOutputInvalid = "Invalid input. Please press 'Space' to draw a card.\n" +
-                "P1's turn!\nPress 'Space' to draw a card.\n";
-
-        // Validate the output for the invalid case
-        assertTrue(outputStream.toString().contains(expectedOutputInvalid), "The invalid input handling for player's turn is incorrect.");
+        assertEquals(expectedOutputValid, outputStream.toString(), "The player's turn message is incorrect for valid input.");
     }
+
+
+
 
 
 
