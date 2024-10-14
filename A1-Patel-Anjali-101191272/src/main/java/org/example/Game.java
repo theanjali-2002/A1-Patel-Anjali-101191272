@@ -125,8 +125,48 @@ public class Game {
 
     // Function to prompt player to draw a card
     public String drawEventCard() {
-        return "nothing yet";
-        //code later
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
+        if (eventDeck.countEventCards() == 0) {
+            System.out.println("No event cards left in the deck!");
+            return null;
+        }
+
+        System.out.println("Press 'e' to draw an event card OR Press 'q' to Quit Game...");
+
+        // Keep asking until the player presses 'e'
+        while (true) {
+            String input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("e")) {
+                // Player pressed 'e', draw a random event card
+                List<Card> deck = eventDeck.getDeck();  // Get the deck list
+                Card drawnCard = null;
+
+                // Find and remove a random event card from the deck
+                while (drawnCard == null) {
+                    int index = random.nextInt(deck.size());
+                    Card card = deck.get(index);
+                    if ("Event".equals(card.getCategory()) ||  "Quest".equals(card.getCategory())) {
+                        drawnCard = card;
+                        deck.remove(index);  // Remove the drawn card from the deck
+                    }
+                }
+
+                // Display the drawn card
+                System.out.println("Drawn Card: " + drawnCard.getCardName());
+                return drawnCard.getCategory();
+
+            } else if (input.equalsIgnoreCase("q")) {
+                System.out.println("Game Exiting...");
+                return null;
+            }
+            else {
+                // Invalid input, prompt the player again
+                System.out.println("Invalid input! Please press 'e' to draw a card OR Press 'q' to Quit Game...");
+            }
+        }
     }
 
 

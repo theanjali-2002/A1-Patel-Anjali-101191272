@@ -78,7 +78,7 @@
       <recent name="org.example" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.GameTest">
+  <component name="RunManager" selected="JUnit.org.example in A1-Patel-Anjali-101191272">
     <configuration name="Game" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.Game" />
       <module name="A1-Patel-Anjali-101191272" />
@@ -154,9 +154,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.org.example in A1-Patel-Anjali-101191272" />
         <item itemvalue="JUnit.GameTest" />
         <item itemvalue="Application.Game" />
-        <item itemvalue="JUnit.org.example in A1-Patel-Anjali-101191272" />
         <item itemvalue="JUnit.UserInterfaceTest.RESP_10_test_01" />
         <item itemvalue="JUnit.UserInterfaceTest" />
       </list>
