@@ -49,4 +49,7 @@ public class UserInterface {
             }
         }
     }
+
+    // Method to display the current player's turn, their hand, and ask to draw an event card
+    public void displayPlayerTurn(String playerName) {}
 }

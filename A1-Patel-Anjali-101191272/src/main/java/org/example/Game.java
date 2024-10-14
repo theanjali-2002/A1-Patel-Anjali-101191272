@@ -50,9 +50,8 @@ public class Game {
     }
 
     public void displayCurrentPlayerHand() {
-        Player currentPlayer = getCurrentPlayer(); // Replace this with your method to get the current player
+        Player currentPlayer = getCurrentPlayer();
 
-        // Assuming the Player class has a method to get the hand of cards
         List<Card> hand = currentPlayer.getHand();
 
         // Check if the hand is empty

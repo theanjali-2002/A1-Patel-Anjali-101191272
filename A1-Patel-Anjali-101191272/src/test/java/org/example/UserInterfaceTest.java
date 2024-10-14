@@ -111,6 +111,44 @@ class UserInterfaceTest {
         assertTrue(outputStream.toString().contains(expectedOutput), "The invalid input message was not printed correctly.");
     }
 
+    @Test
+    @DisplayName("R-TEST-10: UI - Option to draw a card from the event deck")
+    public void RESP_10_test_01() {
+        String playerName = "";
+
+        // Simulate valid input (pressing space bar)
+        String simulatedInputValid = " "; // Simulate pressing space bar
+        InputStream inValid = new ByteArrayInputStream(simulatedInputValid.getBytes());
+        System.setIn(inValid); // Simulate input for the space key
+
+        userInterface = new UserInterface(new Scanner(System.in)); // Use the injected scanner
+        userInterface.displayPlayerTurn(playerName); // Call the method with the playerName
+
+        // Expected output: Check for the correct turn message for the valid input
+        String expectedOutputValid = "P1's turn!\nPress 'Space' to draw a card.\n";
+
+        // Validate the output for the valid case
+        assertTrue(outputStream.toString().contains(expectedOutputValid), "The player's turn message is incorrect for valid input.");
+
+        // Reset the output stream before testing invalid input
+        outputStream.reset();
+
+        // Simulate invalid input ('x') followed by valid input (space)
+        String simulatedInputInvalid = "x\n "; // Simulate pressing 'x' and then space bar
+        InputStream inInvalid = new ByteArrayInputStream(simulatedInputInvalid.getBytes());
+        System.setIn(inInvalid); // Simulate input for invalid then valid
+
+        userInterface.displayPlayerTurn(playerName); // Call the method again with the same playerName
+
+        // Expected output for invalid followed by valid input
+        String expectedOutputInvalid = "Invalid input. Please press 'Space' to draw a card.\n" +
+                "P1's turn!\nPress 'Space' to draw a card.\n";
+
+        // Validate the output for the invalid case
+        assertTrue(outputStream.toString().contains(expectedOutputInvalid), "The invalid input handling for player's turn is incorrect.");
+    }
+
+
 
 
 }
