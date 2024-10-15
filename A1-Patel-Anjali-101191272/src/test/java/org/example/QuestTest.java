@@ -95,6 +95,32 @@ class QuestTest {
         assertTrue(quest.getStages().get(1).getStageValue() > quest.getStages().get(0).getStageValue(), "Stage 2 value should be greater than Stage 1 value");
     }
 
+    @Test
+    @DisplayName("R-TEST-21: Participant Management for the Quest")
+    public void RESP_21_test_01() {
+        // Simulating user input for participants: Player1 says yes, Player2 says no
+        String simulatedInput = "y\nn\n";
+        InputStream input = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(input);
+
+        // Setting up players and sponsor
+        Player sponsor = new Player("P1");
+        Player player1 = new Player("P2");
+        Player player2 = new Player("P3");
+
+        List<Player> players = new ArrayList<>();
+        players.add(sponsor);
+        players.add(player1);
+        players.add(player2);
+
+        Quest quest = new Quest("Q1", "Adventure", sponsor.getName(), 3);
+        quest.promptParticipants(players, sponsor);
+
+        // Testing participant list
+        List<String> expectedParticipants = List.of("P2"); // Only Player2 joins
+        assertEquals(expectedParticipants, quest.getParticipants(), "Participant list should contain only Player2.");
+    }
+
 
 
 }

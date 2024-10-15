@@ -157,6 +157,11 @@ public class Quest {
         return totalValue; // Return the total value of the stage
     }
 
+    public void promptParticipants(List<Player> players, Player sponsor) {
+        //code later
+    }
+
+
 
 
     // Getters and Setters
