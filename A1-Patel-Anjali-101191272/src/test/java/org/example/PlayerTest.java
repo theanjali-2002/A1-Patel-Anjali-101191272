@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
     private Game game;
+    private Player player;
 
     @BeforeEach
     public void setUp(TestInfo testInfo) {
@@ -66,5 +67,31 @@ class PlayerTest {
 
         // Ensure the cards in the hand are the same as the ones added
         assertEquals(cardsToReceive, players.get(0).getHand(), "The cards in the player's hand should match the cards received.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-12: Modify the Player class to include shields logic; Test gaining shields")
+    public void RESP_12_test_01() {
+        player = new Player("TestPlayer");
+        player.gainShields(1); // Gain 1 shield
+        assertEquals(1, player.getShields(), "Player should have 1 shield after gaining 1.");
+
+        // Gain additional shields
+        player.gainShields(2); // Gain 2 more shields
+        assertEquals(3, player.getShields(), "Player should have 3 shields after gaining 2.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-12: Modify the Player class to include shields logic; Test losing shields")
+    public void RESP_12_test_02() {
+        player = new Player("TestPlayer");
+        player.gainShields(2);
+        // Player starts with 2 shields
+        player.loseShields(1); // Lose 1 shield
+        assertEquals(1, player.getShields(), "Player should have 1 shield after losing 1.");
+
+        // Lose more shields than remaining
+        player.loseShields(2); // Attempt to lose 2 shields
+        assertEquals(0, player.getShields(), "Player shields should not go below 0.");
     }
 }

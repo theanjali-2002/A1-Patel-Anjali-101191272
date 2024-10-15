@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="bbab3710-ec0c-4ee6-b1b3-deb0896ef8da" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/EventDeck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/EventDeck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/PlayerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/PlayerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +55,8 @@
     "JUnit.GameTest.testInitializeGameEnvironment.executor": "Run",
     "JUnit.PlayerTest.RESP_04_test_01.executor": "Run",
     "JUnit.PlayerTest.RESP_07_test_01.executor": "Run",
+    "JUnit.PlayerTest.RESP_12_test_01.executor": "Run",
+    "JUnit.PlayerTest.RESP_12_test_02.executor": "Run",
     "JUnit.PlayerTest.executor": "Run",
     "JUnit.UserInterfaceTest.RESP_05_test_01.executor": "Run",
     "JUnit.UserInterfaceTest.RESP_10_test_01.executor": "Run",
@@ -107,7 +108,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserInterfaceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="PlayerTest.RESP_12_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
         <pattern>
@@ -116,13 +117,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.UserInterfaceTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="org.example.PlayerTest" />
+      <option name="METHOD_NAME" value="RESP_12_test_01" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserInterfaceTest.RESP_10_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="PlayerTest.RESP_12_test_02" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
         <pattern>
@@ -131,8 +133,8 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.UserInterfaceTest" />
-      <option name="METHOD_NAME" value="RESP_10_test_01" />
+      <option name="MAIN_CLASS_NAME" value="org.example.PlayerTest" />
+      <option name="METHOD_NAME" value="RESP_12_test_02" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -155,10 +157,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.org.example in A1-Patel-Anjali-101191272" />
+        <item itemvalue="JUnit.PlayerTest.RESP_12_test_02" />
+        <item itemvalue="JUnit.PlayerTest.RESP_12_test_01" />
         <item itemvalue="JUnit.GameTest" />
         <item itemvalue="Application.Game" />
-        <item itemvalue="JUnit.UserInterfaceTest.RESP_10_test_01" />
-        <item itemvalue="JUnit.UserInterfaceTest" />
       </list>
     </recent_temporary>
   </component>
