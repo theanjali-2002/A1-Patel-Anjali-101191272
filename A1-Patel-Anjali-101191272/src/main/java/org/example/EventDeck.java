@@ -85,7 +85,8 @@ public class EventDeck {
 
     // Method to discard an event card
     public void discardEventCard(Card card) {
-        // code later
+        discardPile.add(card); // Add the card to the discard pile
+        System.out.println("Event card discarded: " + card.getCardName());
     }
 
     // Method to get the discard pile

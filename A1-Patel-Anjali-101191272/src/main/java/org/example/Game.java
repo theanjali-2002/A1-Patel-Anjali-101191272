@@ -171,7 +171,34 @@ public class Game {
 
 
     public void handleECardEffects(Card drawnCard, Player currentPlayer) {
-        //code later
+        switch (drawnCard.getCardName()) {
+            case "Plague":
+                System.out.println("Plague card is drawn and current player loses 2 shields.");
+                currentPlayer.loseShields(2); // Implement loseShields to set shields to 0 if less than 2
+                break;
+
+            case "Queen's favor":
+                System.out.println("Queen's favor card is drawn and current player will draw 2 adventure cards.");
+                currentPlayer.receiveCards(adventureDeck.drawCards(2));// Implement this method to let the player draw adventure cards
+                break;
+
+            case "Prosperity":
+                System.out.println("All players draw 2 adventure cards due to the Prosperity event.");
+                for (Player player : players) {
+                    System.out.println(player.getName() + " draws 2 adventure cards.");
+                    player.receiveCards(adventureDeck.drawCards(2));
+                }
+                break;
+
+            default:
+                System.out.println("No specific action for this event card.");
+        }
+
+        // Discard the drawn event card
+        eventDeck.discardEventCard(drawnCard);
+
+        // End the current player's turn after drawing an event card
+        nextPlayer();
     }
 
 
@@ -186,7 +213,13 @@ public class Game {
         game.distributeAdventureCards();
         game.displayCurrentPlayerHand();
         //userInterface.displayPlayerTurn(game.getCurrentPlayer().getName());
-        game.drawEventCard();
+        Card drewCard = game.drawEventCard();
+        if (drewCard.getCategory() == "Event"){
+            game.handleECardEffects(drewCard, game.getCurrentPlayer());
+        } else {
+            System.out.println("not event card");
+        }
+
 
         // Other game logic code later
     }

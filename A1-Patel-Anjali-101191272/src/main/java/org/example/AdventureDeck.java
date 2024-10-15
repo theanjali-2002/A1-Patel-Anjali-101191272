@@ -100,7 +100,8 @@ public class AdventureDeck {
 
     // Method to discard an adventure card
     public void discardAdventureCard(Card card) {
-        // code later
+        discardPile.add(card); // Add the card to the discard pile
+        System.out.println("Adventure card discarded: " + card.getCardName());
     }
 
     // Method to get the discard pile
