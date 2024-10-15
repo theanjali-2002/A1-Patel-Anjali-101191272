@@ -158,7 +158,19 @@ public class Quest {
     }
 
     public void promptParticipants(List<Player> players, Player sponsor) {
-        //code later
+        Scanner scanner = new Scanner(System.in);
+        for (Player player : players) {
+            if (!player.equals(sponsor)) {
+                System.out.println(player.getName() + ", do you want to participate in the quest? (y/n)");
+                String response = scanner.nextLine();
+                if (response.equalsIgnoreCase("y")) {
+                    participants.add(player.getName());
+                    System.out.println(player.getName() + " joined the quest.");
+                } else {
+                    System.out.println(player.getName() + " declined to join the quest.");
+                }
+            }
+        }
     }
 
 
