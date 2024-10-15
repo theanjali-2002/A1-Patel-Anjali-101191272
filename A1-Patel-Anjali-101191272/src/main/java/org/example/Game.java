@@ -123,6 +123,15 @@ public class Game {
 
     public List<Player> getPlayers() {return players;}
 
+    public Player getPlayerByName(String name) {
+        for (Player player : players) {
+            if (player.getName().equalsIgnoreCase(name)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
     // Function to prompt player to draw a card
     public Card drawEventCard() {
         Scanner scanner = new Scanner(System.in);

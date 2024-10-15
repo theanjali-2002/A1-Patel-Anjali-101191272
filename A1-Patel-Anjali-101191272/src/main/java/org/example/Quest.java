@@ -173,6 +173,11 @@ public class Quest {
         }
     }
 
+    public void prepareForQuest(Game game) {
+        //code later
+    }
+
+
 
 
 

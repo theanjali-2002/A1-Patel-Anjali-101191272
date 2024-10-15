@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="bbab3710-ec0c-4ee6-b1b3-deb0896ef8da" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Quest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Quest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/QuestTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/QuestTest.java" afterDir="false" />
     </list>
@@ -74,6 +75,8 @@
     "JUnit.QuestTest.RESP_16_test_01.executor": "Run",
     "JUnit.QuestTest.RESP_18_test_01.executor": "Run",
     "JUnit.QuestTest.RESP_21_test_01.executor": "Run",
+    "JUnit.QuestTest.RESP_22_test_01.executor": "Run",
+    "JUnit.QuestTest.executor": "Run",
     "JUnit.StageTest.RESP_17_test_01.executor": "Run",
     "JUnit.StageTest.executor": "Run",
     "JUnit.UserInterfaceTest.RESP_05_test_01.executor": "Run",
@@ -99,38 +102,6 @@
     </key>
   </component>
   <component name="RunManager" selected="JUnit.org.example in A1-Patel-Anjali-101191272">
-    <configuration name="GameTest.RESP_13_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="A1-Patel-Anjali-101191272" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
-      <option name="METHOD_NAME" value="RESP_13_test_01" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GameTest.RESP_13_test_02" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="A1-Patel-Anjali-101191272" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
-      <option name="METHOD_NAME" value="RESP_13_test_02" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GameTest.RESP_13_test_03" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
@@ -147,6 +118,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="QuestTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="A1-Patel-Anjali-101191272" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.QuestTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="QuestTest.RESP_21_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
@@ -158,6 +144,22 @@
       <option name="PACKAGE_NAME" value="org.example" />
       <option name="MAIN_CLASS_NAME" value="org.example.QuestTest" />
       <option name="METHOD_NAME" value="RESP_21_test_01" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="QuestTest.RESP_22_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="A1-Patel-Anjali-101191272" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.QuestTest" />
+      <option name="METHOD_NAME" value="RESP_22_test_01" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -180,10 +182,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.org.example in A1-Patel-Anjali-101191272" />
+        <item itemvalue="JUnit.QuestTest.RESP_22_test_01" />
+        <item itemvalue="JUnit.QuestTest" />
         <item itemvalue="JUnit.QuestTest.RESP_21_test_01" />
         <item itemvalue="JUnit.GameTest.RESP_13_test_03" />
-        <item itemvalue="JUnit.GameTest.RESP_13_test_02" />
-        <item itemvalue="JUnit.GameTest.RESP_13_test_01" />
       </list>
     </recent_temporary>
   </component>

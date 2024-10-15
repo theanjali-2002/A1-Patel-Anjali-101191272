@@ -3,6 +3,7 @@ package org.example;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,7 +20,7 @@ class QuestTest {
     private Quest quest;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp(TestInfo testInfo) {
         // Initialize the game and current player before each test
         game = new Game();
         quest = new Quest();
@@ -41,9 +42,22 @@ class QuestTest {
         testCards.add(new Card("D5", "D", 5, "Weapon"));
         testCards.add(new Card("D5", "D", 5, "Weapon"));
         testCards.add(new Card("L20", "L", 20, "Weapon"));
+        testCards.add(new Card("H10", "H", 10, "Weapon"));
+        testCards.add(new Card("D5", "D", 5, "Weapon"));
+        testCards.add(new Card("F50", "F", 50, "Foe"));
 
         // Use the receiveCards method to add cards to the player's hand
-        currentPlayer.receiveCards(testCards);
+        //currentPlayer.receiveCards(testCards);
+
+        for (Player player : game.getPlayers()){
+            player.receiveCards(testCards);
+        }
+
+
+        // Check the test name and skip initializing players for RESP_01_test_01
+        if (!testInfo.getDisplayName().equals("R-TEST-22: Preparing for the Quest (Drawing cards)")) {
+            currentPlayer.receiveCards(testCards);
+        }
 
         // Set number of stages for the quest
         quest.setNumberOfStages(2);
@@ -119,6 +133,37 @@ class QuestTest {
         // Testing participant list
         List<String> expectedParticipants = List.of("P2"); // Only Player2 joins
         assertEquals(expectedParticipants, quest.getParticipants(), "Participant list should contain only Player2.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-22: Preparing for the Quest (Drawing cards)")
+    public void RESP_22_test_01() {
+
+        // Give both players more than 12 cards to simulate trimming
+        List<Card> testCards = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            testCards.add(new Card("AD" + i, "Adventure", 10, "Adventure"));
+        }
+
+        // Mock or setup game to return players with predefined names
+        //game.initializePlayers();
+        for (Player player : game.getPlayers()){
+            quest.getParticipants().add(player.getName());
+        }
+
+        System.out.println("participants: "+ quest.getParticipants());
+
+        // Each player should draw one card and potentially trim hand
+        quest.prepareForQuest(game);
+
+        System.out.println("hand: "+ game.getPlayerByName("P1").getHand());
+
+        assertEquals(12, game.getPlayerByName("P1").getHand().size(), "Player should have trimmed the hand to 12 cards.");
+        assertEquals(12, game.getPlayerByName("P2").getHand().size(), "Player should have trimmed the hand to 12 cards.");
+        assertEquals(12, game.getPlayerByName("P3").getHand().size(), "Player should have trimmed the hand to 12 cards.");
+        assertEquals(12, game.getPlayerByName("P4").getHand().size(), "Player should have trimmed the hand to 12 cards.");
+
+
     }
 
 
