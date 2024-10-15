@@ -335,4 +335,87 @@ public class GameTest {
     }
 
 
+    @Test
+    @DisplayName("R-TEST-14: Prompt players for quest sponsor; valid input 'y'")
+    public void RESP_14_test_01() {
+        Player currentPlayer = game.getCurrentPlayer(); // Get the current player
+
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input for sponsoring the quest
+        String simulatedInput = "y\n"; // Simulate 'yes' input
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+        // Call the method
+        boolean result = game.promptToSponsor(currentPlayer);
+
+        // Restore original System.out
+        System.setOut(originalOut);
+
+        // Verify output
+        String output = outputStream.toString();
+        assertTrue(output.contains(currentPlayer.getName() + " has chosen to sponsor the quest."),
+                "Output should confirm the player sponsored the quest.");
+        assertTrue(result, "The result should be true for sponsorship.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-14: Prompt players for quest sponsor; valid input 'n'")
+    public void RESP_14_test_02() {
+        Player currentPlayer = game.getCurrentPlayer(); // Get the current player
+
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input for declining the sponsorship
+        String simulatedInput = "n\n"; // Simulate 'no' input
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+        // Call the method
+        boolean result = game.promptToSponsor(currentPlayer);
+
+        // Restore original System.out
+        System.setOut(originalOut);
+
+        // Verify output
+        String output = outputStream.toString();
+        assertTrue(output.contains(currentPlayer.getName() + " has declined to sponsor the quest."),
+                "Output should confirm the player declined the sponsorship.");
+        assertFalse(result, "The result should be false for declining sponsorship.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-14: Prompt players for quest sponsor; invalid input")
+    public void RESP_14_test_03() {
+        Player currentPlayer = game.getCurrentPlayer(); // Get the current player
+
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input for invalid response
+        String simulatedInput = "invalid\nn\n"; // First input is invalid, then valid 'no'
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+        // Call the method
+        boolean result = game.promptToSponsor(currentPlayer);
+
+        // Restore original System.out
+        System.setOut(originalOut);
+
+        // Verify output
+        String output = outputStream.toString();
+        assertTrue(output.contains("Invalid input. Please enter 'y' or 'n':"),
+                "Output should indicate an invalid input.");
+        assertTrue(output.contains(currentPlayer.getName() + " has declined to sponsor the quest."),
+                "Output should confirm the player declined the sponsorship after the valid input.");
+        assertFalse(result, "The result should be false for declining sponsorship.");
+    }
+
 }

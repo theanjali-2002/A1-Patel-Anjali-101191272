@@ -10,6 +10,7 @@ public class Game {
     private EventDeck eventDeck;
     private List<Player> players;
     private int currentPlayerIndex; // To track the current player
+    private Scanner scanner;
 
     // Constructor
     public Game() {
@@ -17,6 +18,7 @@ public class Game {
         eventDeck = new EventDeck();
         players = new ArrayList<>();
         currentPlayerIndex = 0;
+        scanner = new Scanner(System.in);
     }
 
     // Methods to initialize the game environment
@@ -111,7 +113,6 @@ public class Game {
         return players.get(currentPlayerIndex);
     }
 
-    // Getters for testing
     public AdventureDeck getAdventureDeck() {
         return adventureDeck;
     }
@@ -121,7 +122,6 @@ public class Game {
     }
 
     public List<Player> getPlayers() {return players;}
-
 
     // Function to prompt player to draw a card
     public Card drawEventCard() {
@@ -169,7 +169,6 @@ public class Game {
         }
     }
 
-
     public void handleECardEffects(Card drawnCard, Player currentPlayer) {
         switch (drawnCard.getCardName()) {
             case "Plague":
@@ -199,6 +198,10 @@ public class Game {
 
         // End the current player's turn after drawing an event card
         nextPlayer();
+    }
+
+    public boolean promptToSponsor(Player currentPlayer) {
+        return true;
     }
 
 
