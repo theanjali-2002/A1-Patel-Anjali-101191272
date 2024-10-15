@@ -5,9 +5,11 @@ import java.util.List;
 
 public class EventDeck {
     private List<Card> deck;
+    private List<Card> discardPile;
 
     public EventDeck() {
         deck = new ArrayList<>();
+        this.discardPile = new ArrayList<>();
     }
 
     public void setupDeck() {
@@ -79,6 +81,16 @@ public class EventDeck {
     public void setDeck(List<Card> testCards) {
         clearDeck();  // Ensure the deck is empty before adding new cards
         deck.addAll(testCards);
+    }
+
+    // Method to discard an event card
+    public void discardEventCard(Card card) {
+        // code later
+    }
+
+    // Method to get the discard pile
+    public List<Card> getEventDiscardPile() {
+        return discardPile;
     }
 
 }

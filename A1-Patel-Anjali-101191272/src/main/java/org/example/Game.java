@@ -124,7 +124,7 @@ public class Game {
 
 
     // Function to prompt player to draw a card
-    public String drawEventCard() {
+    public Card drawEventCard() {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
 
@@ -156,7 +156,7 @@ public class Game {
 
                 // Display the drawn card
                 System.out.println("Drawn Card: " + drawnCard.getCardName());
-                return drawnCard.getCategory();
+                return drawnCard;
 
             } else if (input.equalsIgnoreCase("q")) {
                 System.out.println("Game Exiting...");
@@ -167,6 +167,11 @@ public class Game {
                 System.out.println("Invalid input! Please press 'e' to draw a card OR Press 'q' to Quit Game...");
             }
         }
+    }
+
+
+    public void handleECardEffects(Card drawnCard, Player currentPlayer) {
+        //code later
     }
 
 

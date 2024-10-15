@@ -169,7 +169,7 @@ public class GameTest {
         System.setIn(in);
 
         // Call the method
-        String result = game.drawEventCard();
+        Card result = game.drawEventCard();
 
         // Restore original System.out and System.in
         System.setOut(System.out);
@@ -199,7 +199,7 @@ public class GameTest {
         System.setIn(in);
 
         // Call the method
-        String result = game.drawEventCard();
+        Card result = game.drawEventCard();
 
         // Restore original System.out and System.in
         System.setOut(System.out);
@@ -207,7 +207,7 @@ public class GameTest {
 
         // Verify the result
         assertNotNull(result, "The drawn card's category should not be null.");
-        assertTrue(result.equals("Event") || result.equals("Quest"), "The drawn card should be of type 'Event' or 'Quest'.");
+        assertTrue(result.getCategory().equals("Event") || result.getCategory().equals("Quest"), "The drawn card should be of type 'Event' or 'Quest'.");
         assertTrue(outputStream.toString().contains("Drawn Card:"), "The output should indicate that a card was drawn.");
     }
 
@@ -223,7 +223,7 @@ public class GameTest {
         System.setIn(in);
 
         // Call the method
-        String result = game.drawEventCard();
+        Card result = game.drawEventCard();
 
         // Restore original System.out and System.in
         System.setOut(System.out);
@@ -252,16 +252,87 @@ public class GameTest {
         System.setIn(in);
 
         // Call the method
-        String result = game.drawEventCard();
+        Card result = game.drawEventCard();
 
         // Restore original System.out and System.in
         System.setOut(System.out);
         System.setIn(System.in);
 
         // Verify the result
-        assertNotNull(result, "The drawn card's category should not be null after valid input.");
-        assertEquals("Event", result, "The drawn card should be of type 'Event'.");
+        assertNotNull(result.getCategory(), "The drawn card's category should not be null after valid input.");
+        assertEquals("E", result.getType(), "The drawn card should be of type 'E'.");
         assertTrue(outputStream.toString().contains("Invalid input!"), "The output should indicate that the first input was invalid.");
     }
+
+    @Test
+    @DisplayName("R-TEST-13: Carrying out Event and discarding E-card logic; Handle Plague Event Card Effect")
+    public void RESP_13_test_01() {
+        Player currentPlayer = game.getCurrentPlayer();
+        currentPlayer.gainShields(5);
+
+        // Create a Plague event card
+        Card plagueCard = new Card("Plague", "E", -2, "Event");
+
+        // Capture the output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Call the method with the Plague card
+        game.handleECardEffects(plagueCard, currentPlayer);
+
+        // Restore original System.out
+        System.setOut(originalOut);
+
+        // Assertions
+        assertEquals(3, currentPlayer.getShields(), "Current player should lose 2 shields.");
+        assertTrue(outputStream.toString().contains("Plague card is drawn and current player loses 2 shields."),
+                "Output should indicate the Plague card effect.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-13: Carrying out Event and discarding E-card logic; Handle Queen's Favor Event Card Effect")
+    public void RESP_13_test_02() {
+        // Get the current player
+        Player currentPlayer = game.getCurrentPlayer();
+
+        // Set the drawn card to Queen's Favor
+        Card drawnCard = new Card("Queen's favor", "Event", 0, "Description");
+
+        // Call the method to handle the effects of the drawn card
+        game.handleECardEffects(drawnCard, currentPlayer);
+
+        // Verify that the player received the correct cards
+        assertEquals(2, currentPlayer.getHand().size(), "Current player should have drawn 2 adventure cards.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-13: Carrying out Event and discarding E-card logic; Handle Prosperity Event Card Effect")
+    public void RESP_13_test_03() {
+        // Mock players for testing
+        List<Player> players = game.getPlayers();
+
+        // Create a Prosperity event card
+        Card prosperityCard = new Card("Prosperity", "Event", 0, "Event");
+
+        // Capture the output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Call the method with the Prosperity card
+        game.handleECardEffects(prosperityCard, players.get(0)); // Current player doesn't matter here
+
+        // Restore original System.out
+        System.setOut(originalOut);
+
+        // Assertions
+        for (Player player : players) {
+            assertEquals(2, player.getHand().size(), "Each player should have drawn 2 adventure cards.");
+            assertTrue(outputStream.toString().contains(player.getName() + " draws 2 adventure cards."),
+                    "Output should indicate that each player draws cards due to Prosperity.");
+        }
+    }
+
 
 }

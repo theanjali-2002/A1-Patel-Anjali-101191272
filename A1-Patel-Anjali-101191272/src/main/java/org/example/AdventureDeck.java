@@ -6,10 +6,12 @@ import java.util.Random;
 
 public class AdventureDeck {
     private List<Card> deck; // full set of cards in the deck
+    private List<Card> discardPile;
 
     // constructor initializes the deck
     public AdventureDeck() {
         deck = new ArrayList<>();
+        this.discardPile = new ArrayList<>();
     }
 
     public void setupDeck() {
@@ -65,6 +67,13 @@ public class AdventureDeck {
         return drawnCards;
     }
 
+    // Method to add a list of cards to the deck - for testing purposes
+    public void addCards(List<Card> newCards) {
+        if (newCards != null) {
+            this.deck.addAll(newCards); // Add all new cards to the existing list
+        }
+    }
+
     public int getTotalCards() {
         return deck.size();
     }
@@ -87,6 +96,16 @@ public class AdventureDeck {
             }
         }
         return count;
+    }
+
+    // Method to discard an adventure card
+    public void discardAdventureCard(Card card) {
+        // code later
+    }
+
+    // Method to get the discard pile
+    public List<Card> getAdventDiscardPile() {
+        return discardPile;
     }
 
 }
