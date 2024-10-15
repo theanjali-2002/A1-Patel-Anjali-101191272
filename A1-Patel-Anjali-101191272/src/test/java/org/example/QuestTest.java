@@ -30,20 +30,20 @@ class QuestTest {
         Player currentPlayer = game.getCurrentPlayer(); // Get the current player
         assertNotNull(currentPlayer, "The current player should not be null.");
 
-        // Setup: Create a list of cards for testing
-//        List<Card> testCards = new ArrayList<>();
-//        testCards.add(new Card("F25", "F", 25, "Foe"));
-//        testCards.add(new Card("F50", "F", 50, "Foe"));
-//        testCards.add(new Card("S10", "S", 10, "Weapon"));
-//        testCards.add(new Card("S10", "S", 10, "Weapon"));
-//        testCards.add(new Card("H10", "H", 10, "Weapon"));
-//        testCards.add(new Card("H10", "H", 10, "Weapon"));
-//        testCards.add(new Card("D5", "D", 5, "Weapon"));
-//        testCards.add(new Card("D5", "D", 5, "Weapon"));
-//        testCards.add(new Card("L20", "L", 20, "Weapon"));
-//
-//        // Use the receiveCards method to add cards to the player's hand
-//        currentPlayer.receiveCards(testCards);
+         //Setup: Create a list of cards for testing
+        List<Card> testCards = new ArrayList<>();
+        testCards.add(new Card("F25", "F", 25, "Foe"));
+        testCards.add(new Card("F50", "F", 50, "Foe"));
+        testCards.add(new Card("S10", "S", 10, "Weapon"));
+        testCards.add(new Card("S10", "S", 10, "Weapon"));
+        testCards.add(new Card("H10", "H", 10, "Weapon"));
+        testCards.add(new Card("H10", "H", 10, "Weapon"));
+        testCards.add(new Card("D5", "D", 5, "Weapon"));
+        testCards.add(new Card("D5", "D", 5, "Weapon"));
+        testCards.add(new Card("L20", "L", 20, "Weapon"));
+
+        // Use the receiveCards method to add cards to the player's hand
+        currentPlayer.receiveCards(testCards);
 
         // Set number of stages for the quest
         quest.setNumberOfStages(2);
@@ -75,7 +75,7 @@ class QuestTest {
     @Test
     @DisplayName("R-TEST-18: Set up stages of the quest")
     public void RESP_18_test_01() {
-        game.distributeAdventureCards();
+        //game.distributeAdventureCards();
         // Simulate user input: choosing two cards and completing each stage
         String simulatedInput = "1\nq\n2\nq\n"; // Ensure this matches the expected input sequence
         InputStream input = new ByteArrayInputStream(simulatedInput.getBytes());

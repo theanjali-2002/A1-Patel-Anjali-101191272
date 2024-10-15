@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 public class Player {
@@ -27,7 +28,13 @@ public class Player {
     }
 
     public List<Card> getHand() {
+
         return hand;
+    }
+
+
+    public void sortHand(List<Card> handToSort) {
+        //code later
     }
 
     // Getter for shields

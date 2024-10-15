@@ -94,4 +94,44 @@ class PlayerTest {
         player.loseShields(2); // Attempt to lose 2 shields
         assertEquals(0, player.getShields(), "Player shields should not go below 0.");
     }
+
+    @Test
+    @DisplayName("R-TEST-19: Always return player's sorted hand")
+    public void RESP_19_test_01() {
+        // Create a player and a hand of cards
+        player = new Player("TestPlayer");
+
+        // List of unsorted cards with different categories and values
+        List<Card> hand = new ArrayList<>();
+
+        // Add Foes with different values
+        hand.add(new Card("F5", "F", 5, "Foe"));   // Foe with value 5
+        hand.add(new Card("F3", "F", 3, "Foe"));   // Foe with value 3
+        hand.add(new Card("F7", "F", 7, "Foe"));   // Foe with value 7
+
+        // Add Weapons with different types and values
+        hand.add(new Card("H8", "H", 8, "Weapon")); // Horse (type "H")
+        hand.add(new Card("S6", "S", 6, "Weapon")); // Sword (type "S")
+        hand.add(new Card("S4", "S", 4, "Weapon")); // Sword (type "S")
+        hand.add(new Card("D5", "D", 5, "Weapon"));    // Other Weapon (type "D")
+
+        player.receiveCards(hand);
+
+        // Retrieve the sorted hand using the method to be tested
+        List<Card> sortedHand = player.getHand();
+
+        // Check that foes come first, sorted by value
+        assertEquals("F3", sortedHand.get(0).getCardName(), "First card should be F3 with value 3.");
+        assertEquals("F5", sortedHand.get(1).getCardName(), "Second card should be F5 with value 5.");
+        assertEquals("F7", sortedHand.get(2).getCardName(), "Third card should be F7 with value 7.");
+
+        // Check that weapons come next, swords first, sorted by value
+        assertEquals("S4", sortedHand.get(3).getCardName(), "Fourth card should be S4 with value 4.");
+        assertEquals("S6", sortedHand.get(4).getCardName(), "Fifth card should be S6 with value 6.");
+
+        // Then other weapons, followed by horses
+        assertEquals("H8", sortedHand.get(5).getCardName(), "Sixth card should be H8 with value 8.");
+        assertEquals("D5", sortedHand.get(6).getCardName(), "Seventh card should be D5 with value 5.");
+    }
+
 }
