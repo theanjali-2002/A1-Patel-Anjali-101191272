@@ -59,7 +59,7 @@ public class Quest {
     }
 
     public void setTotalShieldsAwarded(int totalShieldsAwarded) {
-
+        this.totalShieldsAwarded = totalShieldsAwarded;
     }
 
     public int getCurrentStage() {
@@ -75,23 +75,26 @@ public class Quest {
     }
 
     public void addParticipant(String participantId) {
-
+        participants.add(participantId);
     }
 
     public void addWinner(String winnerId, int shields) {
-
+        winners.add(winnerId);
+        totalShieldsAwarded += shields;
     }
 
     public void setCurrentStage(int stage) {
-
+        if (stage >= 0 && stage < numberOfStages) {
+            this.currentStage = stage;
+        }
     }
 
     public void setStatus(String status) {
-
+        this.status = status;
     }
 
     public void discardQuestCard(String card) {
-
+        discardedCards.add(card);
     }
 
 
