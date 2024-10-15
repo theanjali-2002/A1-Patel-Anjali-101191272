@@ -60,19 +60,22 @@ public class Stage {
     }
 
     public void addWeaponCard(String weaponCard) {
-
+        weaponCards.add(weaponCard);
     }
 
     public void addParticipant(String participantId) {
-
+        participants.add(participantId);
     }
 
     public void recordAttack(String participantId, int attackValue) {
-
+        attacks.put(participantId, attackValue);
+        if (attackValue >= stageValue) {
+            successfulParticipants.add(participantId);
+        }
     }
 
     public void setStatus(String status) {
-
+        this.status = status;
     }
 
 
