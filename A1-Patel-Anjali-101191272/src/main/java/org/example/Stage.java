@@ -8,17 +8,15 @@ import java.util.Map;
 public class Stage {
     private String stageId;
     private int stageValue;
-    private String foeCard;
     private List<String> weaponCards;
     private List<String> participants;
     private Map<String, Integer> attacks;
     private List<String> successfulParticipants;
     private String status;
 
-    public Stage(String stageId, int stageValue, String foeCard) {
+    public Stage(String stageId, int stageValue, List<Card> cardsInStage) {
         this.stageId = stageId;
         this.stageValue = stageValue;
-        this.foeCard = foeCard;
         this.weaponCards = new ArrayList<>();
         this.participants = new ArrayList<>();
         this.attacks = new HashMap<>();
@@ -33,10 +31,6 @@ public class Stage {
 
     public int getStageValue() {
         return stageValue;
-    }
-
-    public String getFoeCard() {
-        return foeCard;
     }
 
     public List<String> getWeaponCards() {

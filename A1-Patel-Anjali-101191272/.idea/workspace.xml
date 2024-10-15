@@ -5,7 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bbab3710-ec0c-4ee6-b1b3-deb0896ef8da" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Quest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Quest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Stage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Stage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/PlayerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/PlayerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/QuestTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/QuestTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/StageTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/StageTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,9 +71,13 @@
     "JUnit.PlayerTest.RESP_12_test_01.executor": "Run",
     "JUnit.PlayerTest.RESP_12_test_02.executor": "Run",
     "JUnit.PlayerTest.RESP_19_test_01.executor": "Run",
+    "JUnit.PlayerTest.RESP_20_test_01.executor": "Run",
+    "JUnit.PlayerTest.RESP_20_test_02.executor": "Run",
+    "JUnit.PlayerTest.RESP_20_test_03.executor": "Run",
     "JUnit.PlayerTest.executor": "Run",
     "JUnit.QuestTest.RESP_16_test_01.executor": "Run",
     "JUnit.QuestTest.RESP_18_test_01.executor": "Run",
+    "JUnit.StageTest.RESP_17_test_01.executor": "Run",
     "JUnit.StageTest.executor": "Run",
     "JUnit.UserInterfaceTest.RESP_05_test_01.executor": "Run",
     "JUnit.UserInterfaceTest.RESP_10_test_01.executor": "Run",
@@ -92,7 +102,7 @@
     </key>
   </component>
   <component name="RunManager" selected="JUnit.org.example in A1-Patel-Anjali-101191272">
-    <configuration name="PlayerTest.RESP_19_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="PlayerTest.RESP_20_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
         <pattern>
@@ -102,13 +112,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.example" />
       <option name="MAIN_CLASS_NAME" value="org.example.PlayerTest" />
-      <option name="METHOD_NAME" value="RESP_19_test_01" />
+      <option name="METHOD_NAME" value="RESP_20_test_01" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="QuestTest.RESP_16_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="PlayerTest.RESP_20_test_02" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
         <pattern>
@@ -117,8 +127,24 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.QuestTest" />
-      <option name="METHOD_NAME" value="RESP_16_test_01" />
+      <option name="MAIN_CLASS_NAME" value="org.example.PlayerTest" />
+      <option name="METHOD_NAME" value="RESP_20_test_02" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PlayerTest.RESP_20_test_03" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="A1-Patel-Anjali-101191272" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.PlayerTest" />
+      <option name="METHOD_NAME" value="RESP_20_test_03" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -140,21 +166,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StageTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="A1-Patel-Anjali-101191272" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.StageTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="org.example in A1-Patel-Anjali-101191272" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
@@ -172,10 +183,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.org.example in A1-Patel-Anjali-101191272" />
-        <item itemvalue="JUnit.PlayerTest.RESP_19_test_01" />
+        <item itemvalue="JUnit.PlayerTest.RESP_20_test_03" />
+        <item itemvalue="JUnit.PlayerTest.RESP_20_test_02" />
+        <item itemvalue="JUnit.PlayerTest.RESP_20_test_01" />
         <item itemvalue="JUnit.QuestTest.RESP_18_test_01" />
-        <item itemvalue="JUnit.QuestTest.RESP_16_test_01" />
-        <item itemvalue="JUnit.StageTest" />
       </list>
     </recent_temporary>
   </component>

@@ -1,19 +1,18 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class Player {
     private String name;
     private List<Card> hand;
     private int shields;
+    private List<Card> discardPile;
 
     public Player(String name) {
         this.name = name;
         this.hand = new ArrayList<>();
         this.shields = 0;
+        this.discardPile = new ArrayList<>();
     }
 
     public String getName() {
@@ -67,6 +66,21 @@ public class Player {
         handToSort.clear();
         handToSort.addAll(foes);
         handToSort.addAll(weapons);
+    }
+
+    // Method to discard a card from the player's hand
+    public void discardAdventureCard(Card card) {
+        //CODE LATER
+    }
+
+    // Method to get the player's discard pile
+    public List<Card> getDiscardPile() {
+        return discardPile;
+    }
+
+    // Method to trim the player's hand to 12 cards
+    public void trimHandTo12Cards() {
+        // CODE LATER
     }
 
     // Getter for shields

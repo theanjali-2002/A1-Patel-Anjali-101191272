@@ -77,7 +77,7 @@ class QuestTest {
     public void RESP_18_test_01() {
         //game.distributeAdventureCards();
         // Simulate user input: choosing two cards and completing each stage
-        String simulatedInput = "1\nq\n2\nq\n"; // Ensure this matches the expected input sequence
+        String simulatedInput = "1\nq\n3\nq\n1\nq\n"; // Ensure this matches the expected input sequence
         InputStream input = new ByteArrayInputStream(simulatedInput.getBytes());
         System.setIn(input);
 

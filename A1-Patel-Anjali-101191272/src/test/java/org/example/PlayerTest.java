@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,5 +134,100 @@ class PlayerTest {
         assertEquals("H8", sortedHand.get(5).getCardName(), "Sixth card should be H8 with value 8.");
         assertEquals("D5", sortedHand.get(6).getCardName(), "Seventh card should be D5 with value 5.");
     }
+
+    @Test
+    @DisplayName("R-TEST-20: Discard and Trim cards logic.")
+    public void RESP_20_test_01() {
+        // Create a player and a hand with cards
+        player = new Player("TestPlayer");
+
+        // Create two cards for the test
+        Card cardToDiscard = new Card("F5", "F", 5, "Foe");
+        Card anotherCard = new Card("S10", "S", 10, "Weapon");
+
+        // Add both cards to the player's hand
+        List<Card> hand = new ArrayList<>();
+        hand.add(cardToDiscard);
+        hand.add(anotherCard);
+        player.receiveCards(hand);
+
+        // Ensure the player's hand contains both cards initially
+        assertTrue(player.getHand().contains(cardToDiscard), "Player's hand should contain the card to discard.");
+        assertTrue(player.getHand().contains(anotherCard), "Player's hand should contain another card.");
+
+        // Discard the card
+        player.discardAdventureCard(cardToDiscard);
+
+        // Check that the card was removed from the hand
+        assertFalse(player.getHand().contains(cardToDiscard), "The discarded card should be removed from the player's hand.");
+
+        // Check that the card was added to the discard pile
+        assertTrue(player.getDiscardPile().contains(cardToDiscard), "The discarded card should be added to the discard pile.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-20: Discard and Trim cards logic - trimming")
+    public void RESP_20_test_02() {
+        // Create a player and a hand with more than 12 cards
+        player = new Player("TestPlayer");
+
+        // Create 15 cards for the test (more than 12)
+        List<Card> cards = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            cards.add(new Card("Card" + (i + 1), "W", i + 1, "Weapon")); // Cards with different names
+        }
+
+        // Add the cards to the player's hand
+        player.receiveCards(cards);
+
+        // Ensure the player's hand contains 15 cards initially
+        assertEquals(15, player.getHand().size(), "Player should initially have 15 cards in hand.");
+
+        // Mock trimming by calling trimHandTo12Cards (manually discarding cards)
+        // For testing, we simulate the trimming by calling discardAdventureCard manually
+        player.discardAdventureCard(player.getHand().get(0));
+        player.discardAdventureCard(player.getHand().get(4));
+        player.discardAdventureCard(player.getHand().get(6));
+
+        // Now player should have exactly 12 cards
+        assertEquals(12, player.getHand().size(), "Player's hand should be trimmed to 12 cards.");
+
+        // Ensure the discarded cards are in the discard pile
+        assertEquals(3, player.getDiscardPile().size(), "3 cards should have been discarded.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-20: Discard and Trim cards logic - trimming with user input")
+    public void RESP_20_test_03() {
+        // Create a player and a hand with more than 12 cards
+        player = new Player("TestPlayer");
+        // Create 15 cards for the test (more than 12)
+        List<Card> cards = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            cards.add(new Card("Card" + (i + 1), "W", i + 1, "Weapon")); // Cards with different names
+        }
+
+        // Add the cards to the player's hand
+        player.receiveCards(cards);
+
+        // Ensure the player's hand contains 15 cards initially
+        assertEquals(15, player.getHand().size(), "Player should initially have 15 cards in hand.");
+
+        // Simulate user input: discarding cards
+        String simulatedInput = "1\n5\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(in);
+
+        // Call the method that will use the simulated input
+        player.trimHandTo12Cards();
+
+        // After trimming, the player should have exactly 12 cards
+        assertEquals(12, player.getHand().size(), "Player's hand should be trimmed to 12 cards.");
+
+        // Ensure the discarded cards were added to the discard pile
+        assertEquals(3, player.getDiscardPile().size(), "3 cards should have been discarded.");
+    }
+
+
 
 }
