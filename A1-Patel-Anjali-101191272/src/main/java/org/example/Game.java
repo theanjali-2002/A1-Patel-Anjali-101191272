@@ -179,6 +179,7 @@ public class Game {
             case "Queen's favor":
                 System.out.println("Queen's favor card is drawn and current player will draw 2 adventure cards.");
                 currentPlayer.receiveCards(adventureDeck.drawCards(2));// Implement this method to let the player draw adventure cards
+                currentPlayer.trimHandTo12Cards();
                 break;
 
             case "Prosperity":
@@ -186,6 +187,7 @@ public class Game {
                 for (Player player : players) {
                     System.out.println(player.getName() + " draws 2 adventure cards.");
                     player.receiveCards(adventureDeck.drawCards(2));
+                    player.trimHandTo12Cards();
                 }
                 break;
 

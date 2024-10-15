@@ -70,7 +70,12 @@ public class Player {
 
     // Method to discard a card from the player's hand
     public void discardAdventureCard(Card card) {
-        //CODE LATER
+        if (hand.remove(card)) { // Remove the card from the player's hand
+            discardPile.add(card); // Add the card to the discard pile
+            System.out.println("Card discarded: " + card.getCardName());
+        } else {
+            System.out.println("Card not found in hand: " + card.getCardName());
+        }
     }
 
     // Method to get the player's discard pile
@@ -80,7 +85,36 @@ public class Player {
 
     // Method to trim the player's hand to 12 cards
     public void trimHandTo12Cards() {
-        // CODE LATER
+        Scanner scanner = new Scanner(System.in);
+
+        while (hand.size() > 12) {
+            int numToDiscard = hand.size() - 12;
+            System.out.println("You need to discard " + numToDiscard + " card(s).");
+
+            // Display the current hand with indices for selection
+            for (int i = 0; i < hand.size(); i++) {
+                System.out.println((i + 1) + ": " + hand.get(i).getCardName());
+            }
+
+            // Prompt for a valid position to discard
+            int position = -1;
+            while (position < 1 || position > hand.size()) {
+                System.out.print("Enter the position of the card to discard (1-" + hand.size() + "): \n");
+                position = scanner.nextInt();
+            }
+
+            // Discard the card at the selected position
+            Card cardToDiscard = hand.get(position - 1);
+            discardAdventureCard(cardToDiscard);
+
+            // Display the updated hand
+            System.out.println("Updated hand:");
+            for (int i = 0; i < hand.size(); i++) {
+                System.out.println((i + 1) + ": " + hand.get(i).getCardName());
+            }
+        }
+
+        System.out.println("Hand trimmed to 12 cards.");
     }
 
     // Getter for shields
