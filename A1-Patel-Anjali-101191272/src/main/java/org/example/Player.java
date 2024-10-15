@@ -29,17 +29,22 @@ public class Player {
     public List<Card> getHand() {
         return hand;
     }
+
+    // Getter for shields
     public int getShields() {
         return shields;
     }
 
+    // Method to reduce shields (ensures player doesn't go below 0 shields)
     public void loseShields(int amount) {
-        //code later
+        shields = Math.max(shields - amount, 0);  // Player can't go below 0 shields
+        System.out.println(name + " has lost " + amount + " shields. Remaining shields: " + shields);
     }
 
     // Method to add shields
     public void gainShields(int amount) {
-        //code later
+        shields += amount;
+        System.out.println(name + " has gained " + amount + " shields. Current shields: " + shields);
     }
 
 }
