@@ -174,10 +174,16 @@ public class Quest {
     }
 
     public void prepareForQuest(Game game) {
-        //code later
+        for (String participant : participants) {
+            Player player = game.getPlayerByName(participant); // Retrieve the player from game
+            List<Card> drawnCards = adventureDeck.drawCards(1);
+            player.receiveCards(drawnCards); // Each participant draws one adventure card
+            player.trimHandTo12Cards(); // Ensure they don’t exceed card limit
+        }
+        //prepareForStage(0); // After drawing cards, start with the first stage
     }
 
-
+    
 
 
 
