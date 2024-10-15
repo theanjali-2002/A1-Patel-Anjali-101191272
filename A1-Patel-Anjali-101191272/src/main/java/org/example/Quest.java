@@ -56,12 +56,74 @@ public class Quest {
     }
 
     public void setupQuest(Game game) {
+        Scanner scanner = new Scanner(System.in);
 
+        for (int i = 0; i < numberOfStages; i++) {
+            System.out.println("Setting up Stage " + (i + 1));
+            String stageId = "Stage-" + (i + 1);
+            List<Card> cardsInStage = new ArrayList<>();
+            int stageValue = 0;
+
+            // Display the current player's hand before adding to the stage
+            game.displayCurrentPlayerHand();
+
+            boolean validStageSetup = false;
+            while (!validStageSetup) {
+                //System.out.println("Current cards in this stage: " + cardsInStage);
+                System.out.println("Enter the position of the next card to include or 'q' to finish this stage:");
+
+                // Check for available input
+                if (scanner.hasNextLine()) {
+                    String input = scanner.nextLine();
+
+                    if (input.equalsIgnoreCase("q")) {
+                        if (cardsInStage.isEmpty()) {
+                            System.out.println("A stage cannot be empty");
+                        } else if (stageValue <= (i > 0 ? stages.get(i-1).getStageValue() : 0)) {
+                            System.out.println("Insufficient value for this stage");
+                        } else {
+                            validStageSetup = true; // Stage is valid
+                        }
+                    } else {
+                        // Validate the card position
+                        try {
+                            int cardPosition = Integer.parseInt(input); // Convert to int
+                            Card card = getCard(cardPosition-1, game); // Assuming getCard takes position from hand
+
+                            if (card != null && isValidCard(card, cardsInStage)) {
+                                cardsInStage.add(card);
+                                System.out.println("Added card: " + card);
+                                stageValue = calculateStageValue(cardsInStage); // Update stage value
+                                //adventureDeck.discardAdventureCard(card);
+                            } else {
+                                System.out.println("Invalid card selection. Must be a sole foe or non-repeated weapon card.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid position. Please enter a valid card position.");
+                        }
+                    }
+                } else {
+                    System.out.println("No input available. Exiting stage setup.");
+                    return; // Handle the situation where there's no input
+                }
+            }
+
+            // After building the stage, set its value based on the cards
+            stages.add(new Stage(stageId, stageValue, "FoeCardPlaceholder")); // Replace "FoeCardPlaceholder" with actual logic
+        }
+        System.out.println("Quest setup complete with " + stages.size() + " stages.");
     }
 
 
     private Card getCard(int position, Game game) {
+        cardDeck = game.getCurrentPlayer().getHand();
+        // Check if the position is within the valid range
+        if (position < 0 || position >= cardDeck.size()) {
+            System.out.println("Invalid position: " + position + ". It must be between 0 and " + (cardDeck.size() - 1) + ".");
+            return null; // Return null if the position is invalid
+        }
 
+        System.out.println(cardDeck.get(position).getCardName());
         // Return the card from the deck based on the position
         return cardDeck.get(position);
 
