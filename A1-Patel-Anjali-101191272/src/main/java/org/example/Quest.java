@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Quest {
     private String questId;
@@ -14,6 +15,29 @@ public class Quest {
     private int currentStage;
     private String status;
     private List<String> discardedCards;
+    private List<Card> cardDeck;
+    private List<Stage> stages;
+    private Game game;
+    private AdventureDeck adventureDeck;
+    private EventDeck eventDeck;
+
+    public Quest() {
+        this.questId = questId;
+        this.questType = questType;
+        this.sponsorId = sponsorId;
+        this.numberOfStages = numberOfStages;
+        this.participants = new ArrayList<>();
+        this.winners = new ArrayList<>();
+        this.discardedCards = new ArrayList<>();
+        this.currentStage = 0; // Starting at the first stage
+        this.status = "active"; // Default status
+        this.totalShieldsAwarded = 0;
+        this.cardDeck = new ArrayList<>();
+        this.stages = new ArrayList<>();
+        game = new Game();
+        adventureDeck = new AdventureDeck();
+        eventDeck = new EventDeck();
+    }
 
     public Quest(String questId, String questType, String sponsorId, int numberOfStages) {
         this.questId = questId;
@@ -26,7 +50,39 @@ public class Quest {
         this.currentStage = 0; // Starting at the first stage
         this.status = "active"; // Default status
         this.totalShieldsAwarded = 0;
+        this.cardDeck = new ArrayList<>();
+        this.stages = new ArrayList<>();
+        game = new Game();
     }
+
+    public void setupQuest(Game game) {
+
+    }
+
+
+    private Card getCard(int position, Game game) {
+
+        // Return the card from the deck based on the position
+        return cardDeck.get(position);
+
+    }
+
+
+    // Method to check if the selected card is valid
+    private boolean isValidCard(Card card, List<Card> existingCards) {
+        // Check if the card is non-repeated and if it's a valid type
+        return !existingCards.contains(card) && (card.getCategory().equals("Weapon") || card.getCategory().equals("Foe"));
+    }
+
+    // Method to calculate the stage value based on cards
+    private int calculateStageValue(List<Card> cards) {
+        int totalValue = 0;
+        for (Card card : cards) {
+            totalValue += card.getValue();
+        }
+        return totalValue; // Return the total value of the stage
+    }
+
 
 
     // Getters and Setters
@@ -44,6 +100,10 @@ public class Quest {
 
     public int getNumberOfStages() {
         return numberOfStages;
+    }
+
+    public void setNumberOfStages(int num) {
+        this.numberOfStages = num;
     }
 
     public List<String> getParticipants() {
@@ -95,6 +155,10 @@ public class Quest {
 
     public void discardQuestCard(String card) {
         discardedCards.add(card);
+    }
+
+    public List<Stage> getStages() { // Getter for stages
+        return stages;
     }
 
 
