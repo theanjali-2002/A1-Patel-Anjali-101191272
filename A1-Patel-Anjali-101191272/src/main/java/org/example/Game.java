@@ -222,6 +222,11 @@ public class Game {
         }
     }
 
+    public Player findSponsor(Player currentPlayer, List<Player> players) {
+        return getCurrentPlayer();
+    }
+
+
 
     public static void main(String[] args) {
         UserInterface userInterface = new UserInterface(); // Initialize user interface

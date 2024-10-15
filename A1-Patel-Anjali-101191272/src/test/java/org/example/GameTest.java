@@ -421,4 +421,92 @@ public class GameTest {
         assertFalse(result, "The result should be false for declining sponsorship.");
     }
 
+    @Test
+    @DisplayName("R-TEST-15: Find the sponsor from all Players; One player agrees to sponsor the quest.")
+    public void RESP_15_test_01() {
+        // Arrange: Create a list of players
+        Player currentPlayer = new Player("P1");
+        Player p2 = new Player("P2");
+        Player p3 = new Player("P3");
+        Player p4 = new Player("P4");
+        List<Player> players = new ArrayList<>();
+        players.add(currentPlayer);
+        players.add(p2);
+        players.add(p3);
+        players.add(p4);
+
+        // Mock the promptToSponsor method
+        game = new Game() {
+            @Override
+            public boolean promptToSponsor(Player player) {
+                return player.getName().equals("P2"); // Only P2 agrees to sponsor
+            }
+        };
+
+        // Act: Call the findSponsor method
+        Player sponsor = game.findSponsor(currentPlayer, players);
+
+        // Assert: Check if P2 sponsors the quest
+        assertNotNull(sponsor, "P2 should sponsor the quest.");
+        assertEquals("P2", sponsor.getName(), "P2 should be the sponsor.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-15: Find the sponsor from all Players; All players decline to sponsor the quest.")
+    public void RESP_15_test_02() {
+        // Arrange: Create a list of players
+        Player currentPlayer = new Player("P1");
+        Player p2 = new Player("P2");
+        Player p3 = new Player("P3");
+        Player p4 = new Player("P4");
+        List<Player> players = new ArrayList<>();
+        players.add(currentPlayer);
+        players.add(p2);
+        players.add(p3);
+        players.add(p4);
+
+        // Mock the promptToSponsor method
+        game = new Game() {
+            @Override
+            public boolean promptToSponsor(Player player) {
+                return false; // All players decline to sponsor
+            }
+        };
+
+        // Act: Call the findSponsor method
+        Player sponsor = game.findSponsor(currentPlayer, players);
+
+        // Assert: Check if no player sponsors the quest
+        assertNull(sponsor, "No player should sponsor the quest.");
+    }
+
+
+    @Test
+    @DisplayName("R-TEST-15: Find the sponsor from all Players; Sponsor wraps around to the first player.")
+    public void RESP_15_test_03() {
+        // Arrange: Create a list of players
+        Player currentPlayer = new Player("P3");
+        Player p1 = new Player("P1");
+        Player p2 = new Player("P2");
+        List<Player> players = new ArrayList<>();
+        players.add(p1);
+        players.add(p2);
+        players.add(currentPlayer);
+
+        // Mock the promptToSponsor method
+        game = new Game() {
+            @Override
+            public boolean promptToSponsor(Player player) {
+                return player.getName().equals("P1"); // P1 sponsors the quest after wrap around
+            }
+        };
+
+        // Act: Call the findSponsor method
+        Player sponsor = game.findSponsor(currentPlayer, players);
+
+        // Assert: Check if P1 sponsors after wrap around
+        assertNotNull(sponsor, "P1 should sponsor the quest after wrap around.");
+        assertEquals("P1", sponsor.getName(), "P1 should sponsor the quest after wrapping around.");
+    }
+
 }
