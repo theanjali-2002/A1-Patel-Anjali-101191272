@@ -223,7 +223,30 @@ public class Game {
     }
 
     public Player findSponsor(Player currentPlayer, List<Player> players) {
-        return getCurrentPlayer();
+        // Get the index of the current player
+        int currentPlayerIndex = players.indexOf(currentPlayer);
+
+        // Start with the current player and loop through all players in order
+        for (int i = 0; i < players.size(); i++) {
+            // Calculate the current player in the loop (wrap around the list if needed)
+            Player playerToAsk = players.get((currentPlayerIndex + i) % players.size());
+
+            // Prompt the player to sponsor the quest
+            System.out.println("Asking " + playerToAsk.getName() + " to sponsor the quest...");
+            boolean sponsor = promptToSponsor(playerToAsk);
+
+            // If the player agrees to sponsor the quest, return this player
+            if (sponsor) {
+                //System.out.println(playerToAsk.getName() + " has agreed to sponsor the quest.");
+                return playerToAsk;
+            } else {
+                //System.out.println(playerToAsk.getName() + " has declined to sponsor the quest.");
+            }
+        }
+
+        // If no player agrees to sponsor the quest, return null
+        System.out.println("All players have declined to sponsor the quest. The quest ends.");
+        return null;
     }
 
 
@@ -242,8 +265,11 @@ public class Game {
         if (drewCard.getCategory() == "Event"){
             game.handleECardEffects(drewCard, game.getCurrentPlayer());
         } else {
-            System.out.println("not event card");
-            game.promptToSponsor(game.getCurrentPlayer());
+            System.out.println("Quest");
+            Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
+            if (value == null) {
+                game.nextPlayer();
+            }
         }
 
 
