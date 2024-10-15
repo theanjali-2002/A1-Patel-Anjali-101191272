@@ -28,13 +28,45 @@ public class Player {
     }
 
     public List<Card> getHand() {
-
-        return hand;
+        List<Card> sortedHand = new ArrayList<>(hand);
+        //System.out.println("Before sorting: " + sortedHand);
+        sortHand(sortedHand);
+        //System.out.println("After sorting: " + sortedHand);
+        return sortedHand;
     }
 
 
     public void sortHand(List<Card> handToSort) {
-        //code later
+        // Separate foes and weapons into different lists
+        List<Card> foes = new ArrayList<>();
+        List<Card> weapons = new ArrayList<>();
+
+        for (Card card : handToSort) {
+            if (card.getCategory().equals("Foe")) {
+                foes.add(card);
+            } else if (card.getCategory().equals("Weapon")) {
+                weapons.add(card);
+            }
+        }
+
+        // Sort foes by value
+        foes.sort(Comparator.comparingInt(Card::getValue));
+
+        // Sort weapons: prioritize swords before horses, then by value
+        weapons.sort(Comparator.comparing((Card card) -> {
+            if (card.getType().equals("S")) {
+                return 0; // Swords come first
+            } else if (card.getType().equals("H")) {
+                return 1; // Horses come last
+            } else {
+                return 2; // Other weapon types
+            }
+        }).thenComparingInt(Card::getValue)); // Sort by value
+
+        // Clear the original hand and add sorted cards back
+        handToSort.clear();
+        handToSort.addAll(foes);
+        handToSort.addAll(weapons);
     }
 
     // Getter for shields
