@@ -18,7 +18,7 @@ public class Game {
         eventDeck = new EventDeck();
         players = new ArrayList<>();
         currentPlayerIndex = 0;
-        scanner = new Scanner(System.in);
+        this.scanner = new Scanner(System.in);
     }
 
     // Methods to initialize the game environment
@@ -201,9 +201,26 @@ public class Game {
     }
 
     public boolean promptToSponsor(Player currentPlayer) {
-        return true;
-    }
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(currentPlayer.getName() + ", a new quest has been drawn.");
+        System.out.print("Do you want to sponsor this quest? (y/n): ");
 
+        String response = scanner.nextLine().trim().toLowerCase();
+
+        // Validate the input and handle the response
+        while (!response.equalsIgnoreCase("y") && !response.equalsIgnoreCase("n")) {
+            System.out.print("Invalid input. Please enter 'y' or 'n': ");
+            response = scanner.nextLine().trim().toLowerCase();
+        }
+
+        if (response.equalsIgnoreCase("y")) {
+            System.out.println(currentPlayer.getName() + " has chosen to sponsor the quest.");
+            return true; // Player has chosen to sponsor the quest
+        } else {
+            System.out.println(currentPlayer.getName() + " has declined to sponsor the quest.");
+            return false; // Player has declined the sponsorship
+        }
+    }
 
 
     public static void main(String[] args) {
@@ -221,6 +238,7 @@ public class Game {
             game.handleECardEffects(drewCard, game.getCurrentPlayer());
         } else {
             System.out.println("not event card");
+            game.promptToSponsor(game.getCurrentPlayer());
         }
 
 

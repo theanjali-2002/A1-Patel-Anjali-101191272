@@ -7,6 +7,7 @@ import org.junit.jupiter.api.TestInfo;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -334,7 +335,6 @@ public class GameTest {
         }
     }
 
-
     @Test
     @DisplayName("R-TEST-14: Prompt players for quest sponsor; valid input 'y'")
     public void RESP_14_test_01() {
@@ -347,13 +347,14 @@ public class GameTest {
 
         // Simulate user input for sponsoring the quest
         String simulatedInput = "y\n"; // Simulate 'yes' input
-        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes())); // Set the input stream to simulate user input
 
         // Call the method
         boolean result = game.promptToSponsor(currentPlayer);
 
-        // Restore original System.out
+        // Restore original System.out and System.in
         System.setOut(originalOut);
+        System.setIn(System.in);
 
         // Verify output
         String output = outputStream.toString();
@@ -374,13 +375,14 @@ public class GameTest {
 
         // Simulate user input for declining the sponsorship
         String simulatedInput = "n\n"; // Simulate 'no' input
-        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes())); // Set the input stream to simulate user input
 
         // Call the method
         boolean result = game.promptToSponsor(currentPlayer);
 
-        // Restore original System.out
+        // Restore original System.out and System.in
         System.setOut(originalOut);
+        System.setIn(System.in);
 
         // Verify output
         String output = outputStream.toString();
@@ -401,13 +403,14 @@ public class GameTest {
 
         // Simulate user input for invalid response
         String simulatedInput = "invalid\nn\n"; // First input is invalid, then valid 'no'
-        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes())); // Set the input stream to simulate user input
 
         // Call the method
         boolean result = game.promptToSponsor(currentPlayer);
 
-        // Restore original System.out
+        // Restore original System.out and System.in
         System.setOut(originalOut);
+        System.setIn(System.in);
 
         // Verify output
         String output = outputStream.toString();
