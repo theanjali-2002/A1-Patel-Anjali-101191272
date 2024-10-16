@@ -8,6 +8,11 @@ public class Player {
     private int shields;
     private List<Card> discardPile;
 
+    public Player(){
+        this.hand = new ArrayList<>();
+        this.discardPile = new ArrayList<>();
+    }
+
     public Player(String name) {
         this.name = name;
         this.hand = new ArrayList<>();
@@ -132,6 +137,11 @@ public class Player {
     public void gainShields(int amount) {
         shields += amount;
         System.out.println(name + " has gained " + amount + " shields. Current shields: " + shields);
+    }
+
+    public int prepareAttackForStage(Stage stage, Player player) {
+        //code later
+        return 0;
     }
 
 }

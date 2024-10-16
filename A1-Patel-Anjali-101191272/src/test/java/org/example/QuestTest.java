@@ -12,12 +12,14 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class QuestTest {
     private Game game; // Assuming you have a Game class that contains setupQuest()
     private Quest quest;
+    private Player player;
 
     @BeforeEach
     public void setUp(TestInfo testInfo) {
@@ -56,7 +58,7 @@ class QuestTest {
 
         // Check the test name and skip initializing players for RESP_01_test_01
         if (!testInfo.getDisplayName().equals("R-TEST-22: Preparing for the Quest (Drawing cards)")) {
-            currentPlayer.receiveCards(testCards);
+            //currentPlayer.receiveCards(testCards);
         }
 
         // Set number of stages for the quest
@@ -95,8 +97,10 @@ class QuestTest {
         InputStream input = new ByteArrayInputStream(simulatedInput.getBytes());
         System.setIn(input);
 
+        List<Card> testCards = new ArrayList<>();
+        testCards.add(new Card("F25", "F", 25, "Foe"));
         // Run the setupQuest method
-        quest.setupQuest(game);
+        quest.setupQuest(game, testCards.get(0));
 
         // Validate that the stages were set up correctly
         assertEquals(2, quest.getStages().size(), "Expected 2 stages to be set up.");
@@ -163,8 +167,45 @@ class QuestTest {
         assertEquals(12, game.getPlayerByName("P3").getHand().size(), "Player should have trimmed the hand to 12 cards.");
         assertEquals(12, game.getPlayerByName("P4").getHand().size(), "Player should have trimmed the hand to 12 cards.");
 
+    }
+
+    @Test
+    @DisplayName("R-TEST-23: Preparing attacks for each stage")
+    public void RESP_23_test_02() {
+
+        Scanner scanner = new Scanner(System.in);
+
+        Quest quest = new Quest("Q1", "Adventure", "P1", 2);
+        quest.getParticipants().add(game.getCurrentPlayer().getName());
+        System.out.println("Participants: " + quest.getParticipants());
+
+        List<Card> stage1Cards = new ArrayList<>();
+        stage1Cards.add(new Card("Sword", "W", 10, "Weapon"));
+        stage1Cards.add(new Card("Horse", "H", 15, "Weapon"));
+
+        List<Card> stage2Cards = new ArrayList<>();
+        stage2Cards.add(new Card("Bow", "W", 12, "Weapon"));
+        stage2Cards.add(new Card("Shield", "H", 18, "Weapon"));
+
+        String simulatedInput = "1\n3\nq\n";
+        InputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(inputStream);
+
+        quest.setNumberOfStages(2);
+        quest.getStages().add(new Stage("Stage-1", 20, stage1Cards)); // Stage 1 with value 20
+        quest.getStages().add(new Stage("Stage-2", 30, stage2Cards)); // Stage 2 with value 30
+
+        quest.prepareForStage(0, game);  // Stage 0 (Stage-1)
+
+        Stage stage1 = quest.getStages().get(0);
+        assertNotNull(stage1.getAttacks().get("P1"), "P1's attack should have been recorded.");
+
+        assertEquals(10, (int) stage1.getAttacks().get("P1"), "P1's attack value should be 10.");
 
     }
+
+
+
 
 
 

@@ -20,23 +20,21 @@ public class Quest {
     private Game game;
     private AdventureDeck adventureDeck;
     private EventDeck eventDeck;
+    private Player player;
+    private Stage stage;
+    private Quest quest;
 
     public Quest() {
-        this.questId = questId;
-        this.questType = questType;
-        this.sponsorId = sponsorId;
-        this.numberOfStages = numberOfStages;
         this.participants = new ArrayList<>();
         this.winners = new ArrayList<>();
         this.discardedCards = new ArrayList<>();
-        this.currentStage = 0; // Starting at the first stage
-        this.status = "active"; // Default status
-        this.totalShieldsAwarded = 0;
         this.cardDeck = new ArrayList<>();
         this.stages = new ArrayList<>();
         game = new Game();
         adventureDeck = new AdventureDeck();
         eventDeck = new EventDeck();
+        player = new Player();
+        stage = new Stage();
     }
 
     public Quest(String questId, String questType, String sponsorId, int numberOfStages) {
@@ -55,7 +53,9 @@ public class Quest {
         game = new Game();
     }
 
-    public void setupQuest(Game game) {
+    public void setupQuest(Game game, Card drawnQcard) {
+        setNumberOfStages(drawnQcard.getValue());
+        System.out.println("num of stages: "+ numberOfStages);
         Scanner scanner = new Scanner(System.in);
 
         for (int i = 0; i < numberOfStages; i++) {
@@ -180,10 +180,11 @@ public class Quest {
             player.receiveCards(drawnCards); // Each participant draws one adventure card
             player.trimHandTo12Cards(); // Ensure they don’t exceed card limit
         }
-        //prepareForStage(0); // After drawing cards, start with the first stage
     }
 
-    
+    public void prepareForStage(int stageIndex, Game game) {
+        //code later
+    }
 
 
 

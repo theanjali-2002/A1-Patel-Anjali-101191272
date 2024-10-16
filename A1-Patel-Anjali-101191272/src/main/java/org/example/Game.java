@@ -263,10 +263,12 @@ public class Game {
 
 
     public static void main(String[] args) {
+        //Scanner scanner = new Scanner(System.in);
         UserInterface userInterface = new UserInterface(); // Initialize user interface
         userInterface.displayGameStartMessage(true); // Display the game start message
 
         Game game = new Game(); // Create a new instance of the Game class
+        Quest quest = new Quest();
         game.initializeGameEnvironment();
         game.initializePlayers();
         game.distributeAdventureCards();
@@ -280,6 +282,14 @@ public class Game {
             Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
             if (value == null) {
                 game.nextPlayer();
+            } else {
+                quest.setupQuest(game, drewCard);
+                quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
+                quest.prepareForQuest(game);
+                for (int i=0; i<quest.getNumberOfStages(); i++){
+                    quest.prepareForStage(i, game);
+                }
+
             }
         }
 

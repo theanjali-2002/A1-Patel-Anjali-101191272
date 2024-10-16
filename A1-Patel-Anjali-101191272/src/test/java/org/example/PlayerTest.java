@@ -8,12 +8,14 @@ import org.junit.jupiter.api.TestInfo;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
     private Game game;
     private Player player;
+    private Stage stage;
 
     @BeforeEach
     public void setUp(TestInfo testInfo) {
@@ -24,6 +26,9 @@ class PlayerTest {
         if (!testInfo.getDisplayName().equals("R-Test-04: Setup 4 players.")) {
             game.initializePlayers(); // Initialize players for all other tests
         }
+
+        List<Card> cardsInStage = new ArrayList<>();
+        stage = new Stage("Stage1", 15, cardsInStage);
     }
 
     @Test
@@ -226,6 +231,35 @@ class PlayerTest {
 
         // Ensure the discarded cards were added to the discard pile
         assertEquals(3, player.getDiscardPile().size(), "3 cards should have been discarded.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-23: Preparing attacks for each stage")
+    public void RESP_23_test_01() {
+        Scanner scanner = new Scanner(System.in);
+        player = new Player("TestPlayer");
+        // Prepare player's hand with cards
+        List<Card> hand = new ArrayList<>();
+        hand.add(new Card("S10", "W", 10, "Weapon"));  // Weapon card
+        hand.add(new Card("S5", "W", 5, "Weapon"));  // Weapon card
+        hand.add(new Card("D25", "W", 25, "Foe"));    // Foe card (should not be allowed)
+
+        player.receiveCards(hand);
+
+        // Simulate user input: select first two weapon cards and quit
+        String simulatedInput = "1\n2\nq\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(in);
+
+        // Call the method under test
+        int attackValue = player.prepareAttackForStage(stage, player);
+
+        // Assertions to verify behavior
+        assertEquals(15, attackValue, "Total attack value should be 15 from selected cards.");
+        assertEquals(1, player.getHand().size(), "Player's hand should have 1 cards.");
+        assertEquals(2, stage.getWeaponCards().size(), "Stage should have 2 weapon cards used in the attack.");
+        assertTrue(stage.getWeaponCards().contains("S10"), "Stage should have 's10 as one of the weapon cards.");
+        assertTrue(stage.getWeaponCards().contains("S5"), "Stage should have 'S5 as one of the weapon cards.");
     }
 
 

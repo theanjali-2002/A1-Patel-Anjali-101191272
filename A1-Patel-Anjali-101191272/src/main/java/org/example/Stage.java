@@ -14,6 +14,13 @@ public class Stage {
     private List<String> successfulParticipants;
     private String status;
 
+    public Stage() {
+        this.weaponCards = new ArrayList<>();
+        this.participants = new ArrayList<>();
+        this.attacks = new HashMap<>();
+        this.successfulParticipants = new ArrayList<>();
+    }
+
     public Stage(String stageId, int stageValue, List<Card> cardsInStage) {
         this.stageId = stageId;
         this.stageValue = stageValue;
@@ -62,6 +69,9 @@ public class Stage {
     }
 
     public void recordAttack(String participantId, int attackValue) {
+        if (attacks == null) {
+            attacks = new HashMap<>();
+        }
         attacks.put(participantId, attackValue);
         if (attackValue >= stageValue) {
             successfulParticipants.add(participantId);
