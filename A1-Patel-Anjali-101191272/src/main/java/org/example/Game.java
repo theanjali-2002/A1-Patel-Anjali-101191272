@@ -99,6 +99,22 @@ public class Game {
         return players.get(currentPlayerIndex);
     }
 
+    public void setCurrentPlayer(int playerIndex) {
+        // Check if the players list is not empty
+        if (players.isEmpty()) {
+            throw new IllegalStateException("No players available in the game.");
+        }
+
+        // Check if the playerIndex is within the valid range
+        if (playerIndex < 0 || playerIndex >= players.size()) {
+            throw new IndexOutOfBoundsException("Player index is out of bounds: " + playerIndex);
+        }
+
+        // Set the current player index
+        currentPlayerIndex = playerIndex;
+    }
+
+
     public AdventureDeck getAdventureDeck() {
         return adventureDeck;
     }

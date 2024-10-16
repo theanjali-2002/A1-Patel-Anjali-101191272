@@ -82,17 +82,18 @@ public class GameTest {
     public void RESP_08_test_01() {
         assertEquals("P1", game.getCurrentPlayer().getName(), "Current player should be P1.");
 
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input for valid response 'r'
+        String simulatedInput = "r\n"; // Simulate pressing 'r' to return from the hot seat
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+
         game.nextPlayer(); // Move to next player
         assertEquals("P2", game.getCurrentPlayer().getName(), "Current player should be P2.");
 
-        game.nextPlayer(); // Move to next player
-        assertEquals("P3", game.getCurrentPlayer().getName(), "Current player should be P3.");
-
-        game.nextPlayer(); // Move to next player
-        assertEquals("P4", game.getCurrentPlayer().getName(), "Current player should be P4.");
-
-        game.nextPlayer(); // Move to next player
-        assertEquals("P1", game.getCurrentPlayer().getName(), "Current player should wrap around to P1.");
     }
 
     @Test
@@ -289,6 +290,11 @@ public class GameTest {
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outputStream));
 
+        // Simulate user input for valid response 'r'
+        String simulatedInput = "r\n"; // Simulate pressing 'r' to return from the hot seat
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+
         // Call the method with the Plague card
         game.handleECardEffects(plagueCard, currentPlayer);
 
@@ -310,6 +316,15 @@ public class GameTest {
         // Set the drawn card to Queen's Favor
         Card drawnCard = new Card("Queen's favor", "Event", 0, "Description");
 
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input for valid response 'r'
+        String simulatedInput = "r\n"; // Simulate pressing 'r' to return from the hot seat
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+
         // Call the method to handle the effects of the drawn card
         game.handleECardEffects(drawnCard, currentPlayer);
 
@@ -330,6 +345,12 @@ public class GameTest {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outputStream));
+
+
+        // Simulate user input for valid response 'r'
+        String simulatedInput = "r\n"; // Simulate pressing 'r' to return from the hot seat
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
 
         // Call the method with the Prosperity card
         game.handleECardEffects(prosperityCard, players.get(0)); // Current player doesn't matter here
@@ -569,6 +590,57 @@ public class GameTest {
         assertTrue(output.contains("[10] D5"), "Output should contain D5.");
         assertTrue(output.contains("[11] D5"), "Output should contain D5.");
         assertTrue(output.contains("[12] L20"), "Output should contain L20.");
+
+    }
+
+    @Test
+    @DisplayName("R-TEST-26: Turn management for players - Player 1 (P1) to Player 2 (P2)")
+    public void RESP_26_test_01() {
+        // Initial assertions to check the current player is P1
+        assertEquals("P1", game.getCurrentPlayer().getName(), "Current player should be P1.");
+
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input for valid response 'r'
+        String simulatedInput = "r\n"; // Simulate pressing 'r' to return from the hot seat
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+
+        // Call nextPlayer to move to the next player
+        game.nextPlayer();
+
+        // Assert that the next player is now P2
+        assertEquals("P2", game.getCurrentPlayer().getName(), "Current player should be P2.");
+        assertTrue(outputStream.toString().contains("Hot Seat (current player): P2"));
+    }
+
+    @Test
+    @DisplayName("R-TEST-26: Turn management for players - Player 4 (P4) to Player 1 (P1)")
+    public void RESP_26_test_02() {
+        // Move to the last player (P4)
+        game.setCurrentPlayer(3);
+
+        // Assert that the current player is P4
+        assertEquals("P4", game.getCurrentPlayer().getName(), "Current player should be P4.");
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input for valid response 'r'
+        String simulatedInput = "r\n"; // Simulate pressing 'r' to return from the hot seat
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+
+        // Call nextPlayer to move to the next player, wrapping around
+        game.nextPlayer();
+
+        // Assert that the next player is now P1
+        assertEquals("P1", game.getCurrentPlayer().getName(), "Current player should wrap around to P1.");
+        assertTrue(outputStream.toString().contains("Hot Seat (current player): P1"));
 
     }
 

@@ -63,6 +63,8 @@
     "JUnit.GameTest.RESP_15_test_02.executor": "Run",
     "JUnit.GameTest.RESP_15_test_03.executor": "Run",
     "JUnit.GameTest.RESP_25_test_01.executor": "Run",
+    "JUnit.GameTest.RESP_26_test_01.executor": "Run",
+    "JUnit.GameTest.RESP_26_test_02.executor": "Run",
     "JUnit.GameTest.executor": "Run",
     "JUnit.GameTest.testInitializeGameEnvironment.executor": "Run",
     "JUnit.PlayerTest.RESP_04_test_01.executor": "Run",
@@ -109,7 +111,7 @@
     </key>
   </component>
   <component name="RunManager" selected="JUnit.org.example in A1-Patel-Anjali-101191272">
-    <configuration name="AdventureDeckTest.RESP_06_test_02" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GameTest.RESP_08_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
         <pattern>
@@ -118,8 +120,8 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.AdventureDeckTest" />
-      <option name="METHOD_NAME" value="RESP_06_test_02" />
+      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
+      <option name="METHOD_NAME" value="RESP_08_test_01" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -141,6 +143,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="GameTest.RESP_13_test_02" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="A1-Patel-Anjali-101191272" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
+      <option name="METHOD_NAME" value="RESP_13_test_02" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="GameTest.RESP_13_test_03" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
@@ -152,22 +170,6 @@
       <option name="PACKAGE_NAME" value="org.example" />
       <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
       <option name="METHOD_NAME" value="RESP_13_test_03" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GameTest.RESP_25_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="A1-Patel-Anjali-101191272" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
-      <option name="METHOD_NAME" value="RESP_25_test_01" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -190,10 +192,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.org.example in A1-Patel-Anjali-101191272" />
-        <item itemvalue="JUnit.GameTest.RESP_25_test_01" />
-        <item itemvalue="JUnit.AdventureDeckTest.RESP_06_test_02" />
         <item itemvalue="JUnit.GameTest.RESP_13_test_03" />
+        <item itemvalue="JUnit.GameTest.RESP_13_test_02" />
         <item itemvalue="JUnit.GameTest.RESP_13_test_01" />
+        <item itemvalue="JUnit.GameTest.RESP_08_test_01" />
       </list>
     </recent_temporary>
   </component>
