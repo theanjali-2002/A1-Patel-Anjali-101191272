@@ -11,6 +11,7 @@ public class Game {
     private List<Player> players;
     private int currentPlayerIndex; // To track the current player
     private Scanner scanner;
+    private Player player;
 
     // Constructor
     public Game() {
@@ -51,7 +52,6 @@ public class Game {
 
     public void displayCurrentPlayerHand() {
         Player currentPlayer = getCurrentPlayer();
-
         List<Card> hand = currentPlayer.getHand();
 
         // Check if the hand is empty
@@ -64,46 +64,19 @@ public class Game {
         List<Card> foes = new ArrayList<>();
         List<Card> weapons = new ArrayList<>();
 
-        for (Card card : hand) {
-            if (card.getCategory().equals("Foe")) {
-                foes.add(card);
-            } else if (card.getCategory().equals("Weapon")) {
-                weapons.add(card);
-            }
-        }
-
-        // Sort foes by value
-        foes.sort(Comparator.comparingInt(Card::getValue));
-
-        // Sort weapons: prioritize swords before horses, then by value
-        weapons.sort(Comparator.comparing((Card card) -> {
-            // Prioritize Sword before Horse
-            if (card.getType().equals("S")) {
-                return 0; // Swords come first
-            } else if (card.getType().equals("H")) {
-                return 1; // Horses come last
-            } else {
-                return 2; // Other weapon types
-            }
-        }).thenComparingInt(Card::getValue)); // Sort by value
-
-        // Display foes
-        System.out.println("Hot Seat: " + currentPlayer.getName());
         System.out.println("Current Player " + currentPlayer.getName() + "'s Hand: ");
-        int placeValue = 1; // Starting place value from 1
+        int placeValue = 1;
 
-        // Display sorted foes
-        for (Card card : foes) {
-            System.out.println("[" + placeValue + "] " + card.toString());
-            placeValue++;
-        }
-
-        // Display sorted weapons
-        for (Card card : weapons) {
+        for (Card card : hand) {
             System.out.println("[" + placeValue + "] " + card.toString());
             placeValue++;
         }
     }
+
+    public void displayPlayerHand(Player player) {
+
+    }
+
 
     public Player getCurrentPlayer() {
         // Check if the players list is not empty before accessing it

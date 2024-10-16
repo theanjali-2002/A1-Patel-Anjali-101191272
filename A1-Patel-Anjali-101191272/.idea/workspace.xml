@@ -6,14 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="bbab3710-ec0c-4ee6-b1b3-deb0896ef8da" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/AdventureDeck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/AdventureDeck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/EventDeck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/EventDeck.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Quest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Quest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/AdventureDeckTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/AdventureDeckTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/PlayerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/PlayerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +62,7 @@
     "JUnit.GameTest.RESP_15_test_01.executor": "Run",
     "JUnit.GameTest.RESP_15_test_02.executor": "Run",
     "JUnit.GameTest.RESP_15_test_03.executor": "Run",
+    "JUnit.GameTest.RESP_25_test_01.executor": "Run",
     "JUnit.GameTest.executor": "Run",
     "JUnit.GameTest.testInitializeGameEnvironment.executor": "Run",
     "JUnit.PlayerTest.RESP_04_test_01.executor": "Run",
@@ -130,22 +125,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GameTest.RESP_11_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="A1-Patel-Anjali-101191272" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example" />
-      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
-      <option name="METHOD_NAME" value="RESP_11_test_01" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GameTest.RESP_13_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
@@ -178,6 +157,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="GameTest.RESP_25_test_01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="A1-Patel-Anjali-101191272" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.GameTest" />
+      <option name="METHOD_NAME" value="RESP_25_test_01" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="org.example in A1-Patel-Anjali-101191272" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="A1-Patel-Anjali-101191272" />
       <extension name="coverage">
@@ -195,10 +190,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.org.example in A1-Patel-Anjali-101191272" />
+        <item itemvalue="JUnit.GameTest.RESP_25_test_01" />
         <item itemvalue="JUnit.AdventureDeckTest.RESP_06_test_02" />
         <item itemvalue="JUnit.GameTest.RESP_13_test_03" />
         <item itemvalue="JUnit.GameTest.RESP_13_test_01" />
-        <item itemvalue="JUnit.GameTest.RESP_11_test_01" />
       </list>
     </recent_temporary>
   </component>
