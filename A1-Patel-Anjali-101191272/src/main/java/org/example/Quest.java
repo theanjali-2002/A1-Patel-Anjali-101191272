@@ -203,6 +203,23 @@ public class Quest {
 
 
 
+    public void resolveStage(int stageIndex, Game game) {
+        //code later
+    }
+
+    public void resolveWinners(Game game) {
+        //code later
+    }
+
+
+    public void endQuestWithoutWinners() {
+        //code later
+    }
+
+
+
+
+
     // Getters and Setters
     public String getQuestId() {
         return questId;

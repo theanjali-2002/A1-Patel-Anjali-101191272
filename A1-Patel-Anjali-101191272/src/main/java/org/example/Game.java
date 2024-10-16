@@ -288,6 +288,7 @@ public class Game {
                 quest.prepareForQuest(game);
                 for (int i=0; i<quest.getNumberOfStages(); i++){
                     quest.prepareForStage(i, game);
+                    quest.resolveStage(i, game);
                 }
 
             }

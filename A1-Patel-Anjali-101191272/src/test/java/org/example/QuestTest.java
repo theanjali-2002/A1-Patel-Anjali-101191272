@@ -56,11 +56,6 @@ class QuestTest {
         }
 
 
-        // Check the test name and skip initializing players for RESP_01_test_01
-        if (!testInfo.getDisplayName().equals("R-TEST-22: Preparing for the Quest (Drawing cards)")) {
-            //currentPlayer.receiveCards(testCards);
-        }
-
         // Set number of stages for the quest
         quest.setNumberOfStages(2);
     }
@@ -203,6 +198,112 @@ class QuestTest {
         assertEquals(10, (int) stage1.getAttacks().get("P1"), "P1's attack value should be 10.");
 
     }
+
+    @Test
+    @DisplayName("R-TEST-24: Resolving Stages (Failing and/or Winning)")
+    public void RESP_24_test_01() {
+        // Setup quest with two stages
+        Quest quest = new Quest("Q1", "Adventure", "P1", 2);
+
+        quest.getParticipants().addAll(Arrays.asList("P1", "P2"));
+
+        // Create stage and set attack values for participants
+        List<Card> stage1Cards = new ArrayList<>();
+        stage1Cards.add(new Card("Sword", "W", 10, "Weapon"));
+        stage1Cards.add(new Card("Horse", "H", 15, "Weapon"));
+        quest.getStages().add(new Stage("Stage-1", 20, stage1Cards));
+
+        quest.getStages().get(0).getAttacks().put("P1", 25); // P1 passes
+        quest.getStages().get(0).getAttacks().put("P2", 15); // P2 fails
+
+        // Invoke resolveStage() for stage 1
+        quest.resolveStage(0, game);
+
+        // Assert that P1 remains in the participants list
+        assertTrue(quest.getParticipants().contains("P1"), "P1 should have passed the stage.");
+        // Assert that P2 is removed from the participants list
+        assertFalse(quest.getParticipants().contains("P2"), "P2 should have failed the stage and been removed.");
+
+        // Assert that P1 progresses to the next stage
+        assertTrue(quest.getParticipants().contains("P1"), "P1 should have advanced to the next stage.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-24: Resolving Stages (Failing and/or Winning) - no participant left test")
+    public void RESP_24_test_02() {
+        // Setup quest with two stages
+        Quest quest = new Quest("Q2", "Adventure", "P3", 2);
+
+        quest.getParticipants().addAll(Arrays.asList("P3", "P4"));
+
+        // Create stage and set attack values for participants (both fail)
+        List<Card> stage1Cards = new ArrayList<>();
+        stage1Cards.add(new Card("Bow", "W", 12, "Weapon"));
+        quest.getStages().add(new Stage("Stage-1", 20, stage1Cards));
+
+        quest.getStages().get(0).getAttacks().put("P3", 10); // P3 fails
+        quest.getStages().get(0).getAttacks().put("P4", 15); // P4 fails
+
+        // Capture output stream to verify quest end message
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Invoke resolveStage()
+        quest.resolveStage(0, game);
+
+        // Verify no participants left
+        assertTrue(quest.getParticipants().isEmpty(), "No participants should remain.");
+        // Verify the quest ends without winners
+        assertTrue(outContent.toString().contains("No participants left. Quest ends."), "The quest should end without winners.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-24: Resolving Stages (Failing and/or Winning) - Winners Test")
+    public void RESP_24_test_03() {
+        // Setup quest with two stages
+        Quest quest = new Quest("Q3", "Adventure", "P1", 2);
+
+        quest.getParticipants().addAll(Arrays.asList("P1", "P2"));
+        System.out.println("get participants: "+ quest.getParticipants());
+        System.out.println("get game players: "+ game.getPlayerByName("P1").getName());
+
+        List<Card> stage1Cards = new ArrayList<>();
+        stage1Cards.add(new Card("Bow", "W", 12, "Weapon"));
+        stage1Cards.add(new Card("Foe", "F", 10, "Foe"));
+        quest.getStages().add(new Stage("Stage-1", 2, stage1Cards));
+        quest.getStages().add(new Stage("Stage-1", 2, stage1Cards));
+
+        quest.resolveWinners(game);
+
+        // Assert that both participants are added to the winners list
+        assertTrue(quest.getWinners().contains("P1"), "P1 should be in the winners list.");
+        assertTrue(quest.getWinners().contains("P2"), "P2 should be in the winners list.");
+
+        // Assert that players receive shields equal to the number of stages (2 in this case)
+        assertEquals(2, game.getPlayerByName("P1").getShields(), "P1 should have 2 shields.");
+        assertEquals(2, game.getPlayerByName("P2").getShields(), "P2 should have 2 shields.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-24: Resolving Stages (Failing and/or Winning) - quest ends without winners")
+    public void RESP_24_test_04() {
+        // Setup quest
+        Quest quest = new Quest("Q5", "Adventure", "P4", 3);
+
+        // Capture output stream to verify quest end message
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Invoke endQuestWithoutWinners()
+        quest.endQuestWithoutWinners();
+
+        // Verify that the correct end message is printed
+        assertTrue(outContent.toString().contains("QUEST ENDED WITH NO WINNERS"), "The end quest message should be displayed.");
+    }
+
+
+
+
 
 
 
