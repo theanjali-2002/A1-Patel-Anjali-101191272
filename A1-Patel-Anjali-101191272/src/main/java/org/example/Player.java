@@ -6,18 +6,19 @@ public class Player {
     private String name;
     private List<Card> hand;
     private int shields;
-    private List<Card> discardPile;
+    private List<Card> discardPileA;
+    private AdventureDeck adventureDeck;
 
     public Player(){
         this.hand = new ArrayList<>();
-        this.discardPile = new ArrayList<>();
+        this.discardPileA = new ArrayList<>();
     }
 
     public Player(String name) {
         this.name = name;
         this.hand = new ArrayList<>();
         this.shields = 0;
-        this.discardPile = new ArrayList<>();
+        this.discardPileA = new ArrayList<>();
     }
 
     public String getName() {
@@ -74,18 +75,18 @@ public class Player {
     }
 
     // Method to discard a card from the player's hand
-    public void discardAdventureCard(Card card) {
-        if (hand.remove(card)) { // Remove the card from the player's hand
-            discardPile.add(card); // Add the card to the discard pile
-            System.out.println("Card discarded: " + card.getCardName());
+    public void discardACardFromHand(Card card) {
+        if (hand.remove(card)) {
+            discardPileA.add(card); // Add the card to the discard pile
+            System.out.println("Adventure card discarded: " + card.getCardName());
         } else {
             System.out.println("Card not found in hand: " + card.getCardName());
         }
     }
 
     // Method to get the player's discard pile
-    public List<Card> getDiscardPile() {
-        return discardPile;
+    public List<Card> getDiscardPileA() {
+        return discardPileA;
     }
 
     // Method to trim the player's hand to 12 cards
@@ -110,7 +111,7 @@ public class Player {
 
             // Discard the card at the selected position
             Card cardToDiscard = hand.get(position - 1);
-            discardAdventureCard(cardToDiscard);
+            discardACardFromHand(cardToDiscard);
 
             // Display the updated hand
             System.out.println("Updated hand:");
@@ -189,7 +190,7 @@ public class Player {
 
         // Remove selected cards from hand and add them to active cards (cards used for attack)
         for (Card card : selectedCards) {
-            player.discardAdventureCard(card);
+            player.discardACardFromHand(card);
             stage.addWeaponCard(card.getCardName());
         }
 

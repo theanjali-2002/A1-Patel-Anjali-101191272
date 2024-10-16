@@ -99,7 +99,7 @@ public class Quest {
                                 stageValue = calculateStageValue(cardsInStage); // Update stage value
 
                                 // Discard the card from player's hand
-                                game.getCurrentPlayer().discardAdventureCard(card); // Assuming discardCard method exists
+                                game.getCurrentPlayer().discardACardFromHand(card);
 
                                 // Print updated player's hand
                                 game.displayCurrentPlayerHand();
@@ -176,7 +176,7 @@ public class Quest {
     public void prepareForQuest(Game game) {
         for (String participant : participants) {
             Player player = game.getPlayerByName(participant); // Retrieve the player from game
-            List<Card> drawnCards = adventureDeck.drawCards(1);
+            List<Card> drawnCards = adventureDeck.drawACards(1);
             player.receiveCards(drawnCards); // Each participant draws one adventure card
             player.trimHandTo12Cards(); // Ensure they don’t exceed card limit
         }

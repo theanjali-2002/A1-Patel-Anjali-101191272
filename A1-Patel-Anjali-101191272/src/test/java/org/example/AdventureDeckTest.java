@@ -30,7 +30,7 @@ class AdventureDeckTest {
 
         int initialSize = adventureDeck.getTotalCards();
         int cardsToDraw = 12;
-        List<Card> drawnCards = adventureDeck.drawCards(cardsToDraw);
+        List<Card> drawnCards = adventureDeck.drawACards(cardsToDraw);
 
         // Assert that the number of drawn cards is as requested
         assertEquals(cardsToDraw, drawnCards.size(), "The number of drawn cards should match the requested amount.");
@@ -47,7 +47,7 @@ class AdventureDeckTest {
 
         int initialSize = adventureDeck.getTotalCards();
         int cardsToDraw = initialSize + 10; // Attempting to draw more cards than available
-        List<Card> drawnCards = adventureDeck.drawCards(cardsToDraw);
+        List<Card> drawnCards = adventureDeck.drawACards(cardsToDraw);
 
         // Assert that only the available cards are drawn
         assertEquals(initialSize, drawnCards.size(), "Should draw only the available cards.");
@@ -63,13 +63,13 @@ class AdventureDeckTest {
         adventureDeck.setupDeck(); // Initialize the deck before each test
 
         // Draw all cards from the deck
-        adventureDeck.drawCards(adventureDeck.getTotalCards());
+        adventureDeck.drawACards(adventureDeck.getTotalCards());
 
         // Now the deck should be empty
         assertEquals(0, adventureDeck.getTotalCards(), "The deck should be empty after drawing all cards.");
 
         // Drawing again should return an empty list
-        List<Card> drawnCards = adventureDeck.drawCards(12);
+        List<Card> drawnCards = adventureDeck.drawACards(12);
         assertTrue(drawnCards.isEmpty(), "Drawing from an empty deck should return an empty list.");
     }
 }

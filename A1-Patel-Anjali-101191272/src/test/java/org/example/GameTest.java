@@ -155,11 +155,20 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("R-TEST-11: Draws an Event card; No Event Cards in the Deck")
+    @DisplayName("R-TEST-11: Draws an Event card; No Event Cards in the Deck - Refill it")
     public void RESP_11_test_01() {
         // Ensure the event deck is empty
         EventDeck eventDeck = game.getEventDeck();
         eventDeck.clearDeck();  // Clear all cards in the event deck
+
+        // Add some cards to the discard pile for refilling
+        List<Card> discardCards = new ArrayList<>();
+        discardCards.add(new Card("Plague", "E", -2, "Event")); // Example event card
+        discardCards.add(new Card("Queen's Favor", "E", 2, "Event")); // Another example
+
+        for (Card card : discardCards) {
+            eventDeck.discardEventCard(card); // Method to add cards to the discard pile
+        }
 
         // Setup to capture output
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -177,8 +186,9 @@ public class GameTest {
         System.setIn(System.in);
 
         // Verify the result
-        assertNull(result, "When no cards are in the deck, the result should be null.");
-        assertTrue(outputStream.toString().contains("No event cards left in the deck!"), "The message should inform that no event cards are left.");
+        assertNotNull(result, "Expected a card to be drawn after refilling the deck.");
+        assertTrue(outputStream.toString().contains("Drawn Card: "), "The drawn card should be displayed.");
+        assertTrue(outputStream.toString().contains("The Event deck has been refilled from the discard pile."), "Should indicate the deck was refilled.");
     }
 
     @Test
@@ -287,7 +297,7 @@ public class GameTest {
 
         // Assertions
         assertEquals(3, currentPlayer.getShields(), "Current player should lose 2 shields.");
-        assertTrue(outputStream.toString().contains("Plague card is drawn and current player loses 2 shields."),
+        assertTrue(outputStream.toString().contains("Card Drawn: Plague card.\n Current player loses 2 shields."),
                 "Output should indicate the Plague card effect.");
     }
 
@@ -330,7 +340,7 @@ public class GameTest {
         // Assertions
         for (Player player : players) {
             assertEquals(2, player.getHand().size(), "Each player should have drawn 2 adventure cards.");
-            assertTrue(outputStream.toString().contains(player.getName() + " draws 2 adventure cards."),
+            assertTrue(outputStream.toString().contains(player.getName() + " has drawn 2 adventure cards."),
                     "Output should indicate that each player draws cards due to Prosperity.");
         }
     }

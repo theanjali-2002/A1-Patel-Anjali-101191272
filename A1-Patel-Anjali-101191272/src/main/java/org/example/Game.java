@@ -40,7 +40,7 @@ public class Game {
 
         // Distributing cards to each player
         for (Player player : players) {
-            List<Card> cardsToDistribute = adventureDeck.drawCards(CARDS_PER_PLAYER); // Draw cards from the deck
+            List<Card> cardsToDistribute = adventureDeck.drawACards(CARDS_PER_PLAYER); // Draw cards from the deck
             player.receiveCards(cardsToDistribute); // Distribute the drawn cards to the player
         }
     }
@@ -138,8 +138,7 @@ public class Game {
         Random random = new Random();
 
         if (eventDeck.countEventCards() == 0) {
-            System.out.println("No event cards left in the deck!");
-            return null;
+            eventDeck.refillDeckFromDiscard();
         }
 
         System.out.println("Press 'e' to draw an event card OR Press 'q' to Quit Game...");
@@ -159,7 +158,7 @@ public class Game {
                     Card card = deck.get(index);
                     if ("Event".equals(card.getCategory()) ||  "Quest".equals(card.getCategory())) {
                         drawnCard = card;
-                        deck.remove(index);  // Remove the drawn card from the deck
+                        deck.remove(index);
                     }
                 }
 
@@ -181,21 +180,21 @@ public class Game {
     public void handleECardEffects(Card drawnCard, Player currentPlayer) {
         switch (drawnCard.getCardName()) {
             case "Plague":
-                System.out.println("Plague card is drawn and current player loses 2 shields.");
-                currentPlayer.loseShields(2); // Implement loseShields to set shields to 0 if less than 2
+                System.out.println("Card Drawn: Plague card.\n Current player loses 2 shields.");
+                currentPlayer.loseShields(2);
                 break;
 
             case "Queen's favor":
-                System.out.println("Queen's favor card is drawn and current player will draw 2 adventure cards.");
-                currentPlayer.receiveCards(adventureDeck.drawCards(2));// Implement this method to let the player draw adventure cards
+                System.out.println("Card Drawn: Queen's favor card. \n Current player will draw 2 adventure cards.");
+                currentPlayer.receiveCards(adventureDeck.drawACards(2));
                 currentPlayer.trimHandTo12Cards();
                 break;
 
             case "Prosperity":
-                System.out.println("All players draw 2 adventure cards due to the Prosperity event.");
+                System.out.println("Card Drawn: Prosperity Card. \n All players draw 2 adventure cards.");
                 for (Player player : players) {
-                    System.out.println(player.getName() + " draws 2 adventure cards.");
-                    player.receiveCards(adventureDeck.drawCards(2));
+                    System.out.println(player.getName() + " has drawn 2 adventure cards.");
+                    player.receiveCards(adventureDeck.drawACards(2));
                     player.trimHandTo12Cards();
                 }
                 break;

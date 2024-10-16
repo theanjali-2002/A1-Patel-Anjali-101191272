@@ -161,13 +161,13 @@ class PlayerTest {
         assertTrue(player.getHand().contains(anotherCard), "Player's hand should contain another card.");
 
         // Discard the card
-        player.discardAdventureCard(cardToDiscard);
+        player.discardACardFromHand(cardToDiscard);
 
         // Check that the card was removed from the hand
         assertFalse(player.getHand().contains(cardToDiscard), "The discarded card should be removed from the player's hand.");
 
         // Check that the card was added to the discard pile
-        assertTrue(player.getDiscardPile().contains(cardToDiscard), "The discarded card should be added to the discard pile.");
+        assertTrue(player.getDiscardPileA().contains(cardToDiscard), "The discarded card should be added to the discard pile.");
     }
 
     @Test
@@ -190,15 +190,15 @@ class PlayerTest {
 
         // Mock trimming by calling trimHandTo12Cards (manually discarding cards)
         // For testing, we simulate the trimming by calling discardAdventureCard manually
-        player.discardAdventureCard(player.getHand().get(0));
-        player.discardAdventureCard(player.getHand().get(4));
-        player.discardAdventureCard(player.getHand().get(6));
+        player.discardACardFromHand(player.getHand().get(0));
+        player.discardACardFromHand(player.getHand().get(4));
+        player.discardACardFromHand(player.getHand().get(6));
 
         // Now player should have exactly 12 cards
         assertEquals(12, player.getHand().size(), "Player's hand should be trimmed to 12 cards.");
 
         // Ensure the discarded cards are in the discard pile
-        assertEquals(3, player.getDiscardPile().size(), "3 cards should have been discarded.");
+        assertEquals(3, player.getDiscardPileA().size(), "3 cards should have been discarded.");
     }
 
     @Test
@@ -230,7 +230,7 @@ class PlayerTest {
         assertEquals(12, player.getHand().size(), "Player's hand should be trimmed to 12 cards.");
 
         // Ensure the discarded cards were added to the discard pile
-        assertEquals(3, player.getDiscardPile().size(), "3 cards should have been discarded.");
+        assertEquals(3, player.getDiscardPileA().size(), "3 cards should have been discarded.");
     }
 
     @Test

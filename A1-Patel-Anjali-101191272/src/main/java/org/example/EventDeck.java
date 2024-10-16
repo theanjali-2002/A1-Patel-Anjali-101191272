@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EventDeck {
@@ -92,6 +93,21 @@ public class EventDeck {
     // Method to get the discard pile
     public List<Card> getEventDiscardPile() {
         return discardPile;
+    }
+
+    // Method to refill the deck from the discard pile
+    public void refillDeckFromDiscard() {
+        if (!discardPile.isEmpty()) {
+            // Shuffle the discard pile
+            Collections.shuffle(discardPile);
+            // Add all cards from the discard pile back to the deck
+            deck.addAll(discardPile);
+            // Clear the discard pile after refilling the deck
+            discardPile.clear();
+            System.out.println("The Event deck has been refilled from the discard pile.");
+        } else {
+            System.out.println("The Event discard pile is also empty. Cannot refill the deck.");
+        }
     }
 
 }

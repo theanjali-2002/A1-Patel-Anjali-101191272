@@ -1,17 +1,18 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class AdventureDeck {
     private List<Card> deck; // full set of cards in the deck
     private List<Card> discardPile;
+    private Player player;
 
     // constructor initializes the deck
     public AdventureDeck() {
         deck = new ArrayList<>();
-        this.discardPile = new ArrayList<>();
     }
 
     public void setupDeck() {
@@ -54,14 +55,23 @@ public class AdventureDeck {
     }
 
     // Method to draw cards
-    public List<Card> drawCards(int numberOfCards) {
+    public List<Card> drawACards(int numberOfCards) {
         List<Card> drawnCards = new ArrayList<>();
         Random random = new Random();
 
+        // Check if the number of cards requested exceeds the available cards
+        if (numberOfCards > deck.size()) {
+            System.out.println("Requested number of cards (" + numberOfCards + ") exceeds the deck size (" + deck.size() + "). Drawing only available cards (" + deck.size() + ").");
+            numberOfCards = deck.size();  // Adjust the number of cards to draw
+        }
+
         for (int i = 0; i < numberOfCards; i++) {
+            if (deck.isEmpty()) {
+                refillDeckFromDiscard();
+            }
             if (!deck.isEmpty()) {
                 int index = random.nextInt(deck.size());
-                drawnCards.add(deck.remove(index)); // Draw a card and remove it from the deck
+                drawnCards.add(deck.remove(index));
             }
         }
         return drawnCards;
@@ -98,15 +108,19 @@ public class AdventureDeck {
         return count;
     }
 
-    // Method to discard an adventure card
-    public void discardAdventureCard(Card card) {
-        discardPile.add(card); // Add the card to the discard pile
-        System.out.println("Adventure card discarded: " + card.getCardName());
-    }
-
-    // Method to get the discard pile
-    public List<Card> getAdventDiscardPile() {
-        return discardPile;
+    // Method to refill the deck from the discard pile
+    private void refillDeckFromDiscard() {
+        if (!player.getDiscardPileA().isEmpty()) {
+            // Shuffle the discard pile
+            Collections.shuffle(player.getDiscardPileA());
+            // Add all cards from the discard pile back to the deck
+            deck.addAll(player.getDiscardPileA());
+            // Clear the discard pile after refilling the deck
+            player.getDiscardPileA().clear();
+            System.out.println("The Adventure deck has been refilled from the discard pile.");
+        } else {
+            System.out.println("The Adventure discard pile is also empty. Cannot refill the deck.");
+        }
     }
 
 }
