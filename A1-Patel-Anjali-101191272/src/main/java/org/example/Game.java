@@ -74,7 +74,20 @@ public class Game {
     }
 
     public void displayPlayerHand(Player player) {
+        // Check if the player's hand is empty
+        if (player.getHand().isEmpty()) {
+            System.out.println(player.getName() + "'s hand is empty - something went wrong");
+            return;
+        }
 
+        List<Card> hand = player.getHand();
+        System.out.println(player.getName() + "'s Hand: ");
+        int placeValue = 1;
+
+        for (Card card : hand) {
+            System.out.println("[" + placeValue + "] " + card.toString());
+            placeValue++;
+        }
     }
 
 
