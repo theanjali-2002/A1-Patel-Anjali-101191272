@@ -204,19 +204,79 @@ public class Quest {
 
 
     public void resolveStage(int stageIndex, Game game) {
-        //code later
+        Stage stage = stages.get(stageIndex);
+
+        for (String participant : new ArrayList<>(participants)) { // Iterate over a copy to safely remove participants
+            int attackValue = stage.getAttacks().get(participant);
+            if (attackValue < stage.getStageValue()) {
+                System.out.println(participant + " failed to pass stage " + (stageIndex + 1));
+                participants.remove(participant); // Remove the participant if attack value is less than stage value
+            }
+        }
+
+        if (participants.isEmpty()) {
+            System.out.println("No participants left. Quest ends.");
+            endQuestWithoutWinners(); // Quest ends if no participants remain
+        } else if (stageIndex + 1 < stages.size()) {
+            prepareForStage(stageIndex + 1, game); // Move to the next stage if there are remaining stages
+        } else {
+            resolveWinners(game); // Final stage completed, resolve winners
+        }
     }
 
     public void resolveWinners(Game game) {
-        //code later
-    }
+        // The participants who have completed all stages are the winners of the quest.
+        System.out.println("Resolving winners...");
+        int shieldReward = stages.size(); // Each winner gets shields equal to the number of stages
+        System.out.println("total shields: "+ shieldReward);
 
+        if (participants.isEmpty()) {
+            System.out.println("No participants left to resolve winners.");
+            endQuestWithoutWinners(); // No participants left means no winners
+            return;
+        }
+
+        // Iterate over remaining participants and award them shields
+        for (String participant : participants) {
+            Player winner = game.getPlayerByName(participant); // Fetch the player from the game
+            if (winner != null) {
+                winner.gainShields(shieldReward); // Add shields to the winner's score
+                System.out.println(participant + " has won the quest and earned " + shieldReward + " shields!");
+
+                // Add the winner to the Quest's winners list
+                winners.add(participant);
+
+                // Optionally, check if this player has won the game (>= 7 shields)
+                if (winner.getShields() >= 7) {
+                    System.out.println(participant + " has accumulated 7 or more shields and is one of the game's winners!");
+                }
+            } else {
+                System.out.println("Error: Participant " + participant + " could not be found in the game.");
+            }
+        }
+        // Print all winners of the quest
+        System.out.println("Quest Winners: " + winners);
+
+        // The quest ends after resolving the winners
+        System.out.println("The quest has ended. The game will continue.");
+    }
 
     public void endQuestWithoutWinners() {
-        //code later
+        // Fancy ASCII art to enhance the UI
+        System.out.println("*****************************************************");
+        System.out.println("*                                                   *");
+        System.out.println("*        ⚔️ QUEST ENDED WITH NO WINNERS ⚔️          *");
+        System.out.println("*                                                   *");
+        System.out.println("*****************************************************");
+
+        System.out.println("\n\n      ────── ✦ ────── ");
+        System.out.println("      Darkness falls upon the land...");
+        System.out.println("      The brave heroes have failed to complete the quest.");
+        System.out.println("      All hope is lost... until the next adventure!");
+        System.out.println("      ────── ✦ ────── ");
+
+        System.out.println("\nReturning to the main game flow...\n");
     }
-
-
 
 
 
