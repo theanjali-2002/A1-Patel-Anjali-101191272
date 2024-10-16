@@ -140,8 +140,62 @@ public class Player {
     }
 
     public int prepareAttackForStage(Stage stage, Player player) {
-        //code later
-        return 0;
+        Scanner scanner = new Scanner(System.in);  // Scanner for user input
+
+        System.out.println(name + ", it's your turn to prepare ATTACK for stage " + stage.getStageId());
+        System.out.println("Your current hand: ");
+
+        // Display player's hand with indexes
+        for (int i = 0; i < hand.size(); i++) {
+            Card card = hand.get(i);
+            System.out.println((i + 1) + ": " + card);  // Print card number and details
+        }
+
+        List<Card> selectedCards = new ArrayList<>();
+        int totalAttackValue = 0;
+
+        // Player selects cards to use for the stage
+        while (true) {
+            System.out.println("Enter the card number to select for attack or 'q' to finish:");
+            String input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("q")) {
+                if (selectedCards.isEmpty()) {
+                    System.out.println("You must select at least one card to attack.");
+                } else {
+                    break;  // Finish selection when player is done
+                }
+            } else {
+                try {
+                    int cardIndex = Integer.parseInt(input) - 1;
+                    if (cardIndex >= 0 && cardIndex < hand.size()) {
+                        Card selectedCard = hand.get(cardIndex);
+
+                        if (selectedCard.getCategory().equals("Weapon")) {
+                            selectedCards.add(selectedCard);
+                            totalAttackValue += selectedCard.getValue();
+                            System.out.println("Added " + selectedCard + " to attack. Current attack value: " + totalAttackValue);
+                        } else {
+                            System.out.println("You can only select weapon cards for attack.");
+                        }
+                    } else {
+                        System.out.println("Invalid card number.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number or 'q'.");
+                }
+            }
+        }
+
+        // Remove selected cards from hand and add them to active cards (cards used for attack)
+        for (Card card : selectedCards) {
+            player.discardAdventureCard(card);
+            stage.addWeaponCard(card.getCardName());
+        }
+
+        System.out.println(name + " prepared attack with " + totalAttackValue + " attack value.");
+
+        return totalAttackValue;  // Return the total attack value to be recorded in the stage
     }
 
 }

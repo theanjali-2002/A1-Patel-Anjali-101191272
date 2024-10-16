@@ -183,7 +183,22 @@ public class Quest {
     }
 
     public void prepareForStage(int stageIndex, Game game) {
-        //code later
+        Stage stage = stages.get(stageIndex);
+        for (String participant : participants) {
+            System.out.println("Participant in method: " + participant);
+            Player player = game.getPlayerByName(participant);
+            if (player == null) {
+                System.out.println("Error: Player '" + participant + "' could not be found in the game.");
+                continue;
+            }
+            // Prepare the player's attack for the stage
+            try {
+                int attackValue = player.prepareAttackForStage(stage, player);
+                stage.recordAttack(participant, attackValue);
+            } catch (Exception e) {
+                System.out.println("Error while preparing attack for " + participant + ": " + e.getMessage());
+            }
+        }
     }
 
 
