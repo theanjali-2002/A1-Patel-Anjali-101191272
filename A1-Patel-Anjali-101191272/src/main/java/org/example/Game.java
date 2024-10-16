@@ -47,8 +47,28 @@ public class Game {
     }
 
     public void nextPlayer() {
+        // End the current player's turn
+        Player currentPlayer = players.get(currentPlayerIndex);
+        System.out.println(currentPlayer.getName() + ", your turn has ended. Please enter 'r' to return from the Hot Seat.");
+
+        // Check for user input (e.g., 'r') to return
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+
+        if ("r".equalsIgnoreCase(input)) {
+            System.out.println("Leaving the Hot Seat...");
+        } else {
+            System.out.println("Invalid input. Please enter 'r' to return from the Hot Seat.");
+            return; // You may want to call nextPlayer() again here to wait for valid input
+        }
+
+        // Move to the next player
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        Player nextPlayer = players.get(currentPlayerIndex);
+        setCurrentPlayer(currentPlayerIndex);
+        System.out.println("Hot Seat (current player): " + nextPlayer.getName());
     }
+
 
     public void displayCurrentPlayerHand() {
         Player currentPlayer = getCurrentPlayer();
