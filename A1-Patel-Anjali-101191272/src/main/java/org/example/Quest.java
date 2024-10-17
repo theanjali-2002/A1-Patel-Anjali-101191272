@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -68,6 +69,7 @@ public class Quest {
             game.displayCurrentPlayerHand();
 
             boolean validStageSetup = false;
+            boolean hasFoeCard = false;
             while (!validStageSetup) {
                 System.out.println("Enter the position of the next card to include or 'q' to finish this stage:");
 
@@ -81,7 +83,17 @@ public class Quest {
                         } else if (stageValue <= (i > 0 ? stages.get(i - 1).getStageValue() : 0)) {
                             System.out.println("Insufficient value for this stage");
                         } else {
-                            validStageSetup = true; // Stage is valid
+                            for (Card card : cardsInStage) {
+                                if (card.getCategory().equals("Foe")) {
+                                    hasFoeCard = true;
+                                    break;
+                                }
+                            }
+                            if (!hasFoeCard) {
+                                System.out.println("You cannot quit; at least one card with category 'Foe' is required in this stage.");
+                            } else {
+                                validStageSetup = true; // Stage is valid
+                            }
                         }
                     } else {
                         // Validate the card position
@@ -176,27 +188,38 @@ public class Quest {
     public void prepareForQuest(Game game) {
         for (String participant : participants) {
             Player player = game.getPlayerByName(participant); // Retrieve the player from game
-            List<Card> drawnCards = adventureDeck.drawACards(1);
+            List<Card> drawnCards = game.getAdventureDeck().drawACards(1);
             player.receiveCards(drawnCards); // Each participant draws one adventure card
             player.trimHandTo12Cards(); // Ensure they don’t exceed card limit
         }
     }
 
-    public void prepareForStage(int stageIndex, Game game) {
+    public void prepareForStage(int stageIndex, Game game, Quest quest) {
         Stage stage = stages.get(stageIndex);
-        for (String participant : participants) {
+        Iterator<String> iterator = participants.iterator(); // Create an iterator for the participants list
+
+        while (iterator.hasNext()) {
+            String participant = iterator.next(); // Get the next participant
             System.out.println("Participant in method: " + participant);
             Player player = game.getPlayerByName(participant);
+
             if (player == null) {
                 System.out.println("Error: Player '" + participant + "' could not be found in the game.");
-                continue;
+                iterator.remove(); // Remove participant if player not found
+                continue; // Skip to the next participant
             }
+
             // Prepare the player's attack for the stage
             try {
                 int attackValue = player.prepareAttackForStage(stage, player);
-                stage.recordAttack(participant, attackValue);
+                if (attackValue == 0) { // Check if the attack value is 0 (indicating player couldn't attack)
+                    System.out.println(participant + " cannot attack and will be removed from participants.");
+                    iterator.remove(); // Remove participant if they cannot attack
+                } else {
+                    stage.recordAttack(participant, attackValue);
+                }
             } catch (Exception e) {
-                System.out.println("Error while preparing attack for " + participant + ": " + e.getMessage());
+                System.out.println("\n");
             }
         }
     }
@@ -206,22 +229,35 @@ public class Quest {
     public void resolveStage(int stageIndex, Game game) {
         Stage stage = stages.get(stageIndex);
 
-        for (String participant : new ArrayList<>(participants)) { // Iterate over a copy to safely remove participants
+        // First check if there are participants
+        if (participants.isEmpty()) {
+            System.out.println("No participants left. Quest ends.");
+            endQuestWithoutWinners();  // End the quest if no participants remain
+            //game.nextPlayer();
+            return;  // Exit early since there are no participants to process
+        }
+
+        // Iterate over a copy of the participants list to safely remove participants
+        for (String participant : new ArrayList<>(participants)) {
             int attackValue = stage.getAttacks().get(participant);
             if (attackValue < stage.getStageValue()) {
                 System.out.println(participant + " failed to pass stage " + (stageIndex + 1));
-                participants.remove(participant); // Remove the participant if attack value is less than stage value
+                participants.remove(participant);  // Remove the participant if attack value is less than stage value
             }
         }
 
+        // Check if participants remain after processing
         if (participants.isEmpty()) {
             System.out.println("No participants left. Quest ends.");
-            endQuestWithoutWinners(); // Quest ends if no participants remain
+            endQuestWithoutWinners();  // End the quest if no participants remain after attack resolution
+            //game.nextPlayer();
         } else if (stageIndex + 1 < stages.size()) {
-            prepareForStage(stageIndex + 1, game); // Move to the next stage if there are remaining stages
+            //prepareForStage(stageIndex + 1, game, quest);  // Move to the next stage if there are more stages
+            System.out.println("\n");
         } else {
-            resolveWinners(game); // Final stage completed, resolve winners
+            resolveWinners(game);  // If final stage is completed, resolve the winners
         }
+
     }
 
     public void resolveWinners(Game game) {
@@ -233,6 +269,7 @@ public class Quest {
         if (participants.isEmpty()) {
             System.out.println("No participants left to resolve winners.");
             endQuestWithoutWinners(); // No participants left means no winners
+            //game.nextPlayer();
             return;
         }
 
@@ -259,6 +296,7 @@ public class Quest {
 
         // The quest ends after resolving the winners
         System.out.println("The quest has ended. The game will continue.");
+        //game.nextPlayer();
     }
 
     public void endQuestWithoutWinners() {

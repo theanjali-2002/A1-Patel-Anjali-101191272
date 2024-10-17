@@ -247,7 +247,7 @@ class PlayerTest {
         player.receiveCards(hand);
 
         // Simulate user input: select first two weapon cards and quit
-        String simulatedInput = "1\n2\nq\n";
+        String simulatedInput = "2\n3\nq\n";
         ByteArrayInputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
         System.setIn(in);
 

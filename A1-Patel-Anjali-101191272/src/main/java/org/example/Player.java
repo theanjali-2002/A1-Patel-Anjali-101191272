@@ -8,6 +8,8 @@ public class Player {
     private int shields;
     private List<Card> discardPileA;
     private AdventureDeck adventureDeck;
+    private Game game;
+    private Quest quest;
 
     public Player(){
         this.hand = new ArrayList<>();
@@ -19,6 +21,7 @@ public class Player {
         this.hand = new ArrayList<>();
         this.shields = 0;
         this.discardPileA = new ArrayList<>();
+        this.game = new Game();
     }
 
     public String getName() {
@@ -38,6 +41,10 @@ public class Player {
         sortHand(sortedHand);
         //System.out.println("After sorting: " + sortedHand);
         return sortedHand;
+    }
+
+    public void setHand(List<Card> hand) {
+        this.hand = hand;
     }
 
 
@@ -143,13 +150,16 @@ public class Player {
     public int prepareAttackForStage(Stage stage, Player player) {
         Scanner scanner = new Scanner(System.in);  // Scanner for user input
 
-        System.out.println(name + ", it's your turn to prepare ATTACK for stage " + stage.getStageId());
-        System.out.println("Your current hand: ");
+        System.out.println(player.getName() + ", it's your turn to prepare ATTACK for " + stage.getStageId());
+        game.displayPlayerHand(player);
+        List<Card> hand = player.getHand();
 
-        // Display player's hand with indexes
-        for (int i = 0; i < hand.size(); i++) {
-            Card card = hand.get(i);
-            System.out.println((i + 1) + ": " + card);  // Print card number and details
+        // Check if the player has any weapon cards
+        boolean hasWeaponCard = hand.stream().anyMatch(card -> card.getCategory().equals("Weapon"));
+        if (!hasWeaponCard) {
+            System.out.println(player.getName() + ", you have no valid (Weapon) cards to continue playing. You cannot participate in this quest.");
+            quest.getParticipants().remove(player);  // Remove player from participants if they can't continue
+            return 0;  // Return 0 since the player cannot attack
         }
 
         List<Card> selectedCards = new ArrayList<>();
@@ -171,11 +181,20 @@ public class Player {
                     int cardIndex = Integer.parseInt(input) - 1;
                     if (cardIndex >= 0 && cardIndex < hand.size()) {
                         Card selectedCard = hand.get(cardIndex);
+                        System.out.println("Selected card: " + selectedCard);
+
+                        // Check if the selected card is already in selectedCards (by name)
+                        boolean hasDuplicateCardName = selectedCards.stream()
+                                .anyMatch(card -> card.getCardName().equals(selectedCard.getCardName()));
 
                         if (selectedCard.getCategory().equals("Weapon")) {
-                            selectedCards.add(selectedCard);
-                            totalAttackValue += selectedCard.getValue();
-                            System.out.println("Added " + selectedCard + " to attack. Current attack value: " + totalAttackValue);
+                            if (!hasDuplicateCardName) {
+                                selectedCards.add(selectedCard);
+                                totalAttackValue += selectedCard.getValue();
+                                System.out.println("Added " + selectedCard + " to attack. Current attack value: " + totalAttackValue);
+                            } else {
+                                System.out.println("You cannot select the same weapon card more than once.");
+                            }
                         } else {
                             System.out.println("You can only select weapon cards for attack.");
                         }
@@ -194,7 +213,7 @@ public class Player {
             stage.addWeaponCard(card.getCardName());
         }
 
-        System.out.println(name + " prepared attack with " + totalAttackValue + " attack value.");
+        System.out.println(player.getName() + " prepared attack with " + totalAttackValue + " attack value.");
 
         return totalAttackValue;  // Return the total attack value to be recorded in the stage
     }

@@ -182,7 +182,7 @@ class QuestTest {
         stage2Cards.add(new Card("Bow", "W", 12, "Weapon"));
         stage2Cards.add(new Card("Shield", "H", 18, "Weapon"));
 
-        String simulatedInput = "1\n3\nq\n";
+        String simulatedInput = "1\n4\nq\n";
         InputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         System.setIn(inputStream);
 
@@ -190,11 +190,10 @@ class QuestTest {
         quest.getStages().add(new Stage("Stage-1", 20, stage1Cards)); // Stage 1 with value 20
         quest.getStages().add(new Stage("Stage-2", 30, stage2Cards)); // Stage 2 with value 30
 
-        quest.prepareForStage(0, game);  // Stage 0 (Stage-1)
+        quest.prepareForStage(0, game, quest);  // Stage 0 (Stage-1)
 
         Stage stage1 = quest.getStages().get(0);
         assertNotNull(stage1.getAttacks().get("P1"), "P1's attack should have been recorded.");
-
         assertEquals(10, (int) stage1.getAttacks().get("P1"), "P1's attack value should be 10.");
 
     }

@@ -69,7 +69,6 @@ public class Game {
         System.out.println("Hot Seat (current player): " + nextPlayer.getName());
     }
 
-
     public void displayCurrentPlayerHand() {
         Player currentPlayer = getCurrentPlayer();
         List<Card> hand = currentPlayer.getHand();
@@ -110,7 +109,6 @@ public class Game {
         }
     }
 
-
     public Player getCurrentPlayer() {
         // Check if the players list is not empty before accessing it
         if (players.isEmpty()) {
@@ -133,7 +131,6 @@ public class Game {
         // Set the current player index
         currentPlayerIndex = playerIndex;
     }
-
 
     public AdventureDeck getAdventureDeck() {
         return adventureDeck;
@@ -206,7 +203,7 @@ public class Game {
                 currentPlayer.loseShields(2);
                 break;
 
-            case "Queen's favor":
+            case "Queen's Favor":
                 System.out.println("Card Drawn: Queen's favor card. \n Current player will draw 2 adventure cards.");
                 currentPlayer.receiveCards(adventureDeck.drawACards(2));
                 currentPlayer.trimHandTo12Cards();
@@ -246,8 +243,28 @@ public class Game {
         }
 
         if (response.equalsIgnoreCase("y")) {
-            System.out.println(currentPlayer.getName() + " has chosen to sponsor the quest.");
-            return true; // Player has chosen to sponsor the quest
+            int foeCardCount = (int) currentPlayer.getHand().stream()
+                    .filter(card -> card.getCategory().equals("Foe")) // Assuming card has a getCategory() method
+                    .count();
+
+            if (foeCardCount >= 3) {
+                System.out.println(currentPlayer.getName() + " has chosen to sponsor the quest.");
+                return true; // Player has chosen to sponsor the quest
+            } else {
+                System.out.println("You do not have enough Foe cards to sponsor the quest.");
+                System.out.print("Please respond with 'n' to decline sponsorship: ");
+                String newResponse = scanner.nextLine().trim().toLowerCase();
+
+                // Handle the new response
+                while (!newResponse.equalsIgnoreCase("n")) {
+                    System.out.print("Invalid input.");
+                    System.out.println("You do not have enough Foe cards to sponsor the quest.");
+                    System.out.print("Please respond with 'n' to decline sponsorship: ");
+                    newResponse = scanner.nextLine().trim().toLowerCase();
+                }
+                System.out.println(currentPlayer.getName() + " has declined to sponsor the quest. (Ineligibility)");
+                return false; // Player has declined the sponsorship
+            }
         } else {
             System.out.println(currentPlayer.getName() + " has declined to sponsor the quest.");
             return false; // Player has declined the sponsorship
@@ -295,23 +312,30 @@ public class Game {
         game.distributeAdventureCards();
         game.displayCurrentPlayerHand();
         //userInterface.displayPlayerTurn(game.getCurrentPlayer().getName());
-        Card drewCard = game.drawEventCard();
-        if (drewCard.getCategory() == "Event"){
-            game.handleECardEffects(drewCard, game.getCurrentPlayer());
-        } else {
-            System.out.println("Quest");
-            Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
-            if (value == null) {
-                game.nextPlayer();
+        Card drewCard;
+        while (true) {
+            drewCard = game.drawEventCard();
+            if (drewCard.getCategory() == "Event"){
+                game.handleECardEffects(drewCard, game.getCurrentPlayer());
             } else {
-                quest.setupQuest(game, drewCard);
-                quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
-                quest.prepareForQuest(game);
-                for (int i=0; i<quest.getNumberOfStages(); i++){
-                    quest.prepareForStage(i, game);
-                    quest.resolveStage(i, game);
-                }
+                System.out.println("Quest");
+                Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
+                if (value == null) {
+                    game.nextPlayer();
+                    //drewCard = game.drawEventCard();
+                } else {
+                    quest.setupQuest(game, drewCard);
+                    quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
+                    quest.prepareForQuest(game);
+                    for (int i=0; i<drewCard.getValue(); i++){
+                        quest.prepareForStage(i, game, quest);
+                        quest.resolveStage(i, game);
+                    }
+                    if (!(quest.getWinners()== null)) {
+                        game.nextPlayer();
+                    }
 
+                }
             }
         }
 

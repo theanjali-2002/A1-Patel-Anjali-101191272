@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -371,13 +372,19 @@ public class GameTest {
     public void RESP_14_test_01() {
         Player currentPlayer = game.getCurrentPlayer(); // Get the current player
 
+        // Setup the player's hand with enough Foe cards
+        List<Card> hand = Arrays.asList(
+                new Card("F5","F",5, "Foe"), new Card("F5","F",5, "Foe"), new Card("F5","F",5, "Foe"), new Card("A5","A",5, "Weapon")
+        );
+        currentPlayer.setHand(hand);
+
         // Setup to capture output
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outputStream));
 
         // Simulate user input for sponsoring the quest
-        String simulatedInput = "y\n"; // Simulate 'yes' input
+        String simulatedInput = "y\n";
         System.setIn(new ByteArrayInputStream(simulatedInput.getBytes())); // Set the input stream to simulate user input
 
         // Call the method
@@ -451,6 +458,43 @@ public class GameTest {
                 "Output should confirm the player declined the sponsorship after the valid input.");
         assertFalse(result, "The result should be false for declining sponsorship.");
     }
+
+    @Test
+    @DisplayName("R-TEST-14: Prompt players for quest sponsor; valid input 'y'")
+    public void RESP_14_test_04() {
+        Player currentPlayer = game.getCurrentPlayer(); // Get the current player
+
+        // Setup the player's hand with not enough Foe cards
+        List<Card> hand = Arrays.asList(
+                new Card("F5","F",5, "Foe"), new Card("A5","A",5, "Weapon")
+        );
+        currentPlayer.setHand(hand);
+
+        // Setup to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Simulate user input for sponsoring the quest
+        String simulatedInput = "y\nn\n"; // Simulate 'yes' and then 'no' input
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes())); // Set the input stream to simulate user input
+
+        // Call the method
+        boolean result = game.promptToSponsor(currentPlayer);
+
+        // Restore original System.out and System.in
+        System.setOut(originalOut);
+        System.setIn(System.in);
+
+        // Verify output
+        String output = outputStream.toString();
+        assertTrue(output.contains("You do not have enough Foe cards to sponsor the quest."),
+                "Output should inform the player about not having enough Foe cards.");
+        assertTrue(output.contains(currentPlayer.getName() + " has declined to sponsor the quest. (Ineligibility)"),
+                "Output should confirm the player declined to sponsor the quest.");
+        assertFalse(result, "The result should be false for sponsorship.");
+    }
+
 
     @Test
     @DisplayName("R-TEST-15: Find the sponsor from all Players; One player agrees to sponsor the quest.")
