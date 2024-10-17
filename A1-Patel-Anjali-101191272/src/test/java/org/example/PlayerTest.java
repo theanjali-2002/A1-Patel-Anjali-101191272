@@ -224,7 +224,7 @@ class PlayerTest {
         System.setIn(in);
 
         // Call the method that will use the simulated input
-        player.trimHandTo12Cards();
+        player.trimHandTo12Cards(player);
 
         // After trimming, the player should have exactly 12 cards
         assertEquals(12, player.getHand().size(), "Player's hand should be trimmed to 12 cards.");

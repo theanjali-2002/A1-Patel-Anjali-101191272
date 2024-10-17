@@ -70,4 +70,18 @@ public class UserInterface {
             }
         }
     }
+
+    public void gameStatus(Game game) {
+        System.out.println("*********************************************");
+        System.out.println("**************** Game Status ****************");
+        System.out.println("*********************************************");
+        System.out.println("Current Player: " + game.getCurrentPlayer().getName());
+
+        System.out.println("Player Shields:");
+        for (Player player : game.getPlayers()) {
+            System.out.println(player.getName() + " - Shields: " + player.getShields());
+        }
+        System.out.println("*********************************************");
+        System.out.println("*********************************************");
+    }
 }

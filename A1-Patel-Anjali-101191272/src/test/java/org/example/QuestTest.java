@@ -17,7 +17,7 @@ import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.*;
 
 class QuestTest {
-    private Game game; // Assuming you have a Game class that contains setupQuest()
+    private Game game;
     private Quest quest;
     private Player player;
 
@@ -33,7 +33,7 @@ class QuestTest {
         Player currentPlayer = game.getCurrentPlayer(); // Get the current player
         assertNotNull(currentPlayer, "The current player should not be null.");
 
-         //Setup: Create a list of cards for testing
+        //Setup: Create a list of cards for testing
         List<Card> testCards = new ArrayList<>();
         testCards.add(new Card("F25", "F", 25, "Foe"));
         testCards.add(new Card("F50", "F", 50, "Foe"));
@@ -71,7 +71,7 @@ class QuestTest {
         // Manually updating fields after construction for testing
         quest.getParticipants().addAll(Arrays.asList("P1", "P2", "P3"));
         quest.getWinners().addAll(Arrays.asList("P2"));
-        quest.setTotalShieldsAwarded(3); // Assuming direct access for simplicity in test
+        quest.setTotalShieldsAwarded(3);
         quest.setCurrentStage(2); // Setting current stage directly
         quest.setStatus("completed"); // Setting status directly
         quest.getDiscardedCards().addAll(Arrays.asList("F10", "H10", "D5"));
@@ -350,7 +350,7 @@ class QuestTest {
 
         // Assert that the sponsor's hand is trimmed to 12 cards
         sponsor.getHand().add(new Card("ExtraCard", "X", 1, "Weapon")); // Simulate having more than 12 cards
-        sponsor.trimHandTo12Cards();
+        sponsor.trimHandTo12Cards(sponsor);
         assertTrue(sponsor.getHand().size() <= 12, "Sponsor's hand should have been trimmed to 12 cards.");
 
         assertTrue(outputStream.toString().contains("adventure cards as the sponsor!"));

@@ -9,6 +9,7 @@ public class Player {
     private List<Card> discardPileA;
     private AdventureDeck adventureDeck;
     private Game game;
+    private boolean sponsor;
     private Quest quest;
 
     public Player(){
@@ -22,10 +23,12 @@ public class Player {
         this.shields = 0;
         this.discardPileA = new ArrayList<>();
         this.game = new Game();
+        this.sponsor = false;
+        this.quest = new Quest();
     }
 
     public String getName() {
-       return name;
+        return name;
     }
 
     // Add cards to the player's hand
@@ -97,17 +100,15 @@ public class Player {
     }
 
     // Method to trim the player's hand to 12 cards
-    public void trimHandTo12Cards() {
+    public void trimHandTo12Cards(Player player) {
         Scanner scanner = new Scanner(System.in);
 
         while (hand.size() > 12) {
             int numToDiscard = hand.size() - 12;
+            System.out.println("*********************************************");
             System.out.println("You need to discard " + numToDiscard + " card(s).");
 
-            // Display the current hand with indices for selection
-            for (int i = 0; i < hand.size(); i++) {
-                System.out.println((i + 1) + ": " + hand.get(i).getCardName());
-            }
+            game.displayPlayerHand(player);
 
             // Prompt for a valid position to discard
             int position = -1;
@@ -121,13 +122,16 @@ public class Player {
             discardACardFromHand(cardToDiscard);
 
             // Display the updated hand
+            System.out.println("*********************************************");
             System.out.println("Updated hand:");
             for (int i = 0; i < hand.size(); i++) {
                 System.out.println((i + 1) + ": " + hand.get(i).getCardName());
             }
+            System.out.println("*********************************************");
         }
 
         System.out.println("Hand trimmed to 12 cards.");
+        System.out.println("*********************************************");
     }
 
     // Getter for shields
@@ -148,7 +152,7 @@ public class Player {
     }
 
     public int prepareAttackForStage(Stage stage, Player player) {
-        Scanner scanner = new Scanner(System.in);  // Scanner for user input
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println(player.getName() + ", it's your turn to prepare ATTACK for " + stage.getStageId());
         game.displayPlayerHand(player);
@@ -167,6 +171,7 @@ public class Player {
 
         // Player selects cards to use for the stage
         while (true) {
+            System.out.println("*********************************************");
             System.out.println("Enter the card number to select for attack or 'q' to finish:");
             String input = scanner.nextLine();
 
@@ -192,6 +197,7 @@ public class Player {
                                 selectedCards.add(selectedCard);
                                 totalAttackValue += selectedCard.getValue();
                                 System.out.println("Added " + selectedCard + " to attack. Current attack value: " + totalAttackValue);
+                                System.out.println("*********************************************");
                             } else {
                                 System.out.println("You cannot select the same weapon card more than once.");
                             }
@@ -214,8 +220,19 @@ public class Player {
         }
 
         System.out.println(player.getName() + " prepared attack with " + totalAttackValue + " attack value.");
+        System.out.println("*********************************************");
 
         return totalAttackValue;  // Return the total attack value to be recorded in the stage
+    }
+
+    // Getter method for sponsor
+    public boolean isSponsor() {
+        return sponsor;
+    }
+
+    // Setter method for sponsor
+    public void setSponsor(boolean sponsor) {
+        this.sponsor = sponsor;
     }
 
 }

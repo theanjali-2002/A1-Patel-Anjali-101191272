@@ -23,7 +23,6 @@ public class Quest {
     private EventDeck eventDeck;
     private Player player;
     private Stage stage;
-    private Quest quest;
     private List<Card> cardsUsedBySponsor; // Track all cards used by the sponsor
 
 
@@ -54,22 +53,22 @@ public class Quest {
         this.totalShieldsAwarded = 0;
         this.cardDeck = new ArrayList<>();
         this.stages = new ArrayList<>();
-        game = new Game();
+        this.game = new Game();
     }
 
     public void setupQuest(Game game, Card drawnQcard) {
         setNumberOfStages(drawnQcard.getValue());
-        System.out.println("num of stages: "+ numberOfStages);
         Scanner scanner = new Scanner(System.in);
 
         for (int i = 0; i < numberOfStages; i++) {
-            System.out.println("Setting up Stage " + (i + 1));
+            System.out.println("*********************************************");
+            System.out.println("You are setting up Stage " + (i + 1));
             String stageId = "Stage-" + (i + 1);
             List<Card> cardsInStage = new ArrayList<>();
             int stageValue = 0;
 
             // Display the current player's hand before adding to the stage
-            game.displayCurrentPlayerHand();
+            game.displayPlayerHand(game.getCurrentPlayer());
 
             boolean validStageSetup = false;
             boolean hasFoeCard = false;
@@ -102,11 +101,12 @@ public class Quest {
                         // Validate the card position
                         try {
                             int cardPosition = Integer.parseInt(input); // Convert to int
-                            Card card = getCard(cardPosition - 1, game); // Assuming getCard takes position from hand
+                            Card card = getCard(cardPosition - 1, game);
 
                             if (card != null && isValidCard(card, cardsInStage)) {
                                 cardsInStage.add(card);
                                 cardsUsedBySponsor.add(card);
+                                System.out.println("*********************************************");
                                 System.out.println("Added card: " + card);
 
                                 // Print the cards currently in the stage
@@ -138,8 +138,11 @@ public class Quest {
 
             // Print details of the created stage
             System.out.println("Stage created: " + stage.getStageId());
+            System.out.println("*********************************************");
         }
         System.out.println("Quest setup complete with " + stages.size() + " stages.");
+        System.out.println("*********************************************");
+        System.out.println("*********************************************");
     }
 
 
@@ -182,19 +185,50 @@ public class Quest {
                 if (response.equalsIgnoreCase("y")) {
                     participants.add(player.getName());
                     System.out.println(player.getName() + " joined the quest.");
+                    System.out.println("*********************************************");
                 } else {
                     System.out.println(player.getName() + " declined to join the quest.");
+                    System.out.println("*********************************************");
+                }
+            }
+        }
+    }
+
+    public void promptEachStage(List<String> participants, Player sponsor) {
+        Scanner scanner = new Scanner(System.in);
+        Iterator<String> iterator = participants.iterator();
+
+        while (iterator.hasNext()) {
+            String participant = iterator.next();
+            if (!participant.equals(sponsor.getName())) {
+                System.out.println(participant + ", do you want to participate in this stage? (y/n)");
+                String response = scanner.nextLine();
+                if (response.equalsIgnoreCase("y")) {
+                    System.out.println(participant + " joined to participate.");
+                    System.out.println("*********************************************");
+                } else {
+                    iterator.remove();  // Safely remove using iterator
+                    System.out.println(participant + " declined to participate.");
+                    System.out.println("*********************************************");
                 }
             }
         }
     }
 
     public void prepareForQuest(Game game) {
+        Player sponsor = new Player();
+        for (Player player : game.getPlayers()){
+            if (player.isSponsor()) {
+                sponsor = player;
+            }
+        }
+        promptEachStage(participants, sponsor);
         for (String participant : participants) {
             Player player = game.getPlayerByName(participant); // Retrieve the player from game
             List<Card> drawnCards = game.getAdventureDeck().drawACards(1);
             player.receiveCards(drawnCards); // Each participant draws one adventure card
-            player.trimHandTo12Cards(); // Ensure they don’t exceed card limit
+            player.sortHand(player.getHand());
+            player.trimHandTo12Cards(player); // Ensure they don’t exceed card limit
         }
     }
 
@@ -204,7 +238,7 @@ public class Quest {
 
         while (iterator.hasNext()) {
             String participant = iterator.next(); // Get the next participant
-            System.out.println("Participant in method: " + participant);
+            //System.out.println("Participant in method: " + participant);
             Player player = game.getPlayerByName(participant);
 
             if (player == null) {
@@ -216,6 +250,7 @@ public class Quest {
             // Prepare the player's attack for the stage
             try {
                 int attackValue = player.prepareAttackForStage(stage, player);
+                //System.out.flush();
                 if (attackValue == 0) { // Check if the attack value is 0 (indicating player couldn't attack)
                     System.out.println(participant + " cannot attack and will be removed from participants.");
                     iterator.remove(); // Remove participant if they cannot attack
@@ -242,6 +277,7 @@ public class Quest {
         }
 
         // Iterate over a copy of the participants list to safely remove participants
+        System.out.println("*********************************************");
         for (String participant : new ArrayList<>(participants)) {
             int attackValue = stage.getAttacks().get(participant);
             if (attackValue < stage.getStageValue()) {
@@ -249,6 +285,7 @@ public class Quest {
                 participants.remove(participant);  // Remove the participant if attack value is less than stage value
             }
         }
+        System.out.println("*********************************************");
 
         // Check if participants remain after processing
         if (participants.isEmpty()) {
@@ -268,7 +305,7 @@ public class Quest {
         // The participants who have completed all stages are the winners of the quest.
         System.out.println("Resolving winners...");
         int shieldReward = stages.size(); // Each winner gets shields equal to the number of stages
-        System.out.println("total shields: "+ shieldReward);
+        //System.out.println("total shields: "+ shieldReward);
 
         if (participants.isEmpty()) {
             System.out.println("No participants left to resolve winners.");
@@ -278,6 +315,7 @@ public class Quest {
         }
 
         // Iterate over remaining participants and award them shields
+        System.out.println("*********************************************");
         for (String participant : participants) {
             Player winner = game.getPlayerByName(participant); // Fetch the player from the game
             if (winner != null) {
@@ -295,8 +333,10 @@ public class Quest {
                 System.out.println("Error: Participant " + participant + " could not be found in the game.");
             }
         }
+        System.out.println("*********************************************");
         // Print all winners of the quest
         System.out.println("Quest Winners: " + winners);
+        System.out.println("*********************************************");
 
         // Check if the game has a winner
         boolean gameWon = winners.stream()
@@ -304,7 +344,7 @@ public class Quest {
 
         if (!gameWon) {
             // Sponsor discards all cards used to build the quest
-            Player sponsor = game.getCurrentPlayer(); // Assuming there's a method to get the sponsor
+            Player sponsor = game.getCurrentPlayer();
             int questCards = cardsUsedBySponsor.size();
 
             // Sponsor draws the same number of adventure cards + additional cards for each stage
@@ -312,11 +352,12 @@ public class Quest {
             int totalCardsToDraw = questCards + stagesCount;
             List<Card> drawnCards = game.getAdventureDeck().drawACards(totalCardsToDraw);
             sponsor.receiveCards(drawnCards);
+            System.out.println("*********************************************");
             System.out.println(sponsor.getName() + " draws " + totalCardsToDraw + " adventure cards as the sponsor!\n");
 
             // If necessary, the sponsor trims their hand to 12 cards
             System.out.println(sponsor.getName() + "'s hand has to be reduced to 12 cards!\n");
-            sponsor.trimHandTo12Cards();
+            sponsor.trimHandTo12Cards(sponsor);
         }
 
         // The quest ends after resolving the winners

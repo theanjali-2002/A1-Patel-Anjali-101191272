@@ -9,9 +9,7 @@ public class Game {
     private AdventureDeck adventureDeck;
     private EventDeck eventDeck;
     private List<Player> players;
-    private int currentPlayerIndex; // To track the current player
-    private Scanner scanner;
-    private Player player;
+    private int currentPlayerIndex;
 
     // Constructor
     public Game() {
@@ -19,7 +17,6 @@ public class Game {
         eventDeck = new EventDeck();
         players = new ArrayList<>();
         currentPlayerIndex = 0;
-        this.scanner = new Scanner(System.in);
     }
 
     // Methods to initialize the game environment
@@ -33,7 +30,6 @@ public class Game {
         players.add(new Player("P2"));
         players.add(new Player("P3"));
         players.add(new Player("P4"));
-        //System.out.println("PLayers are initialized now!");
     }
 
     public void distributeAdventureCards() {
@@ -59,14 +55,17 @@ public class Game {
             System.out.println("Leaving the Hot Seat...");
         } else {
             System.out.println("Invalid input. Please enter 'r' to return from the Hot Seat.");
-            return; // You may want to call nextPlayer() again here to wait for valid input
+            return;
         }
 
         // Move to the next player
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         Player nextPlayer = players.get(currentPlayerIndex);
         setCurrentPlayer(currentPlayerIndex);
+        //System.out.flush();
+        System.out.println("*********************************************");
         System.out.println("Hot Seat (current player): " + nextPlayer.getName());
+        System.out.println("*********************************************");
     }
 
     public void displayCurrentPlayerHand() {
@@ -199,27 +198,36 @@ public class Game {
     public void handleECardEffects(Card drawnCard, Player currentPlayer) {
         switch (drawnCard.getCardName()) {
             case "Plague":
-                System.out.println("Card Drawn: Plague card.\n Current player loses 2 shields.");
+                System.out.println("*********************************************");
+                System.out.println("Card Drawn: Plague card.");
+                System.out.println("Current player loses 2 shields.");
+                System.out.println("*********************************************");
                 currentPlayer.loseShields(2);
                 break;
 
             case "Queen's Favor":
-                System.out.println("Card Drawn: Queen's favor card. \n Current player will draw 2 adventure cards.");
+                System.out.println("*********************************************");
+                System.out.println("Card Drawn: Queen's favor card.");
+                System.out.println("Current player will draw 2 adventure cards.");
+                System.out.println("*********************************************");
                 currentPlayer.receiveCards(adventureDeck.drawACards(2));
-                currentPlayer.trimHandTo12Cards();
+                currentPlayer.trimHandTo12Cards(currentPlayer);
                 break;
 
             case "Prosperity":
-                System.out.println("Card Drawn: Prosperity Card. \n All players draw 2 adventure cards.");
+                System.out.println("*********************************************");
+                System.out.println("Card Drawn: Prosperity Card.");
+                System.out.println("All players draw 2 adventure cards.");
+                System.out.println("*********************************************");
                 for (Player player : players) {
                     System.out.println(player.getName() + " has drawn 2 adventure cards.");
                     player.receiveCards(adventureDeck.drawACards(2));
-                    player.trimHandTo12Cards();
+                    player.trimHandTo12Cards(player);
                 }
                 break;
 
             default:
-                System.out.println("No specific action for this event card.");
+                System.out.println("\n");
         }
 
         // Discard the drawn event card
@@ -249,8 +257,16 @@ public class Game {
 
             if (foeCardCount >= 3) {
                 System.out.println(currentPlayer.getName() + " has chosen to sponsor the quest.");
+                System.out.println("*********************************************");
+                currentPlayer.setSponsor(true);
+                for (Player player : players) {
+                    if (player.getName() != currentPlayer.getName()) {
+                        player.setSponsor(false);
+                    }
+                }
                 return true; // Player has chosen to sponsor the quest
             } else {
+                System.out.println("*********************************************");
                 System.out.println("You do not have enough Foe cards to sponsor the quest.");
                 System.out.print("Please respond with 'n' to decline sponsorship: ");
                 String newResponse = scanner.nextLine().trim().toLowerCase();
@@ -281,6 +297,7 @@ public class Game {
             Player playerToAsk = players.get((currentPlayerIndex + i) % players.size());
 
             // Prompt the player to sponsor the quest
+            System.out.println("*********************************************");
             System.out.println("Asking " + playerToAsk.getName() + " to sponsor the quest...");
             boolean sponsor = promptToSponsor(playerToAsk);
 
@@ -301,7 +318,6 @@ public class Game {
 
 
     public static void main(String[] args) {
-        //Scanner scanner = new Scanner(System.in);
         UserInterface userInterface = new UserInterface(); // Initialize user interface
         userInterface.displayGameStartMessage(true); // Display the game start message
 
@@ -310,37 +326,43 @@ public class Game {
         game.initializeGameEnvironment();
         game.initializePlayers();
         game.distributeAdventureCards();
-        game.displayCurrentPlayerHand();
-        //userInterface.displayPlayerTurn(game.getCurrentPlayer().getName());
+
         Card drewCard;
         while (true) {
             drewCard = game.drawEventCard();
             if (drewCard.getCategory() == "Event"){
                 game.handleECardEffects(drewCard, game.getCurrentPlayer());
             } else {
-                System.out.println("Quest");
+                //System.out.println("Quest");
                 Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
+                Player sponsor = new Player();
+                for (Player player : game.getPlayers()){
+                    if (player.isSponsor()) {
+                        sponsor = player;
+                    }
+                }
                 if (value == null) {
+                    userInterface.gameStatus(game);
                     game.nextPlayer();
-                    //drewCard = game.drawEventCard();
                 } else {
                     quest.setupQuest(game, drewCard);
                     quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
-                    quest.prepareForQuest(game);
                     for (int i=0; i<drewCard.getValue(); i++){
+                        if (i != 0){
+                            quest.prepareForQuest(game);
+                        }
                         quest.prepareForStage(i, game, quest);
                         quest.resolveStage(i, game);
                     }
                     if (!(quest.getWinners()== null)) {
+                        userInterface.gameStatus(game);
                         game.nextPlayer();
+                    } else {
+                        System.out.println("finish");
                     }
-
                 }
             }
         }
-
-
-        // Other game logic code later
     }
 
 }

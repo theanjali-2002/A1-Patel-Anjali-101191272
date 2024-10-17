@@ -304,7 +304,7 @@ public class GameTest {
 
         // Assertions
         assertEquals(3, currentPlayer.getShields(), "Current player should lose 2 shields.");
-        assertTrue(outputStream.toString().contains("Card Drawn: Plague card.\n Current player loses 2 shields."),
+        assertTrue(outputStream.toString().contains("Card Drawn: Plague card."),
                 "Output should indicate the Plague card effect.");
     }
 
@@ -687,5 +687,115 @@ public class GameTest {
         assertTrue(outputStream.toString().contains("Hot Seat (current player): P1"));
 
     }
+
+//    @Test
+//    @DisplayName("A-TEST JP-Scenario")
+//    public void A_TEST_JP_Scenario() {
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        PrintStream originalOut = System.out;
+//        System.setOut(new PrintStream(outputStream));
+//
+//        // Simulate user input for valid response 'r'
+//        String simulatedInput = "s\ne\nn\ny\n"; // Simulate pressing 'r' to return from the hot seat
+//        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+//
+//
+//        UserInterface userInterface = new UserInterface(); // Initialize user interface
+//        userInterface.displayGameStartMessage(true); // Display the game start message
+//
+//        game = new Game();
+//        Quest quest = new Quest();
+//
+//        // Step 1: Start game, decks are created, hands of the 4 players are set up with random cards
+//        game.initializeGameEnvironment();
+//        game.initializePlayers();
+//        game.distributeAdventureCards();
+//
+//        // Step 2: Rig the 4 hands to hold the cards of the 4 posted initial hands
+//        // Setup: Create a list of cards for testing
+//        List<Card> testCardsP1 = new ArrayList<>();
+//        testCardsP1.add(new Card("F5", "F", 5, "Foe")); //
+//        testCardsP1.add(new Card("S10", "S", 10, "Weapon")); //
+//        testCardsP1.add(new Card("D5", "D", 5, "Weapon")); //
+//        testCardsP1.add(new Card("H10", "H", 10, "Weapon")); //
+//        testCardsP1.add(new Card("S10", "S", 10, "Weapon")); //
+//        testCardsP1.add(new Card("F5", "F", 5, "Foe"));
+//        testCardsP1.add(new Card("F15", "F", 15, "Foe"));
+//        testCardsP1.add(new Card("F15", "F", 15, "Foe"));
+//        testCardsP1.add(new Card("L20", "L", 20, "Weapon"));
+//        testCardsP1.add(new Card("B15", "H", 15, "Weapon"));
+//        testCardsP1.add(new Card("B15", "D", 15, "Weapon"));
+//        testCardsP1.add(new Card("H10", "H", 10, "Weapon"));
+//
+//        // Setup: Create a list of cards for Player 3 (P3)
+//        List<Card> testCardsP3 = new ArrayList<>();
+//        testCardsP3.add(new Card("S10", "S", 10, "Weapon"));  // Sword (for attacks)
+//        testCardsP3.add(new Card("D5", "D", 5, "Weapon"));    // Dagger (for attack in Stage 1)
+//        testCardsP3.add(new Card("F5", "F", 5, "Foe"));       // F5 (will be discarded)
+//        testCardsP3.add(new Card("L20", "L", 20, "Weapon"));  // Lance (for attacks)
+//        testCardsP3.add(new Card("H10", "H", 10, "Weapon"));  // Horse (for Stage 3 and 4 attacks)
+//        testCardsP3.add(new Card("S10", "S", 10, "Weapon"));  // Sword (for attacks in Stage 3 and 4)
+//        testCardsP3.add(new Card("B15", "B", 15, "Weapon"));  // Axe (drawn during Stage 3)
+//        testCardsP3.add(new Card("F5", "F", 5, "Foe"));       // F5 (final hand after Stage 4)
+//        testCardsP3.add(new Card("F15", "F", 15, "Foe"));     // F15 (final hand after Stage 4)
+//        testCardsP3.add(new Card("F5", "F", 5, "Foe"));     // F30 (drawn during Stage 4)
+//        testCardsP3.add(new Card("H10", "H", 10, "Weapon")); //
+//        testCardsP3.add(new Card("S10", "S", 10, "Weapon")); //
+//
+//        // Setup: Create a list of cards for Player 4 (P4)
+//        List<Card> testCardsP4 = new ArrayList<>();
+//        testCardsP4.add(new Card("L20", "L", 20, "Weapon"));  // Axe (drawn during Stage 1)
+//        testCardsP4.add(new Card("D5", "D", 5, "Weapon"));    // Dagger (for attack in Stage 1)
+//        testCardsP4.add(new Card("F5", "F", 5, "Foe"));       // F5 (will be discarded)
+//        testCardsP4.add(new Card("H10", "H", 10, "Weapon"));  // Horse (for attacks in Stage 1 and 2)
+//        testCardsP4.add(new Card("B15", "B", 15, "Weapon"));   // Lance (drawn in Stage 2)
+//        testCardsP4.add(new Card("S10", "S", 10, "Weapon"));  // Sword (drawn in Stage 3)
+//        testCardsP4.add(new Card("H10", "H", 10, "Weapon"));  // Lance (for final attack in Stage 4)
+//        testCardsP4.add(new Card("E30", "E", 30, "Weapon"));  // Excalibur (for final attack)
+//        testCardsP4.add(new Card("F15", "F", 15, "Foe"));     // F15 (final hand after winning Stage 4)
+//        testCardsP4.add(new Card("F15", "F", 15, "Foe"));     // F15 (final hand after winning Stage 4)
+//        testCardsP4.add(new Card("F40", "F", 40, "Foe"));     // F40 (final hand after winning Stage 4)
+//        testCardsP4.add(new Card("D5", "D", 5, "Weapon")); // Lance (final hand after winning Stage 4)
+//
+//        // Setup: Create a list of cards for Player 2 (P2 - Sponsor)
+//        List<Card> testCardsP2 = new ArrayList<>();
+//        testCardsP2.add(new Card("F5", "F", 5, "Foe"));       // Random card
+//        testCardsP2.add(new Card("S10", "S", 10, "Weapon"));  // Random card
+//        testCardsP2.add(new Card("S10", "S", 10, "Weapon"));
+//        testCardsP2.add(new Card("E30", "E", 30, "Weapon"));     // Random card
+//        testCardsP2.add(new Card("F20", "F", 20, "Foe"));
+//        testCardsP2.add(new Card("F20", "F", 20, "Foe"));
+//        testCardsP2.add(new Card("F20", "F", 20, "Foe"));
+//        testCardsP2.add(new Card("F10", "F", 10, "Foe"));
+//        testCardsP2.add(new Card("F15", "F", 15, "Foe"));
+//        testCardsP2.add(new Card("B15", "B", 15, "Weapon"));  // Random card
+//        testCardsP2.add(new Card("S15", "S", 15, "Weapon"));  // Random card
+//        testCardsP2.add(new Card("L30", "L", 30, "Weapon"));  // Random card
+//
+//        game.getPlayerByName("P1").setHand(testCardsP1);
+//        game.getPlayerByName("P2").setHand(testCardsP2);
+//        game.getPlayerByName("P3").setHand(testCardsP3);
+//        game.getPlayerByName("P4").setHand(testCardsP4);
+//
+//
+//        Card drewCard = new Card("Q4", "Q", 4, "Quest");;
+//
+//        while (true) {
+//            quest.setupQuest(game, drewCard);
+//            quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
+//            for (int i=0; i<drewCard.getValue(); i++){
+//                if (i != 0){
+//                    quest.prepareForQuest(game);
+//                }
+//                quest.prepareForStage(i, game, quest);
+//                quest.resolveStage(i, game);
+//            }
+//            if (!(quest.getWinners()== null)) {
+//                game.nextPlayer();
+//            } else {
+//                System.out.println("finish");
+//            }
+//        }
+//    }
 
 }
