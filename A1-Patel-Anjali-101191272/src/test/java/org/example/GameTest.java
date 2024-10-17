@@ -315,7 +315,7 @@ public class GameTest {
         Player currentPlayer = game.getCurrentPlayer();
 
         // Set the drawn card to Queen's Favor
-        Card drawnCard = new Card("Queen's favor", "Event", 0, "Description");
+        Card drawnCard = new Card("Queen's Favor", "Event", 0, "Description");
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;

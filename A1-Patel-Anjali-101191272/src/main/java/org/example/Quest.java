@@ -24,6 +24,8 @@ public class Quest {
     private Player player;
     private Stage stage;
     private Quest quest;
+    private List<Card> cardsUsedBySponsor; // Track all cards used by the sponsor
+
 
     public Quest() {
         this.participants = new ArrayList<>();
@@ -31,6 +33,7 @@ public class Quest {
         this.discardedCards = new ArrayList<>();
         this.cardDeck = new ArrayList<>();
         this.stages = new ArrayList<>();
+        this.cardsUsedBySponsor = new ArrayList<>();
         game = new Game();
         adventureDeck = new AdventureDeck();
         eventDeck = new EventDeck();
@@ -103,6 +106,7 @@ public class Quest {
 
                             if (card != null && isValidCard(card, cardsInStage)) {
                                 cardsInStage.add(card);
+                                cardsUsedBySponsor.add(card);
                                 System.out.println("Added card: " + card);
 
                                 // Print the cards currently in the stage
@@ -294,6 +298,8 @@ public class Quest {
         // Print all winners of the quest
         System.out.println("Quest Winners: " + winners);
 
+        // code resp 27 here
+
         // The quest ends after resolving the winners
         System.out.println("The quest has ended. The game will continue.");
         //game.nextPlayer();
@@ -393,6 +399,17 @@ public class Quest {
     public List<Stage> getStages() { // Getter for stages
         return stages;
     }
+
+    // Getter for cardsUsedBySponsor
+    public List<Card> getCardsUsedBySponsor() {
+        return cardsUsedBySponsor;
+    }
+
+    // Setter for cardsUsedBySponsor
+    public void setCardsUsedBySponsor(List<Card> cardsUsedBySponsor) {
+        this.cardsUsedBySponsor = cardsUsedBySponsor;
+    }
+
 
 
 }

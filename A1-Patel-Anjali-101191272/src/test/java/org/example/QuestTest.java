@@ -137,20 +137,13 @@ class QuestTest {
     @Test
     @DisplayName("R-TEST-22: Preparing for the Quest (Drawing cards)")
     public void RESP_22_test_01() {
-
-        // Give both players more than 12 cards to simulate trimming
-        List<Card> testCards = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            testCards.add(new Card("AD" + i, "Adventure", 10, "Adventure"));
-        }
-
-        // Mock or setup game to return players with predefined names
-        //game.initializePlayers();
-        for (Player player : game.getPlayers()){
-            quest.getParticipants().add(player.getName());
-        }
+        quest.getParticipants().add("P1");
 
         System.out.println("participants: "+ quest.getParticipants());
+
+        String simulatedInput = "1\n";
+        InputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(inputStream);
 
         // Each player should draw one card and potentially trim hand
         quest.prepareForQuest(game);
@@ -215,6 +208,11 @@ class QuestTest {
         quest.getStages().get(0).getAttacks().put("P1", 25); // P1 passes
         quest.getStages().get(0).getAttacks().put("P2", 15); // P2 fails
 
+        quest.setCardsUsedBySponsor(stage1Cards);
+
+        String simulatedInput = "1\n1\n1\n1\n1\n1\n"; // Simulate pressing 'r' to return from the hot seat
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
         // Invoke resolveStage() for stage 1
         quest.resolveStage(0, game);
 
@@ -272,6 +270,11 @@ class QuestTest {
         quest.getStages().add(new Stage("Stage-1", 2, stage1Cards));
         quest.getStages().add(new Stage("Stage-1", 2, stage1Cards));
 
+        quest.setCardsUsedBySponsor(stage1Cards);
+
+        String simulatedInput = "1\n1\n1\n1\n1\n1\n"; // Simulate pressing 'r' to return from the hot seat
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
         quest.resolveWinners(game);
 
         // Assert that both participants are added to the winners list
@@ -298,6 +301,60 @@ class QuestTest {
 
         // Verify that the correct end message is printed
         assertTrue(outContent.toString().contains("QUEST ENDED WITH NO WINNERS"), "The end quest message should be displayed.");
+    }
+
+    @Test
+    @DisplayName("R-TEST-27: Sponsor Post-Quest Card Set Up (Drawing and Trimming)")
+    public void RESP_27_test_01() {
+        // Setup quest with two stages
+        Quest quest = new Quest("Q1", "Adventure", "P1", 2);
+
+        quest.getParticipants().addAll(Arrays.asList("P1", "P2"));
+
+        // Create stage and set attack values for participants
+        List<Card> stage1Cards = new ArrayList<>();
+        stage1Cards.add(new Card("Sword", "W", 10, "Weapon"));
+        stage1Cards.add(new Card("Horse", "H", 15, "Weapon"));
+        quest.getStages().add(new Stage("Stage-1", 20, stage1Cards));
+
+        quest.getStages().get(0).getAttacks().put("P1", 25); // P1 passes
+        quest.getStages().get(0).getAttacks().put("P2", 15); // P2 fails
+
+        quest.setCardsUsedBySponsor(stage1Cards);
+
+        String simulatedInput = "1\n1\n1\n1\n1\n1\n"; // Simulate pressing 'r' to return from the hot seat
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        // Invoke resolveStage() for stage 1
+        quest.resolveStage(0, game);
+
+        Player sponsor = game.getCurrentPlayer();
+
+        // Assert that P1 remains in the participants list
+        assertTrue(quest.getParticipants().contains("P1"), "P1 should have passed the stage.");
+        // Assert that P2 is removed from the participants list
+        assertFalse(quest.getParticipants().contains("P2"), "P2 should have failed the stage and been removed.");
+
+        // Assert that P1 progresses to the next stage
+        assertTrue(quest.getParticipants().contains("P1"), "P1 should have advanced to the next stage and wins!");
+        // Simulate resolving winners and post-quest actions
+
+        // Assert that the sponsor drew the correct number of adventure cards
+        int expectedCardsToDraw = stage1Cards.size() + quest.getStages().size();
+        assertEquals(12, sponsor.getHand().size(),
+                "Sponsor should have drawn " + expectedCardsToDraw + " adventure cards after the quest.");
+
+        // Assert that the sponsor's hand is trimmed to 12 cards
+        sponsor.getHand().add(new Card("ExtraCard", "X", 1, "Weapon")); // Simulate having more than 12 cards
+        sponsor.trimHandTo12Cards();
+        assertTrue(sponsor.getHand().size() <= 12, "Sponsor's hand should have been trimmed to 12 cards.");
+
+        assertTrue(outputStream.toString().contains("adventure cards as the sponsor!"));
+
     }
 
 
