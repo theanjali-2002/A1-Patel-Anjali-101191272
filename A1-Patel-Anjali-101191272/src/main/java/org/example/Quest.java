@@ -298,7 +298,26 @@ public class Quest {
         // Print all winners of the quest
         System.out.println("Quest Winners: " + winners);
 
-        // code resp 27 here
+        // Check if the game has a winner
+        boolean gameWon = winners.stream()
+                .anyMatch(winner -> game.getPlayerByName(winner).getShields() >= 7);
+
+        if (!gameWon) {
+            // Sponsor discards all cards used to build the quest
+            Player sponsor = game.getCurrentPlayer(); // Assuming there's a method to get the sponsor
+            int questCards = cardsUsedBySponsor.size();
+
+            // Sponsor draws the same number of adventure cards + additional cards for each stage
+            int stagesCount = stages.size();
+            int totalCardsToDraw = questCards + stagesCount;
+            List<Card> drawnCards = game.getAdventureDeck().drawACards(totalCardsToDraw);
+            sponsor.receiveCards(drawnCards);
+            System.out.println(sponsor.getName() + " draws " + totalCardsToDraw + " adventure cards as the sponsor!\n");
+
+            // If necessary, the sponsor trims their hand to 12 cards
+            System.out.println(sponsor.getName() + "'s hand has to be reduced to 12 cards!\n");
+            sponsor.trimHandTo12Cards();
+        }
 
         // The quest ends after resolving the winners
         System.out.println("The quest has ended. The game will continue.");
