@@ -220,6 +220,7 @@ public class Player {
 
         System.out.println(player.getName() + " prepared attack with " + totalAttackValue + " attack value.");
         System.out.println("*********************************************");
+        Game.clearConsole();
 
         return totalAttackValue;  // Return the total attack value to be recorded in the stage
     }

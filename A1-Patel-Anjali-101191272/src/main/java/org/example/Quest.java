@@ -188,6 +188,7 @@ public class Quest {
                     System.out.println(player.getName() + " declined to join the quest.");
                     System.out.println("*********************************************");
                 }
+                Game.clearConsole();
             }
         }
     }
@@ -208,6 +209,7 @@ public class Quest {
                     System.out.println(participant + " declined to participate.");
                     System.out.println("*********************************************");
                 }
+                Game.clearConsole();
             }
         }
     }
@@ -226,6 +228,7 @@ public class Quest {
             player.receiveCards(drawnCards); // Each participant draws one adventure card
             player.sortHand(player.getHand());
             player.trimHandTo12Cards(player); // Ensure they don’t exceed card limit
+            Game.clearConsole();
         }
     }
 
@@ -349,12 +352,15 @@ public class Quest {
             int totalCardsToDraw = questCards + stagesCount;
             List<Card> drawnCards = game.getAdventureDeck().drawACards(totalCardsToDraw);
             sponsor.receiveCards(drawnCards);
+            System.out.println("Calling Sponsor ... Loading ... ...");
+
             System.out.println("*********************************************");
             System.out.println(sponsor.getName() + " draws " + totalCardsToDraw + " adventure cards as the sponsor!\n");
 
             // If necessary, the sponsor trims their hand to 12 cards
-            System.out.println(sponsor.getName() + "'s hand has to be reduced to 12 cards!\n");
+            System.out.println(sponsor.getName() + ", your hand has to be reduced to 12 cards!");
             sponsor.trimHandTo12Cards(sponsor);
+            Game.clearConsole();
         }
 
         // The quest ends after resolving the winners

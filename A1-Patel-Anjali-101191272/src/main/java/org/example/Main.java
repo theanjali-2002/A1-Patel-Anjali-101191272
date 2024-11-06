@@ -33,12 +33,14 @@ public class Main {
                     //drewCard = game.drawEventCard();
                 } else {
                     quest.setupQuest(game, drewCard);
+                    Game.clearConsole();
                     quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
                     for (int i=0; i<drewCard.getValue(); i++){
                         if (i != 0){
                             quest.prepareForQuest(game);
                         }
                         quest.prepareForStage(i, game, quest);
+                        Game.clearConsole();
                         quest.resolveStage(i, game);
                     }
                     if (!(quest.getWinners()== null)) {

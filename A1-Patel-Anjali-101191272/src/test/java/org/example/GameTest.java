@@ -253,7 +253,7 @@ public class GameTest {
         // Assertions
         for (Player player : players) {
             assertEquals(2, player.getHand().size(), "Each player should have drawn 2 adventure cards.");
-            assertTrue(outputStream.toString().contains(player.getName() + " has drawn 2 adventure cards."),
+            assertTrue(outputStream.toString().contains(player.getName() + ", you have drawn 2 adventure cards."),
                     "Output should indicate that each player draws cards due to Prosperity.");
         }
     }

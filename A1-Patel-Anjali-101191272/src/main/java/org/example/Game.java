@@ -47,16 +47,19 @@ public class Game {
         Player currentPlayer = players.get(currentPlayerIndex);
         System.out.println(currentPlayer.getName() + ", your turn has ended. Please enter 'r' to return from the Hot Seat.");
 
-        // Check for user input (e.g., 'r') to return
-        String input = getScannerInstance().nextLine();
+        // Check for user input (e.g., 'r') to return, and loop until the input is valid
+        while (true) {
+            String input = getScannerInstance().nextLine();
 
-        if ("r".equalsIgnoreCase(input)) {
-            System.out.println("Leaving the Hot Seat...");
-        } else {
-            System.out.println("Invalid input. Please enter 'r' to return from the Hot Seat.");
-            return;
+            if ("r".equalsIgnoreCase(input)) {
+                System.out.println("Leaving the Hot Seat...");
+                break; // Exit the loop when input is valid
+            } else {
+                System.out.println("Invalid input. Please enter 'r' to return from the Hot Seat.");
+            }
         }
 
+        clearConsole();
         // Move to the next player
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         Player nextPlayer = players.get(currentPlayerIndex);
@@ -217,10 +220,13 @@ public class Game {
                 System.out.println("Card Drawn: Prosperity Card.");
                 System.out.println("All players draw 2 adventure cards.");
                 System.out.println("*********************************************");
+                System.out.println("Loading ... ...");
                 for (Player player : players) {
-                    System.out.println(player.getName() + " has drawn 2 adventure cards.");
+                    System.out.println(player.getName() + ", you have drawn 2 adventure cards.");
                     player.receiveCards(adventureDeck.drawACards(2));
                     player.trimHandTo12Cards(player);
+                    System.out.println("Next player ... Loading ... ...");
+                    clearConsole();
                 }
                 break;
 
@@ -305,12 +311,19 @@ public class Game {
             } else {
                 //System.out.println(playerToAsk.getName() + " has declined to sponsor the quest.");
             }
+            Game.clearConsole();
         }
 
         // If no player agrees to sponsor the quest, return null
         System.out.println("All players have declined to sponsor the quest. The quest ends.");
         return null;
     }
+
+    public static void clearConsole() {
+        System.out.print("\n".repeat(100)); // Prints 100 newlines to simulate a cleared screen
+        System.out.flush();
+    }
+
 
 
 
