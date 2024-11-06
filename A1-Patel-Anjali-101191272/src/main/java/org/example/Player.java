@@ -102,11 +102,13 @@ public class Player {
 
     // Method to trim the player's hand to 12 cards
     public void trimHandTo12Cards(Player player) {
+        hand = player.getHand();
 
         while (hand.size() > 12) {
             int numToDiscard = hand.size() - 12;
             System.out.println("*********************************************");
-            System.out.println("You need to discard " + numToDiscard + " card(s).");
+            System.out.println("You have drawn/received new adventure cards!");
+            System.out.println("You need to discard " + numToDiscard + " card(s) to maintain the deck of 12");
 
             game.displayPlayerHand(player);
 
@@ -120,14 +122,6 @@ public class Player {
             // Discard the card at the selected position
             Card cardToDiscard = hand.get(position - 1);
             discardACardFromHand(cardToDiscard);
-
-            // Display the updated hand
-            System.out.println("*********************************************");
-            System.out.println("Updated hand:");
-            for (int i = 0; i < hand.size(); i++) {
-                System.out.println((i + 1) + ": " + hand.get(i).getCardName());
-            }
-            System.out.println("*********************************************");
         }
 
         System.out.println("Hand trimmed to 12 cards.");

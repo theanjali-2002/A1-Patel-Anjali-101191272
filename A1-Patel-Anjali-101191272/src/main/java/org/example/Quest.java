@@ -175,6 +175,7 @@ public class Quest {
         return totalValue; // Return the total value of the stage
     }
 
+    // In general at first if they want to play the quest or not
     public void promptParticipants(List<Player> players, Player sponsor) {
         for (Player player : players) {
             if (!player.equals(sponsor)) {
@@ -193,6 +194,7 @@ public class Quest {
         }
     }
 
+    //asking for each individual stage of quest if they want to continue or not
     public void promptEachStage(List<String> participants, Player sponsor) {
         Iterator<String> iterator = participants.iterator();
 
@@ -214,6 +216,8 @@ public class Quest {
         }
     }
 
+    //for participants now. they will be asked if they want to play particular stage in the quest.
+    // for every participant who agreed to play, will draw cards and trim
     public void prepareForQuest(Game game) {
         Player sponsor = new Player();
         for (Player player : game.getPlayers()){

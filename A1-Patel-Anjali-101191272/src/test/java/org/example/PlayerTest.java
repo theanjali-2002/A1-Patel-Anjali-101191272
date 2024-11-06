@@ -193,9 +193,13 @@ class PlayerTest {
 
         // Create 15 cards for the test (more than 12)
         List<Card> cards = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 12; i++) {
             cards.add(new Card("Card" + (i + 1), "W", i + 1, "Weapon")); // Cards with different names
         }
+        cards.add(new Card("S10", "W", 10, "Foe"));  // Weapon card
+        cards.add(new Card("S5", "W", 5, "Foe"));  // Weapon card
+        cards.add(new Card("D25", "W", 25, "Foe"));    // Foe card (should not be allowed)
+
 
         // Add the cards to the player's hand
         player.receiveCards(cards);
@@ -205,12 +209,14 @@ class PlayerTest {
 
         // Mock trimming by calling trimHandTo12Cards (manually discarding cards)
         // For testing, we simulate the trimming by calling discardAdventureCard manually
-        player.discardACardFromHand(player.getHand().get(0));
-        player.discardACardFromHand(player.getHand().get(4));
-        player.discardACardFromHand(player.getHand().get(6));
+        player.discardACardFromHand(player.getHand().get(12));
+        player.discardACardFromHand(player.getHand().get(12));
+        player.discardACardFromHand(player.getHand().get(12));
 
         // Now player should have exactly 12 cards
         assertEquals(12, player.getHand().size(), "Player's hand should be trimmed to 12 cards.");
+
+        assertEquals(player.getHand().get(11).getCategory(), "Weapon");
 
         // Ensure the discarded cards are in the discard pile
         assertEquals(3, player.getDiscardPileA().size(), "3 cards should have been discarded.");
