@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
+import static org.example.ScannerSingleton.getScannerInstance;
 
 public class Quest {
     private String questId;
@@ -58,7 +58,6 @@ public class Quest {
 
     public void setupQuest(Game game, Card drawnQcard) {
         setNumberOfStages(drawnQcard.getValue());
-        Scanner scanner = new Scanner(System.in);
 
         for (int i = 0; i < numberOfStages; i++) {
             System.out.println("*********************************************");
@@ -76,8 +75,8 @@ public class Quest {
                 System.out.println("Enter the position of the next card to include or 'q' to finish this stage:");
 
                 // Check for available input
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
+                if (getScannerInstance().hasNextLine()) {
+                    String input = getScannerInstance().nextLine();
 
                     if (input.equalsIgnoreCase("q")) {
                         if (cardsInStage.isEmpty()) {
@@ -177,11 +176,10 @@ public class Quest {
     }
 
     public void promptParticipants(List<Player> players, Player sponsor) {
-        Scanner scanner = new Scanner(System.in);
         for (Player player : players) {
             if (!player.equals(sponsor)) {
                 System.out.println(player.getName() + ", do you want to participate in the quest? (y/n)");
-                String response = scanner.nextLine();
+                String response = getScannerInstance().nextLine();
                 if (response.equalsIgnoreCase("y")) {
                     participants.add(player.getName());
                     System.out.println(player.getName() + " joined the quest.");
@@ -195,14 +193,13 @@ public class Quest {
     }
 
     public void promptEachStage(List<String> participants, Player sponsor) {
-        Scanner scanner = new Scanner(System.in);
         Iterator<String> iterator = participants.iterator();
 
         while (iterator.hasNext()) {
             String participant = iterator.next();
             if (!participant.equals(sponsor.getName())) {
                 System.out.println(participant + ", do you want to participate in this stage? (y/n)");
-                String response = scanner.nextLine();
+                String response = getScannerInstance().nextLine();
                 if (response.equalsIgnoreCase("y")) {
                     System.out.println(participant + " joined to participate.");
                     System.out.println("*********************************************");

@@ -1,19 +1,12 @@
 package org.example;
+import static org.example.ScannerSingleton.getScannerInstance;
 
 import java.util.Scanner;
 
 public class UserInterface {
-    private Scanner scanner;
     private Game game;
 
     public UserInterface() {
-        this.scanner = new Scanner(System.in);
-        this.game = new Game();
-    }
-
-    // Constructor with Scanner
-    public UserInterface(Scanner scanner) {
-        this.scanner = scanner;
         this.game = new Game();
     }
 
@@ -38,7 +31,7 @@ public class UserInterface {
         // Handle user input if specified
         if (waitForInput) {
             while (true) {
-                String userInput = scanner.nextLine().trim().toLowerCase();
+                String userInput = getScannerInstance().nextLine().trim().toLowerCase();
 
                 if ("s".equals(userInput)) {
                     System.out.println("Game Starting...\n");
@@ -61,7 +54,7 @@ public class UserInterface {
 
         // Wait for player to press the space bar or 'e' key to draw a card
         while (true) {
-            String input = scanner.nextLine().trim();
+            String input = getScannerInstance().nextLine().trim();
             if ("e".equalsIgnoreCase(input)) {
                 System.out.println(CurrentplayerName + " has drawn a card from the event deck!");
                 break; // Exit the loop once valid input is received

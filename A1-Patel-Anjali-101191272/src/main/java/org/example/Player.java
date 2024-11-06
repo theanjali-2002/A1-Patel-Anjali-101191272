@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.*;
+import static org.example.ScannerSingleton.getScannerInstance;
 
 public class Player {
     private String name;
@@ -101,7 +102,6 @@ public class Player {
 
     // Method to trim the player's hand to 12 cards
     public void trimHandTo12Cards(Player player) {
-        Scanner scanner = new Scanner(System.in);
 
         while (hand.size() > 12) {
             int numToDiscard = hand.size() - 12;
@@ -114,7 +114,7 @@ public class Player {
             int position = -1;
             while (position < 1 || position > hand.size()) {
                 System.out.print("Enter the position of the card to discard (1-" + hand.size() + "): \n");
-                position = scanner.nextInt();
+                position = getScannerInstance().nextInt();
             }
 
             // Discard the card at the selected position
@@ -152,7 +152,6 @@ public class Player {
     }
 
     public int prepareAttackForStage(Stage stage, Player player) {
-        Scanner scanner = new Scanner(System.in);
 
         System.out.println(player.getName() + ", it's your turn to prepare ATTACK for " + stage.getStageId());
         game.displayPlayerHand(player);
@@ -173,7 +172,7 @@ public class Player {
         while (true) {
             System.out.println("*********************************************");
             System.out.println("Enter the card number to select for attack or 'q' to finish:");
-            String input = scanner.nextLine();
+            String input = getScannerInstance().nextLine();
 
             if (input.equalsIgnoreCase("q")) {
                 if (selectedCards.isEmpty()) {

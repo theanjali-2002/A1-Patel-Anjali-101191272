@@ -1,9 +1,6 @@
 package org.example;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,28 +12,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserInterfaceTest {
     private UserInterface userInterface;
-    private ByteArrayOutputStream outputStream;
-    private PrintStream originalOut;
     private Game game;
+    private final InputStream originalIn = System.in;
+    private final PrintStream originalOut = System.out;
+    private ByteArrayOutputStream outputStream;
 
     @BeforeEach
     public void setUp() {
-        //game = new Game();
-        //game.initializeGameEnvironment();
-        //game.initializePlayers();
-        //game.distributeAdventureCards();
-
         userInterface = new UserInterface();
+        // Set up to capture output
         outputStream = new ByteArrayOutputStream();
-        originalOut = System.out;
-        System.setOut(new PrintStream(outputStream)); // Redirecting System.out to capture the output
+        System.setOut(new PrintStream(outputStream));
     }
 
     @AfterEach
-    public void tearDown() {
-        // Restore the original System.out
-        System.setOut(originalOut); // Restore original System.out after tests
-        outputStream.reset(); // Reset the output stream for the next test
+    public void restoreStreams() {
+        System.setIn(originalIn);
+        System.setOut(originalOut);
+    }
+
+    private void simulateInput(String input) {
+        ScannerSingleton.resetScanner(new ByteArrayInputStream(input.getBytes()));
     }
 
     @Test
@@ -67,11 +63,9 @@ class UserInterfaceTest {
     @DisplayName("R-Test-05: Display game start message and instructions; Test user input to start the game")
     public void RESP_05_test_02() {
         // Simulate user input for starting the game
-        String simulatedInput = "s\n"; // Simulate pressing 's' and then Enter
-        InputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
-        System.setIn(in); // Set the input stream to simulate user input
+        simulateInput("s\n");
 
-        userInterface = new UserInterface(new Scanner(System.in)); // Use the injected scanner
+        userInterface = new UserInterface(); // Use the injected scanner
         userInterface.displayGameStartMessage(true); // Call the method
 
         // Expected output after starting the game
@@ -84,33 +78,17 @@ class UserInterfaceTest {
     @Test
     @DisplayName("R-Test-05: Display game start message and instructions; Test user input to quit the game")
     public void RESP_05_test_03() {
-        // Simulate user input for quitting the game
-        String simulatedInput = "q\n"; // Simulate pressing 'q' and then Enter
-        InputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
-        System.setIn(in); // Set the input stream to simulate user input
-
-        userInterface = new UserInterface(new Scanner(System.in)); // Use the injected scanner
+        simulateInput("q\n");
         userInterface.displayGameStartMessage(true); // Call the method
-
-        // Expected output after quitting the game
         String expectedOutput = "Game Exiting...\n"; // Replace with expected output for quitting the game
-
-        // Validate the output
         assertTrue(outputStream.toString().contains(expectedOutput), "The game quit message was not printed correctly.");
     }
 
     @Test
     @DisplayName("R-Test-05: Display game start message and instructions; Test invalid user input")
     public void RESP_05_test_04() {
-        // Simulate invalid user input
-        String simulatedInput = "x\ns\n"; // Simulate pressing 'x' (invalid) then 's' (valid)
-        InputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
-        System.setIn(in); // Set the input stream to simulate user input
-
-        userInterface = new UserInterface(new Scanner(System.in)); // Use the injected scanner
+        simulateInput("x\ns\n"); // Simulate pressing 'x' (invalid) then 's' (valid)
         userInterface.displayGameStartMessage(true); // Call the method
-
-        // Expected output after invalid input
         String expectedOutput = "Invalid input! Please enter 's' to start or 'q' to quit.\n"; // Expectation for invalid input
 
         // Validate the output
@@ -121,21 +99,11 @@ class UserInterfaceTest {
     @DisplayName("R-TEST-10: UI - Option to draw a card from the event deck")
     public void RESP_10_test_01() {
         String playerName = "P1";
-
-        // Simulate valid input (pressing space bar)
-        String simulatedInputValid = "e"; // Simulate pressing space bar
-        InputStream inValid = new ByteArrayInputStream(simulatedInputValid.getBytes());
-        System.setIn(inValid); // Simulate input for the space key
-
-        userInterface = new UserInterface(new Scanner(System.in)); // Use the injected scanner
-        userInterface.displayPlayerTurn(playerName); // Call the method with the playerName
-
-        // Expected output: Check for the correct turn message for the valid input
+        simulateInput("e\n");
+        userInterface.displayPlayerTurn(playerName);
         String expectedOutputValid = "It is P1's turn on the hotseat!\r\n" +
                 "Press 'e' to draw a card from the event deck...\r\n" +
                 "P1 has drawn a card from the event deck!\r\n";
-
-        // Validate the output for the valid case
         assertEquals(expectedOutputValid, outputStream.toString(), "The player's turn message is incorrect for valid input.");
     }
 

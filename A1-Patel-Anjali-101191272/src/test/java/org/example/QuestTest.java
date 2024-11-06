@@ -1,9 +1,6 @@
 package org.example;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +17,9 @@ class QuestTest {
     private Game game;
     private Quest quest;
     private Player player;
+    private final InputStream originalIn = System.in;
+    private final PrintStream originalOut = System.out;
+    private ByteArrayOutputStream outputStream;
 
     @BeforeEach
     public void setUp(TestInfo testInfo) {
@@ -58,8 +58,21 @@ class QuestTest {
 
         // Set number of stages for the quest
         quest.setNumberOfStages(2);
+
+        // Set up to capture output
+        outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
     }
 
+    @AfterEach
+    public void restoreStreams() {
+        System.setIn(originalIn);
+        System.setOut(originalOut);
+    }
+
+    private void simulateInput(String input) {
+        ScannerSingleton.resetScanner(new ByteArrayInputStream(input.getBytes()));
+    }
 
 
     @Test
@@ -88,9 +101,7 @@ class QuestTest {
     public void RESP_18_test_01() {
         //game.distributeAdventureCards();
         // Simulate user input: choosing two cards and completing each stage
-        String simulatedInput = "1\nq\n3\nq\n1\nq\n"; // Ensure this matches the expected input sequence
-        InputStream input = new ByteArrayInputStream(simulatedInput.getBytes());
-        System.setIn(input);
+        simulateInput("1\nq\n3\nq\n1\nq\n"); // Ensure this matches the expected input sequence
 
         List<Card> testCards = new ArrayList<>();
         testCards.add(new Card("F25", "F", 25, "Foe"));
@@ -112,9 +123,7 @@ class QuestTest {
     @DisplayName("R-TEST-21: Participant Management for the Quest")
     public void RESP_21_test_01() {
         // Simulating user input for participants: Player1 says yes, Player2 says no
-        String simulatedInput = "y\nn\n";
-        InputStream input = new ByteArrayInputStream(simulatedInput.getBytes());
-        System.setIn(input);
+        simulateInput("y\nn\n");
 
         // Setting up players and sponsor
         Player sponsor = new Player("P1");
@@ -175,9 +184,7 @@ class QuestTest {
         stage2Cards.add(new Card("Bow", "W", 12, "Weapon"));
         stage2Cards.add(new Card("Shield", "H", 18, "Weapon"));
 
-        String simulatedInput = "1\n4\nq\n";
-        InputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
-        System.setIn(inputStream);
+        simulateInput("1\n4\nq\n");
 
         quest.setNumberOfStages(2);
         quest.getStages().add(new Stage("Stage-1", 20, stage1Cards)); // Stage 1 with value 20
@@ -210,8 +217,7 @@ class QuestTest {
 
         quest.setCardsUsedBySponsor(stage1Cards);
 
-        String simulatedInput = "1\n1\n1\n1\n1\n1\n"; // Simulate pressing 'r' to return from the hot seat
-        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+        simulateInput("1\n1\n1\n1\n1\n1\n");
 
         // Invoke resolveStage() for stage 1
         quest.resolveStage(0, game);
@@ -272,8 +278,7 @@ class QuestTest {
 
         quest.setCardsUsedBySponsor(stage1Cards);
 
-        String simulatedInput = "1\n1\n1\n1\n1\n1\n"; // Simulate pressing 'r' to return from the hot seat
-        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+        simulateInput("1\n1\n1\n1\n1\n1\n");
 
         quest.resolveWinners(game);
 
@@ -322,8 +327,7 @@ class QuestTest {
 
         quest.setCardsUsedBySponsor(stage1Cards);
 
-        String simulatedInput = "1\n1\n1\n1\n1\n1\n"; // Simulate pressing 'r' to return from the hot seat
-        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+        simulateInput("1\n1\n1\n1\n1\n1\n");
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;

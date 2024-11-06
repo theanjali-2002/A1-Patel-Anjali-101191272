@@ -1,11 +1,11 @@
 package org.example;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,6 +16,9 @@ class PlayerTest {
     private Game game;
     private Player player;
     private Stage stage;
+    private final InputStream originalIn = System.in;
+    private final PrintStream originalOut = System.out;
+    private ByteArrayOutputStream outputStream;
 
     @BeforeEach
     public void setUp(TestInfo testInfo) {
@@ -29,6 +32,20 @@ class PlayerTest {
 
         List<Card> cardsInStage = new ArrayList<>();
         stage = new Stage("Stage1", 15, cardsInStage);
+
+        // Set up to capture output
+        outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+    }
+
+    @AfterEach
+    public void restoreStreams() {
+        System.setIn(originalIn);
+        System.setOut(originalOut);
+    }
+
+    private void simulateInput(String input) {
+        ScannerSingleton.resetScanner(new ByteArrayInputStream(input.getBytes()));
     }
 
     @Test
@@ -59,8 +76,6 @@ class PlayerTest {
         for (int i = 0; i < 12; i++) {
             cardsToReceive.add(new Card("test","W", 10, "Weapon")); // Example of a Weapon card
         }
-
-        //System.out.println("receive the cards: "+cardsToReceive);
 
         // Ensure the player's hand is initially empty
         assertTrue(players.get(0).getHand().isEmpty(), "Player's hand should initially be empty.");
@@ -218,12 +233,7 @@ class PlayerTest {
         // Ensure the player's hand contains 15 cards initially
         assertEquals(15, player.getHand().size(), "Player should initially have 15 cards in hand.");
 
-        // Simulate user input: discarding cards
-        String simulatedInput = "1\n5\n9\n";
-        ByteArrayInputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
-        System.setIn(in);
-
-        // Call the method that will use the simulated input
+        simulateInput("1\n5\n9\n"); // Use simulateInput to reset the singleton scanner with test input
         player.trimHandTo12Cards(player);
 
         // After trimming, the player should have exactly 12 cards
@@ -247,9 +257,7 @@ class PlayerTest {
         player.receiveCards(hand);
 
         // Simulate user input: select first two weapon cards and quit
-        String simulatedInput = "2\n3\nq\n";
-        ByteArrayInputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
-        System.setIn(in);
+        simulateInput("2\n3\nq\n");
 
         // Call the method under test
         int attackValue = player.prepareAttackForStage(stage, player);

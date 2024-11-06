@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.Scanner;
+import java.io.InputStream;
 
 public class ScannerSingleton {
     private static Scanner scannerInstance;
@@ -14,6 +15,14 @@ public class ScannerSingleton {
             scannerInstance = new Scanner(System.in);
         }
         return scannerInstance;
+    }
+
+    // Method to reset Scanner with a new InputStream
+    public static void resetScanner(InputStream newInputStream) {
+        if (scannerInstance != null) {
+            scannerInstance.close();
+        }
+        scannerInstance = new Scanner(newInputStream);
     }
 }
 

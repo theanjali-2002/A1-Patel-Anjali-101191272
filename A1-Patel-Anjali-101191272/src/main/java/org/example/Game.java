@@ -2,7 +2,7 @@
 //including initializing the game environment,
 //setting up decks, and controlling the flow of gameplay.
 package org.example;
-
+import static org.example.ScannerSingleton.getScannerInstance;
 import java.util.*;
 
 public class Game {
@@ -48,8 +48,7 @@ public class Game {
         System.out.println(currentPlayer.getName() + ", your turn has ended. Please enter 'r' to return from the Hot Seat.");
 
         // Check for user input (e.g., 'r') to return
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
+        String input = getScannerInstance().nextLine();
 
         if ("r".equalsIgnoreCase(input)) {
             System.out.println("Leaving the Hot Seat...");
@@ -152,7 +151,6 @@ public class Game {
 
     // Function to prompt player to draw a card
     public Card drawEventCard() {
-        Scanner scanner = new Scanner(System.in);
         Random random = new Random();
 
         if (eventDeck.countEventCards() == 0) {
@@ -163,7 +161,7 @@ public class Game {
 
         // Keep asking until the player presses 'e'
         while (true) {
-            String input = scanner.nextLine();
+            String input = getScannerInstance().nextLine();
 
             if (input.equalsIgnoreCase("e")) {
                 // Player pressed 'e', draw a random event card
@@ -238,16 +236,15 @@ public class Game {
     }
 
     public boolean promptToSponsor(Player currentPlayer) {
-        Scanner scanner = new Scanner(System.in);
         System.out.println(currentPlayer.getName() + ", a new quest has been drawn.");
         System.out.print("Do you want to sponsor this quest? (y/n): ");
 
-        String response = scanner.nextLine().trim().toLowerCase();
+        String response = getScannerInstance().nextLine().trim().toLowerCase();
 
         // Validate the input and handle the response
         while (!response.equalsIgnoreCase("y") && !response.equalsIgnoreCase("n")) {
             System.out.print("Invalid input. Please enter 'y' or 'n': ");
-            response = scanner.nextLine().trim().toLowerCase();
+            response = getScannerInstance().nextLine().trim().toLowerCase();
         }
 
         if (response.equalsIgnoreCase("y")) {
@@ -269,14 +266,14 @@ public class Game {
                 System.out.println("*********************************************");
                 System.out.println("You do not have enough Foe cards to sponsor the quest.");
                 System.out.print("Please respond with 'n' to decline sponsorship: ");
-                String newResponse = scanner.nextLine().trim().toLowerCase();
+                String newResponse = getScannerInstance().nextLine().trim().toLowerCase();
 
                 // Handle the new response
                 while (!newResponse.equalsIgnoreCase("n")) {
                     System.out.print("Invalid input.");
                     System.out.println("You do not have enough Foe cards to sponsor the quest.");
                     System.out.print("Please respond with 'n' to decline sponsorship: ");
-                    newResponse = scanner.nextLine().trim().toLowerCase();
+                    newResponse = getScannerInstance().nextLine().trim().toLowerCase();
                 }
                 System.out.println(currentPlayer.getName() + " has declined to sponsor the quest. (Ineligibility)");
                 return false; // Player has declined the sponsorship
@@ -359,6 +356,7 @@ public class Game {
                         game.nextPlayer();
                     } else {
                         System.out.println("finish");
+                        getScannerInstance().close();
                     }
                 }
             }
