@@ -262,6 +262,8 @@ public class Game {
                 System.out.println(currentPlayer.getName() + " has chosen to sponsor the quest.");
                 System.out.println("*********************************************");
                 currentPlayer.setSponsor(true);
+                setCurrentPlayer(currentPlayerIndex);
+                //System.out.println("curent player: "+ currentPlayer.getName());
                 for (Player player : players) {
                     if (player.getName() != currentPlayer.getName()) {
                         player.setSponsor(false);
@@ -303,6 +305,9 @@ public class Game {
             System.out.println("*********************************************");
             System.out.println("Asking " + playerToAsk.getName() + " to sponsor the quest...");
             boolean sponsor = promptToSponsor(playerToAsk);
+
+            //Fixing Bug - setting sponsor as current player:
+            setCurrentPlayer(currentPlayerIndex + i);
 
             // If the player agrees to sponsor the quest, return this player
             if (sponsor) {

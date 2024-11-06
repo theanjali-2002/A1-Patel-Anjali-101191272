@@ -32,15 +32,16 @@ public class Main {
                     game.nextPlayer();
                     //drewCard = game.drawEventCard();
                 } else {
+                    //System.out.println("current player in main: "+ game.getCurrentPlayer().getName());
                     quest.setupQuest(game, drewCard);
-                    Game.clearConsole();
+                    Game.clearConsole(); //here
                     quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
                     for (int i=0; i<drewCard.getValue(); i++){
                         if (i != 0){
                             quest.prepareForQuest(game);
                         }
                         quest.prepareForStage(i, game, quest);
-                        Game.clearConsole();
+                        Game.clearConsole(); //here
                         quest.resolveStage(i, game);
                     }
                     if (!(quest.getWinners()== null)) {

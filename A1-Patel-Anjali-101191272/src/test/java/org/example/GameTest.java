@@ -615,7 +615,9 @@ public class GameTest {
         game.getPlayerByName("P4").setHand(testCardsP4);
 
 
-        Card drewCard = new Card("Q4", "Q", 4, "Quest");;
+        Card drewCard = new Card("Q4", "Q", 4, "Quest");
+
+
 
 //        while (true) {
 //            quest.setupQuest(game, drewCard);
