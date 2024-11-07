@@ -155,7 +155,7 @@ class QuestTest {
         System.setIn(inputStream);
 
         // Each player should draw one card and potentially trim hand
-        quest.prepareForQuest(game);
+        quest.prepareForQuest(game, 1);
 
         System.out.println("hand: "+ game.getPlayerByName("P1").getHand());
 

@@ -397,7 +397,7 @@ public class Game {
                     quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
                     for (int i=0; i<drewCard.getValue(); i++){
                         if (i != 0){
-                            quest.prepareForQuest(game);
+                            quest.prepareForQuest(game, i);
                         }
                         quest.prepareForStage(i, game, quest);
                         quest.resolveStage(i, game);

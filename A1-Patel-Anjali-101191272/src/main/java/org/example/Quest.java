@@ -195,13 +195,13 @@ public class Quest {
     }
 
     //asking for each individual stage of quest if they want to continue or not
-    public void promptEachStage(List<String> participants, Player sponsor) {
+    public void promptEachStage(List<String> participants, Player sponsor, int stageNumber) {
         Iterator<String> iterator = participants.iterator();
 
         while (iterator.hasNext()) {
             String participant = iterator.next();
             if (!participant.equals(sponsor.getName())) {
-                System.out.println(participant + ", do you want to participate in this stage? (y/n)");
+                System.out.println(participant + ", do you want to participate in Stage - " + stageNumber + "? (y/n)");
                 String response = getScannerInstance().nextLine();
                 if (response.equalsIgnoreCase("y")) {
                     System.out.println(participant + " joined to participate.");
@@ -218,14 +218,14 @@ public class Quest {
 
     //for participants now. they will be asked if they want to play particular stage in the quest.
     // for every participant who agreed to play, will draw cards and trim
-    public void prepareForQuest(Game game) {
+    public void prepareForQuest(Game game, int stageNumber) {
         Player sponsor = new Player();
         for (Player player : game.getPlayers()){
             if (player.isSponsor()) {
                 sponsor = player;
             }
         }
-        promptEachStage(participants, sponsor);
+        promptEachStage(participants, sponsor, stageNumber + 1);
         for (String participant : participants) {
             Player player = game.getPlayerByName(participant); // Retrieve the player from game
             List<Card> drawnCards = game.getAdventureDeck().drawACards(1);
