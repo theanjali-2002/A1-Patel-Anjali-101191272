@@ -10,6 +10,7 @@ public class Game {
     private EventDeck eventDeck;
     private List<Player> players;
     private int currentPlayerIndex;
+    private int hotSeatIndex;
 
     // Constructor
     public Game() {
@@ -17,6 +18,7 @@ public class Game {
         eventDeck = new EventDeck();
         players = new ArrayList<>();
         currentPlayerIndex = 0;
+        hotSeatIndex = 0;
     }
 
     // Methods to initialize the game environment
@@ -68,6 +70,35 @@ public class Game {
         System.out.println("*********************************************");
         System.out.println("Hot Seat (current player): " + nextPlayer.getName());
         System.out.println("*********************************************");
+    }
+
+    // Method to advance to the next hot seat player
+    public void nextHotSeatPlayer() {
+        // End the current player's turn
+        Player currentPlayer = players.get(hotSeatIndex);
+        System.out.println(currentPlayer.getName() + ", your turn has ended. Please enter 'r' to return from the Hot Seat.");
+
+        // Check for user input (e.g., 'r') to return, and loop until the input is valid
+        while (true) {
+            String input = getScannerInstance().nextLine();
+
+            if ("r".equalsIgnoreCase(input)) {
+                System.out.println("Leaving the Hot Seat...");
+                break; // Exit the loop when input is valid
+            } else {
+                System.out.println("Invalid input. Please enter 'r' to return from the Hot Seat.");
+            }
+        }
+
+        clearConsole();
+        // Move to the next Hot Seat player
+        hotSeatIndex = (hotSeatIndex + 1) % players.size();
+        Player nextPlayer = players.get(hotSeatIndex);
+        setCurrentPlayer(hotSeatIndex);
+        System.out.println("*********************************************");
+        System.out.println("Hot Seat (current player): " + nextPlayer.getName());
+        System.out.println("*********************************************");
+
     }
 
     public void displayCurrentPlayerHand() {
@@ -238,7 +269,8 @@ public class Game {
         eventDeck.discardEventCard(drawnCard);
 
         // End the current player's turn after drawing an event card
-        nextPlayer();
+        // Next Hot Seat Player
+        nextHotSeatPlayer();
     }
 
     public boolean promptToSponsor(Player currentPlayer) {
@@ -307,7 +339,8 @@ public class Game {
             boolean sponsor = promptToSponsor(playerToAsk);
 
             //Fixing Bug - setting sponsor as current player:
-            setCurrentPlayer(currentPlayerIndex + i);
+            setCurrentPlayer((currentPlayerIndex + i) % players.size());
+
 
             // If the player agrees to sponsor the quest, return this player
             if (sponsor) {

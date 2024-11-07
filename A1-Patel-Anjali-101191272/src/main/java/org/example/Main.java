@@ -19,6 +19,7 @@ public class Main {
             drewCard = game.drawEventCard();
             if (drewCard.getCategory() == "Event"){
                 game.handleECardEffects(drewCard, game.getCurrentPlayer());
+                //next hot seat player here - DONE
             } else {
                 System.out.println("it is a Quest card");
                 Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
@@ -29,10 +30,13 @@ public class Main {
                     }
                 }
                 if (value == null) {
-                    game.nextPlayer();
-                    //drewCard = game.drawEventCard();
+                    //game.nextPlayer();
+                    //next hot seat player here since no sponsor so no quest - DONE
+                    game.nextHotSeatPlayer();
                 } else {
                     //System.out.println("current player in main: "+ game.getCurrentPlayer().getName());
+
+                    //anywhere where game can end - get next hot seat player
                     quest.setupQuest(game, drewCard);
                     Game.clearConsole(); //here
                     quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
@@ -45,7 +49,9 @@ public class Main {
                         quest.resolveStage(i, game);
                     }
                     if (!(quest.getWinners()== null)) {
-                        game.nextPlayer();
+                        //game.nextPlayer();
+                        // quest game ends here to Next Hot Seat Player - DONE
+                        game.nextHotSeatPlayer();
                     } else {
                         System.out.println("finish");
                     }
