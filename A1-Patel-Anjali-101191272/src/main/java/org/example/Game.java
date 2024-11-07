@@ -4,6 +4,7 @@
 package org.example;
 import static org.example.ScannerSingleton.getScannerInstance;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class Game {
     private AdventureDeck adventureDeck;
@@ -11,9 +12,20 @@ public class Game {
     private List<Player> players;
     private int currentPlayerIndex;
     private int hotSeatIndex;
+    private Supplier<Integer> randomSupplier;
+
+    public Game(Supplier<Integer> randomSupplier) {
+        this.randomSupplier = randomSupplier != null ? randomSupplier : () -> new Random().nextInt();
+        adventureDeck = new AdventureDeck(() -> 0);
+        eventDeck = new EventDeck();
+        players = new ArrayList<>();
+        currentPlayerIndex = 0;
+        hotSeatIndex = 0;
+    }
 
     // Constructor
     public Game() {
+        this(null);
         adventureDeck = new AdventureDeck();
         eventDeck = new EventDeck();
         players = new ArrayList<>();
@@ -185,7 +197,6 @@ public class Game {
 
     // Function to prompt player to draw a card
     public Card drawEventCard() {
-        Random random = new Random();
 
         if (eventDeck.countEventCards() == 0) {
             eventDeck.refillDeckFromDiscard();
@@ -204,11 +215,13 @@ public class Game {
 
                 // Find and remove a random event card from the deck
                 while (drawnCard == null) {
-                    int index = random.nextInt(deck.size());
+                    //int index = random.nextInt(deck.size());
+                    //Card card = deck.get(index);
+                    int index = Math.floorMod(randomSupplier.get(), deck.size());  // Ensures index is within bounds
                     Card card = deck.get(index);
                     if ("Event".equals(card.getCategory()) ||  "Quest".equals(card.getCategory())) {
                         drawnCard = card;
-                        deck.remove(index);
+                        deck.remove(card);
                     }
                 }
 

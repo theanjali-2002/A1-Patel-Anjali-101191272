@@ -4,20 +4,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class AdventureDeck {
     private List<Card> deck; // full set of cards in the deck
     private List<Card> discardPile;
     private Player player;
+    private Supplier<Integer> randomSupplier;
 
     // constructor initializes the deck
+    public AdventureDeck(Supplier<Integer> randomSupplier) {
+        this.randomSupplier = randomSupplier != null ? randomSupplier : () -> new Random().nextInt();
+        deck = new ArrayList<>();
+    }
+
     public AdventureDeck() {
+        this(null);
         deck = new ArrayList<>();
     }
 
     public void setupDeck() {
         addFoeCards();
         addWeaponCards();
+    }
+
+    public List<Card> getDeck() {
+        return deck;
     }
 
     private void addFoeCards() {
@@ -57,7 +69,6 @@ public class AdventureDeck {
     // Method to draw cards
     public List<Card> drawACards(int numberOfCards) {
         List<Card> drawnCards = new ArrayList<>();
-        Random random = new Random();
 
         // Check if the number of cards requested exceeds the available cards
         if (numberOfCards > deck.size()) {
@@ -70,7 +81,7 @@ public class AdventureDeck {
                 refillDeckFromDiscard();
             }
             if (!deck.isEmpty()) {
-                int index = random.nextInt(deck.size());
+                int index = Math.floorMod(randomSupplier.get(), deck.size());
                 drawnCards.add(deck.remove(index));
             }
         }

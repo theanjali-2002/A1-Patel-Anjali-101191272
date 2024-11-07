@@ -9,7 +9,6 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/AdventureDeck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/AdventureDeck.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Quest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Quest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

@@ -51,6 +51,17 @@ public class Player {
         this.hand = hand;
     }
 
+    // Method to clear all cards in the event deck
+    public void clearHand() {
+        hand.clear();  // Removes all cards from the hand
+    }
+
+    // Method to set a specific deck (for testing purposes)
+    public void setClearHand(List<Card> testCards) {
+        clearHand();  // Ensure the hand is empty before adding new cards
+        hand.addAll(testCards);
+    }
+
 
     public void sortHand(List<Card> handToSort) {
         // Separate foes and weapons into different lists

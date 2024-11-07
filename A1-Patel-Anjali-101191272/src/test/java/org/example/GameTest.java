@@ -9,6 +9,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.lang.System.in;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,10 +24,15 @@ public class GameTest {
     @BeforeEach
     public void setUp(TestInfo testInfo) {
         game = new Game();
-        game.initializeGameEnvironment();
 
         // Check the test name and skip initializing players for RESP_01_test_01
-        if (!testInfo.getDisplayName().equals("R-Test-01: Initialization of game environment.")) {
+        if (!testInfo.getDisplayName().equals("A-TEST JP-Scenario")) {
+            //game = new Game();
+            game.initializeGameEnvironment();
+        }
+
+        // Check the test name and skip initializing players for RESP_01_test_01
+        if (!testInfo.getDisplayName().equals("R-Test-01: Initialization of game environment.") || !testInfo.getDisplayName().equals("A-TEST JP-Scenario")) {
             game.initializePlayers(); // Initialize players for all other tests
         }
 
@@ -538,7 +545,6 @@ public class GameTest {
     @Test
     @DisplayName("A-TEST JP-Scenario")
     public void A_TEST_JP_Scenario() {
-        //simulateInput("s\ne\nn\ny\n1\n6\n2\n5\n2\n2\n2\n5\n");
         simulateInput(
                 // Game Start sequence
                 "s\n" +   // Start the game
@@ -564,8 +570,9 @@ public class GameTest {
                 "q\n" +
 
                 // Quest setup (Stage 4)
-                "2\n" +   // Select card position 2
-                "5\n" +   // Select card position 5
+                "1\n" +
+                "1\n" +   // Select card position 2
+                "4\n" +   // Select card position 5
                 "q\n" +
 
                 //Prompt each participant if they want to play the quest
@@ -578,16 +585,46 @@ public class GameTest {
                 "1\n" + "1\n" + "1\n" +
 
                 // P1 prepare attack Stage 1
-                "9\n" + "5\n" + "q\n" +
+                "5\n" + "9\n" + "q\n" +
 
                 // P3 prepare attack Stage 1
-                "5\n" + "10\n" + "q\n" +
+                "4\n" + "10\n" + "q\n" +
 
                 // P4 prepare attack Stage 1
-                "8\n" + "7\n" + "q\n" +
+                "6\n" + "7\n" + "q\n" +
 
                 //Prompt each participant if they want to play in the STAGE 2
-                "y\n" + "y\n" + "y\n"
+                "y\n" + "y\n" + "y\n" +
+
+                // P1 prepare attack Stage 2
+                "6\n" + "7\n" + "q\n" +
+
+                // P3 prepare attack Stage 2
+                "4\n" + "9\n" + "q\n" +
+
+                // P4 prepare attack Stage 2
+                "5\n" + "7\n" + "q\n" +
+
+                //Prompt each participant if they want to play in the STAGE 3
+                "y\n" + "y\n" +
+
+                // P3 prepare attack Stage 3
+                "5\n" + "6\n" + "9\n" + "q\n" +
+
+                // P4 prepare attack Stage 3
+                "4\n" + "7\n" + "8\n" + "q\n" +
+
+                //Prompt each participant if they want to play in the STAGE 4
+                "y\n" + "y\n" +
+
+                // P3 prepare attack Stage 4
+                "6\n" + "7\n" + "8\n" + "q\n" +
+
+                // P4 prepare attack Stage 4
+                "4\n" + "5\n" + "6\n" + "8\n" + "q\n" +
+
+                // After Quest ends, P2 has to trim down to 12 cards, discard 4 cards.
+                "1\n" + "3\n" + "2\n" + "7\n"
 
         );
 
@@ -595,7 +632,7 @@ public class GameTest {
         UserInterface userInterface = new UserInterface(); // Initialize user interface
         userInterface.displayGameStartMessage(true); // Display the game start message
 
-        game = new Game();
+        game = new Game(() -> 0);
         Quest quest = new Quest();
 
         // Step 1: Start game, decks are created, hands of the 4 players are set up with random cards
@@ -610,11 +647,11 @@ public class GameTest {
                 new Card("F5", "F", 5, "Foe"),
                 new Card("F15", "F", 15, "Foe"),
                 new Card("F15", "F", 15, "Foe"),
-                new Card("S10", "S", 10, "Weapon"),
-                new Card("S10", "S", 10, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"), //s1
+                new Card("S10", "S", 10, "Weapon"), //s2
+                new Card("H10", "H", 10, "Weapon"), //s2
                 new Card("H10", "H", 10, "Weapon"),
-                new Card("H10", "H", 10, "Weapon"),
-                new Card("D5", "D", 5, "Weapon"),
+                new Card("D5", "D", 5, "Weapon"), //s1
                 new Card("B15", "H", 15, "Weapon"),
                 new Card("B15", "D", 15, "Weapon"),
                 new Card("L20", "L", 20, "Weapon")
@@ -627,14 +664,14 @@ public class GameTest {
                 new Card("F5", "F", 5, "Foe"),
                 new Card("F5", "F", 5, "Foe"),
                 new Card("F15", "F", 15, "Foe"),
-                new Card("S10", "S", 10, "Weapon"),
-                new Card("S10", "S", 10, "Weapon"),
-                new Card("S10", "S", 10, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"), //s1
+                new Card("S10", "S", 10, "Weapon"), //s2
+                new Card("S10", "S", 10, "Weapon"), //s3
+                new Card("H10", "H", 10, "Weapon"), //s3
                 new Card("H10", "H", 10, "Weapon"),
-                new Card("H10", "H", 10, "Weapon"),
-                new Card("D5", "D", 5, "Weapon"),
-                new Card("B15", "B", 15, "Weapon"),
-                new Card("L20", "L", 20, "Weapon")
+                new Card("D5", "D", 5, "Weapon"), //s1
+                new Card("B15", "B", 15, "Weapon"), //s2
+                new Card("L20", "L", 20, "Weapon") //s3
         ));
 
         // Setup: Create a list of cards for Player 4 (P4)
@@ -643,13 +680,14 @@ public class GameTest {
                 new Card("F15", "F", 15, "Foe"),
                 new Card("F15", "F", 15, "Foe"),
                 new Card("F40", "F", 40, "Foe"),
-                new Card("S10", "S", 10, "Weapon"),
-                new Card("H10", "H", 10, "Weapon"),
-                new Card("H10", "H", 10, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"), //s3
+                new Card("H10", "H", 10, "Weapon"), //s2
+                new Card("H10", "H", 10, "Weapon"), //s1
+                new Card("D5", "D", 5, "Weapon"), //s1
                 new Card("D5", "D", 5, "Weapon"),
-                new Card("D5", "D", 5, "Weapon"),
-                new Card("B15", "B", 15, "Weapon"),
-                new Card("L20", "L", 20, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"), //s2
+                //s3
+                new Card("L20", "L", 20, "Weapon"), //s3
                 new Card("E30", "E", 30, "Weapon")
         ));
 
@@ -669,12 +707,25 @@ public class GameTest {
                 new Card("E30", "E", 30, "Weapon")
         ));
 
-
-        game.getPlayerByName("P1").setHand(testCardsP1);
-        game.getPlayerByName("P2").setHand(testCardsP2);
-        game.getPlayerByName("P3").setHand(testCardsP3);
-        game.getPlayerByName("P4").setHand(testCardsP4);
+        game.getPlayerByName("P1").setClearHand(testCardsP1);
+        game.getPlayerByName("P2").setClearHand(testCardsP2);
+        game.getPlayerByName("P3").setClearHand(testCardsP3);
+        game.getPlayerByName("P4").setClearHand(testCardsP4);
         assertEquals("P1",game.getCurrentPlayer().getName());
+
+        // Define the expected list of card names
+        List<String> expectedHand = Arrays.asList("F5", "F15", "F15", "F40", "S10", "H10", "H10", "D5", "D5", "B15", "L20", "E30");
+
+        // Convert the actual hand of cards to a list of card names
+        List<String> actualHand = game.getPlayerByName("P4")
+                .getHand()
+                .stream()
+                .map(Card::getCardName) // Assumes Card has a getCardName() method
+                .collect(Collectors.toList());
+
+        // Compare the expected and actual card names
+        assertEquals(expectedHand, actualHand, "The cards in P4's hand do not match the expected hand.");
+
 
         //Set Event Deck
         EventDeck eventDeck = game.getEventDeck();
@@ -684,6 +735,7 @@ public class GameTest {
         //Set Adventure Deck
         AdventureDeck adventureDeck = game.getAdventureDeck();
         assertEquals(52, game.getAdventureDeck().getTotalCards()); //since 48 are already distributed
+        adventureDeck.clearDeck();
         adventureDeck.setDeck(Arrays.asList(
                 new Card("F30", "F", 30, "Foe"),
                 new Card("S10", "S", 10, "Weapon"),
@@ -717,6 +769,8 @@ public class GameTest {
                 new Card("L20", "L", 20, "Weapon")
         ));
 
+
+
         Card drewCard = game.drawEventCard();
         assertNotNull(drewCard, "The drawn card should not be null.");
         assertEquals("Quest", drewCard.getCategory());
@@ -725,19 +779,72 @@ public class GameTest {
         game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
         assertEquals("P2",game.getCurrentPlayer().getName()); //sponsor
 
+        assertEquals(12, game.getCurrentPlayer().getHand().size());
         quest.setupQuest(game, drewCard);
+        assertEquals(3, game.getCurrentPlayer().getHand().size());
         assertEquals(4, quest.getStages().size());
         Game.clearConsole();
 
         quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
 
-//        for (int i=0; i<drewCard.getValue(); i++){
-//            quest.prepareForQuest(game, i);
-//            quest.prepareForStage(i, game, quest);
-//            Game.clearConsole(); //here
-//            quest.resolveStage(i, game);
-//        }
+        for (int i=0; i<drewCard.getValue(); i++){
+            quest.prepareForQuest(game, i);
+            //assertEquals(29, adventureDeck.getTotalCards());
+            quest.prepareForStage(i, game, quest);
+            Game.clearConsole(); //here
+            quest.resolveStage(i, game);
+        }
 
+        // Define the expected list of card names for the adventure deck
+        List<String> expectedDeckNames = Arrays.asList(
+            "L20", "L20", "B15", "S10", "F30", "L20"
+        );
+
+        // Convert the actual adventure deck cards to a list of card names
+        List<String> actualDeckNames = adventureDeck.getDeck()
+                .stream()
+                .map(Card::getCardName) // Assumes Card has a getCardName() method
+                .collect(Collectors.toList());
+
+        // Compare the expected and actual card names for the adventure deck
+        assertEquals(expectedDeckNames, actualDeckNames, "The cards in the adventure deck do not match the expected deck order.");
+
+
+        // Define the expected list of card names
+        List<String> expectedHand1 = Arrays.asList("F15", "F15", "F40", "L20");
+
+        // Convert the actual hand of cards to a list of card names
+        List<String> actualHand1 = game.getPlayerByName("P4")
+                .getHand()
+                .stream()
+                .map(Card::getCardName) // Assumes Card has a getCardName() method
+                .collect(Collectors.toList());
+
+        // Compare the expected and actual card names
+        assertEquals(expectedHand1, actualHand1, "The cards in P4's hand do not match the expected hand.");
+
+        // Define the expected list of card names for Player 3's hand
+        List<String> expectedHandP3 = Arrays.asList("F5", "F5", "F15", "F30", "S10");
+
+        // Convert the actual hand of cards to a list of card names for Player 3
+        List<String> actualHandP3 = game.getPlayerByName("P3")
+                .getHand()
+                .stream()
+                .map(Card::getCardName) // Assumes Card has a getCardName() method
+                .collect(Collectors.toList());
+
+        // Compare the expected and actual card names for Player 3's hand
+        assertEquals(expectedHandP3, actualHandP3, "The cards in P3's hand do not match the expected hand.");
+
+
+
+
+        assertEquals(5, game.getPlayerByName("P3").getHand().size());
+        assertEquals(4, game.getPlayerByName("P4").getHand().size());
+        assertEquals(12, game.getCurrentPlayer().getHand().size());
+
+        assertEquals(4, game.getPlayerByName("P4").getShields());
+        assertEquals(0, game.getPlayerByName("P3").getShields());
 
 
     }
