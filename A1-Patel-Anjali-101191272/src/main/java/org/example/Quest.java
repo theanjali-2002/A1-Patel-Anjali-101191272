@@ -180,7 +180,7 @@ public class Quest {
         for (Player player : players) {
             if (!player.equals(sponsor)) {
                 System.out.println(player.getName() + ", do you want to participate in the quest? (y/n)");
-                String response = getScannerInstance().nextLine();
+                String response = getScannerInstance().nextLine().trim();
                 if (response.equalsIgnoreCase("y")) {
                     participants.add(player.getName());
                     System.out.println(player.getName() + " joined the quest.");

@@ -51,7 +51,7 @@ public class Game {
 
         // Check for user input (e.g., 'r') to return, and loop until the input is valid
         while (true) {
-            String input = getScannerInstance().nextLine();
+            String input = getScannerInstance().nextLine().trim();
 
             if ("r".equalsIgnoreCase(input)) {
                 System.out.println("Leaving the Hot Seat...");
@@ -80,7 +80,7 @@ public class Game {
 
         // Check for user input (e.g., 'r') to return, and loop until the input is valid
         while (true) {
-            String input = getScannerInstance().nextLine();
+            String input = getScannerInstance().nextLine().trim();
 
             if ("r".equalsIgnoreCase(input)) {
                 System.out.println("Leaving the Hot Seat...");
@@ -360,58 +360,6 @@ public class Game {
     public static void clearConsole() {
         System.out.print("\n".repeat(100)); // Prints 100 newlines to simulate a cleared screen
         System.out.flush();
-    }
-
-
-
-
-    public static void main(String[] args) {
-        UserInterface userInterface = new UserInterface(); // Initialize user interface
-        userInterface.displayGameStartMessage(true); // Display the game start message
-
-        Game game = new Game(); // Create a new instance of the Game class
-        Quest quest = new Quest();
-        game.initializeGameEnvironment();
-        game.initializePlayers();
-        game.distributeAdventureCards();
-
-        Card drewCard;
-        while (true) {
-            drewCard = game.drawEventCard();
-            if (drewCard.getCategory() == "Event"){
-                game.handleECardEffects(drewCard, game.getCurrentPlayer());
-            } else {
-                //System.out.println("Quest");
-                Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
-                Player sponsor = new Player();
-                for (Player player : game.getPlayers()){
-                    if (player.isSponsor()) {
-                        sponsor = player;
-                    }
-                }
-                if (value == null) {
-                    userInterface.gameStatus(game);
-                    game.nextPlayer();
-                } else {
-                    quest.setupQuest(game, drewCard);
-                    quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
-                    for (int i=0; i<drewCard.getValue(); i++){
-                        if (i != 0){
-                            quest.prepareForQuest(game, i);
-                        }
-                        quest.prepareForStage(i, game, quest);
-                        quest.resolveStage(i, game);
-                    }
-                    if (!(quest.getWinners()== null)) {
-                        userInterface.gameStatus(game);
-                        game.nextPlayer();
-                    } else {
-                        System.out.println("finish");
-                        getScannerInstance().close();
-                    }
-                }
-            }
-        }
     }
 
 }

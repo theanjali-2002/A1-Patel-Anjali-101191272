@@ -166,7 +166,8 @@ public class Player {
         while (true) {
             System.out.println("*********************************************");
             System.out.println("Enter the card number to select for attack or 'q' to finish:");
-            String input = getScannerInstance().nextLine();
+
+            String input = getScannerInstance().nextLine().trim();
 
             if (input.equalsIgnoreCase("q")) {
                 if (selectedCards.isEmpty()) {
