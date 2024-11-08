@@ -1,0 +1,32 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+# Ignore all files in .idea except those needed for project configuration
+.idea/*
+
+# Allow project configuration files to be committed
+!.idea/*.iml
+!.idea/modules.xml
+!.idea/vcs.xml
+!.idea/workspace.xml
+
+# Ignore files that store user-specific preferences
+.idea/workspace.xml
+.idea/misc.xml
+.idea/encodings.xml
+.idea/compiler.xml
+.idea/jarRepositories.xml
+
+# Ignore log files and OS-specific files
+*.log
+.DS_Store
+Thumbs.db
+
+# Ignore build output directories
+/out/
+target/
+
+# Ignore IntelliJ specific file types
+*.iws
+*.ipr
