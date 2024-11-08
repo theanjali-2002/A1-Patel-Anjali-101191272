@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Objects;
+
 public class Card {
     private String cardName;
     private String type;   // Just "F", "D", "S", etc. (for card type, Foe, or Weapon)

@@ -1,6 +1,8 @@
 package org.example;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static org.example.ScannerSingleton.getScannerInstance;
 
 public class Player {
@@ -16,10 +18,15 @@ public class Player {
     // Map to store total attack values for each stage
     private Map<String, Integer> stageAttackValues;
 
+    private Map<Integer, List<Card>> receivedCardEvents;
+    private int receptionCount = 0; // To keep track of the reception event number
+
     public Player(){
         this.hand = new ArrayList<>();
         this.discardPileA = new ArrayList<>();
         this.stageAttackValues = new HashMap<>();
+        this.receivedCardEvents = new HashMap<>(); // Initialize the map here
+        this.receptionCount = 0; // Initialize the count
     }
 
     public Player(String name) {
@@ -31,6 +38,8 @@ public class Player {
         this.sponsor = false;
         this.quest = new Quest();
         this.stageAttackValues = new HashMap<>();
+        this.receivedCardEvents = new HashMap<>(); // Initialize the map here
+        this.receptionCount = 0; // Initialize the count
     }
 
     public String getName() {
@@ -42,6 +51,11 @@ public class Player {
         if (cards != null && !cards.isEmpty()) {
             hand.addAll(cards); // Add the received cards to the player's hand
         }
+
+        // Increment the reception count for the next reception event
+        receptionCount++;
+        // Store the cards received in this event with the incremented key
+        receivedCardEvents.put(receptionCount, new ArrayList<>(cards));
     }
 
     public List<Card> getHand() {
@@ -252,5 +266,23 @@ public class Player {
     public Map<String, Integer> getStageAttackValues() {
         return stageAttackValues;
     }
+
+    public Map<Integer, List<String>> getReceivedCardEvents() {
+        Map<Integer, List<String>> receivedCardNames = new HashMap<>();
+        for (Map.Entry<Integer, List<Card>> entry : receivedCardEvents.entrySet()) {
+            List<String> cardNames = entry.getValue().stream()
+                    .map(Card::getCardName)
+                    .collect(Collectors.toList());
+            receivedCardNames.put(entry.getKey(), cardNames);
+        }
+        return receivedCardNames;
+    }
+
+
+    public void clearReceivedCardEvents() {
+        receivedCardEvents.clear();
+        receptionCount = 0; // Reset the reception count as well
+    }
+
 
 }

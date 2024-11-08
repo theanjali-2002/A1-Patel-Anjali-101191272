@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="bbab3710-ec0c-4ee6-b1b3-deb0896ef8da" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Card.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/GameTest.java" afterDir="false" />
     </list>
@@ -120,7 +121,7 @@
       <recent name="org.example" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.GameTest.A_TEST_JP_Scenario">
+  <component name="RunManager" selected="JUnit.example in A1-Patel-Anjali-101191272">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.Main" />
       <module name="A1-Patel-Anjali-101191272" />
@@ -190,11 +191,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.example in A1-Patel-Anjali-101191272" />
         <item itemvalue="JUnit.GameTest.A_TEST_JP_Scenario" />
         <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.RunCucumberTest" />
         <item itemvalue="JUnit.GameTest" />
-        <item itemvalue="JUnit.example in A1-Patel-Anjali-101191272" />
       </list>
     </recent_temporary>
   </component>
