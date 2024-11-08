@@ -13,9 +13,13 @@ public class Player {
     private boolean sponsor;
     private Quest quest;
 
+    // Map to store total attack values for each stage
+    private Map<String, Integer> stageAttackValues;
+
     public Player(){
         this.hand = new ArrayList<>();
         this.discardPileA = new ArrayList<>();
+        this.stageAttackValues = new HashMap<>();
     }
 
     public Player(String name) {
@@ -26,6 +30,7 @@ public class Player {
         this.game = new Game();
         this.sponsor = false;
         this.quest = new Quest();
+        this.stageAttackValues = new HashMap<>();
     }
 
     public String getName() {
@@ -224,6 +229,8 @@ public class Player {
             stage.addWeaponCard(card.getCardName());
         }
 
+        stageAttackValues.put(stage.getStageId(), totalAttackValue);
+
         System.out.println(player.getName() + " prepared attack with " + totalAttackValue + " attack value.");
         System.out.println("*********************************************");
         Game.clearConsole();
@@ -239,6 +246,11 @@ public class Player {
     // Setter method for sponsor
     public void setSponsor(boolean sponsor) {
         this.sponsor = sponsor;
+    }
+
+    // Getter to retrieve attack values for each stage
+    public Map<String, Integer> getStageAttackValues() {
+        return stageAttackValues;
     }
 
 }

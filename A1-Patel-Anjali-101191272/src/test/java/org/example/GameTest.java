@@ -585,7 +585,7 @@ public class GameTest {
                 "1\n" + "1\n" + "1\n" +
 
                 // P1 prepare attack Stage 1
-                "5\n" + "9\n" + "q\n" +
+                "5\n" + "10\n" + "q\n" +
 
                 // P3 prepare attack Stage 1
                 "4\n" + "10\n" + "q\n" +
@@ -888,9 +888,9 @@ public class GameTest {
 
 
                 //Assert each player's attack values
-                //assertEquals(15, game.getPlayerByName("P1").getAttackValue(), "P1's attack value in Stage 1 should be 15.");
-                //assertEquals(15, game.getPlayerByName("P3").getAttackValue(), "P3's attack value in Stage 1 should be 15.");
-                //assertEquals(15, game.getPlayerByName("P4").getAttackValue(), "P4's attack value in Stage 1 should be 15.");
+                assertEquals(15, game.getPlayerByName("P1").getStageAttackValues().get("Stage-1"));
+                assertEquals(15, game.getPlayerByName("P3").getStageAttackValues().get("Stage-1"));
+                assertEquals(15, game.getPlayerByName("P4").getStageAttackValues().get("Stage-1"));
 
                 //Assert each player now has 2 less cards on hand since they all used 2
                 assertEquals(10, game.getPlayerByName("P1").getHand().size());
@@ -904,9 +904,9 @@ public class GameTest {
                 //assertEquals("F30", quest.getParticipants().get(0));
 
                 //Assert each player's attack values
-                //assertEquals(15, game.getPlayerByName("P1").getAttackValue(), "P1's attack value in Stage 1 should be 15.");
-                //assertEquals(15, game.getPlayerByName("P3").getAttackValue(), "P3's attack value in Stage 1 should be 15.");
-                //assertEquals(15, game.getPlayerByName("P4").getAttackValue(), "P4's attack value in Stage 1 should be 15.");
+                assertEquals(20, game.getPlayerByName("P1").getStageAttackValues().get("Stage-2"));
+                assertEquals(25, game.getPlayerByName("P3").getStageAttackValues().get("Stage-2"));
+                assertEquals(25, game.getPlayerByName("P4").getStageAttackValues().get("Stage-2"));
 
                 //Assert each player now has 9 cards (12 - S1(2) + Draw 1 - S2(2) = 9)
                 assertEquals(9, game.getPlayerByName("P1").getHand().size());
@@ -916,7 +916,7 @@ public class GameTest {
                 //P1 elimination
                 assertEquals(0, game.getPlayerByName("P1").getShields(), "P1 should have 0 shields after elimination.");
                 // Expected hand for Player 1 (P1)
-                List<String> expectedHandP1Eliminate = Arrays.asList("F5", "F10", "F15", "F15", "F30", "H10", "D5", "B15", "L20");
+                List<String> expectedHandP1Eliminate = Arrays.asList("F5", "F10", "F15", "F15", "F30", "H10", "B15", "B15", "L20");
                 List<String> actualHandP1Eliminate = game.getPlayerByName("P1")
                         .getHand()
                         .stream()
@@ -931,9 +931,8 @@ public class GameTest {
                 //assertEquals("F30", quest.getParticipants().get(0));
 
                 //Assert each player's attack values
-                //assertEquals(15, game.getPlayerByName("P1").getAttackValue(), "P1's attack value in Stage 1 should be 15.");
-                //assertEquals(15, game.getPlayerByName("P3").getAttackValue(), "P3's attack value in Stage 1 should be 15.");
-                //assertEquals(15, game.getPlayerByName("P4").getAttackValue(), "P4's attack value in Stage 1 should be 15.");
+                assertEquals(40, game.getPlayerByName("P3").getStageAttackValues().get("Stage-3"));
+                assertEquals(45, game.getPlayerByName("P4").getStageAttackValues().get("Stage-3"));
 
                 //Assert each player now has 9 cards (12 - S1(2) + Draw 1 - S2(2) + Draws(1) - S3(3)= 7)
                 assertEquals(7, game.getPlayerByName("P3").getHand().size());
@@ -946,9 +945,8 @@ public class GameTest {
                 //assertEquals("F30", quest.getParticipants().get(0));
 
                 //Assert each player's attack values
-                //assertEquals(15, game.getPlayerByName("P1").getAttackValue(), "P1's attack value in Stage 1 should be 15.");
-                //assertEquals(15, game.getPlayerByName("P3").getAttackValue(), "P3's attack value in Stage 1 should be 15.");
-                //assertEquals(15, game.getPlayerByName("P4").getAttackValue(), "P4's attack value in Stage 1 should be 15.");
+                assertEquals(45, game.getPlayerByName("P3").getStageAttackValues().get("Stage-4"));
+                assertEquals(65, game.getPlayerByName("P4").getStageAttackValues().get("Stage-4"));
 
                 //Assert each player now has 9 cards (12 - S1(2) + Draw 1 - S2(2) + Draws(1) - S3(3) + Draws(1) - S4(3/4) = 5/4)
                 assertEquals(5, game.getPlayerByName("P3").getHand().size());
@@ -978,10 +976,6 @@ public class GameTest {
                 assertEquals(expectedHandP4Wins, actualHandP4Wins, "The cards in P4's hand do not match the expected hand.");
 
             }
-
-
-
-
 
 
         }
