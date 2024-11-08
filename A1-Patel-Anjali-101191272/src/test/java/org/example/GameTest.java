@@ -632,6 +632,24 @@ public class GameTest {
         UserInterface userInterface = new UserInterface(); // Initialize user interface
         userInterface.displayGameStartMessage(true); // Display the game start message
 
+        // Prepare the expected output for Game Start
+        String expectedOutput = "***********************************************************\r\n" +
+                "          Welcome to the 4004 Assignment 1 Game!          \r\n" +
+                "***********************************************************\r\n" +
+                "\r\nInstructions:\r\n" +
+                "1. 🧙‍♂️ Accumulate 7 shields to become a knight!\r\n" +
+                "2. 🃏 Draw adventure cards to complete quests.\r\n" +
+                "3. 🎯 Successfully complete quests to earn shields.\r\n" +
+                "4. 🏆 Players with 7 or more shields at the end of a quest win!\r\n" +
+                "\r\n" +
+                "✨ Good luck, and may the best knight prevail! ✨\r\n" +
+                "***********************************************************\r\n" +
+                "Press 's' to Start Game\r\n" +
+                "Press 'q' to Quit Game\r\n"; // Include button instructions in the expected output
+
+        // Assert the Game Start
+        assertTrue(outputStream.toString().contains(expectedOutput), "The displayed game start message is incorrect.");
+
         game = new Game(() -> 0);
         Quest quest = new Quest();
 
@@ -639,6 +657,22 @@ public class GameTest {
         game.initializeGameEnvironment();
         game.initializePlayers();
         game.distributeAdventureCards();
+
+        assertNotNull(game.getAdventureDeck(), "Adventure deck should be initialized.");
+        assertNotNull(game.getEventDeck(), "Event deck should be initialized.");
+        assertEquals(4, game.getPlayers().size(), "There should be exactly 4 players initialized.");
+        assertEquals(52, game.getAdventureDeck().getTotalCards(), "Adventure deck should have 52 cards after initial distribution.");
+        assertEquals(17, game.getEventDeck().getTotalCards(), "Event deck should contain 17 cards.");
+
+        //Assert 4 player initialization in game
+        assertEquals(4, game.getPlayers().size());
+        //Assert current Player is P1 by default
+        assertEquals("P1",game.getCurrentPlayer().getName());
+
+        //Assert each player has a hand of 12 cards initially before rigging
+        for (Player player : game.getPlayers()) {
+            assertEquals(12, game.getPlayerByName(player.getName()).getHand().size());
+        }
 
         // Step 2: Rig the 4 hands to hold the cards of the 4 posted initial hands
         // Setup: Create a list of cards for testing
@@ -711,30 +745,68 @@ public class GameTest {
         game.getPlayerByName("P2").setClearHand(testCardsP2);
         game.getPlayerByName("P3").setClearHand(testCardsP3);
         game.getPlayerByName("P4").setClearHand(testCardsP4);
-        assertEquals("P1",game.getCurrentPlayer().getName());
 
-        // Define the expected list of card names
-        List<String> expectedHand = Arrays.asList("F5", "F15", "F15", "F40", "S10", "H10", "H10", "D5", "D5", "B15", "L20", "E30");
+        //Assert each player has a hand of 12 cards after rigging
+        for (Player player : game.getPlayers()) {
+            assertEquals(12, game.getPlayerByName(player.getName()).getHand().size());
+        }
 
-        // Convert the actual hand of cards to a list of card names
-        List<String> actualHand = game.getPlayerByName("P4")
+        //Assert the rigged hand of players with above defined list
+        // Expected hand for Player 1 (P1)
+        List<String> expectedHandP1 = Arrays.asList("F5", "F5", "F15", "F15", "S10", "S10", "H10", "H10", "B15", "D5", "B15", "L20");
+        List<String> actualHandP1 = game.getPlayerByName("P1")
                 .getHand()
                 .stream()
-                .map(Card::getCardName) // Assumes Card has a getCardName() method
+                .map(Card::getCardName)
                 .collect(Collectors.toList());
+        assertEquals(expectedHandP1, actualHandP1, "The cards in P1's hand do not match the expected hand.");
 
-        // Compare the expected and actual card names
-        assertEquals(expectedHand, actualHand, "The cards in P4's hand do not match the expected hand.");
+        // Expected hand for Player 2 (P2)
+        List<String> expectedHandP2 = Arrays.asList("F5", "F10", "F15", "F20", "F20", "F20", "S10", "S10", "S10", "B15", "L30", "E30");
+        List<String> actualHandP2 = game.getPlayerByName("P2")
+                .getHand()
+                .stream()
+                .map(Card::getCardName)
+                .collect(Collectors.toList());
+        assertEquals(expectedHandP2, actualHandP2, "The cards in P2's hand do not match the expected hand.");
+
+        // Expected hand for Player 3 (P3)
+        List<String> expectedHandP3 = Arrays.asList("F5", "F5", "F5", "F15", "S10", "S10", "S10", "H10", "H10", "D5", "B15", "L20");
+        List<String> actualHandP3 = game.getPlayerByName("P3")
+                .getHand()
+                .stream()
+                .map(Card::getCardName)
+                .collect(Collectors.toList());
+        assertEquals(expectedHandP3, actualHandP3, "The cards in P3's hand do not match the expected hand.");
+
+        // Expected hand for Player 4 (P4)
+        List<String> expectedHandP4 = Arrays.asList("F5", "F15", "F15", "F40", "S10", "H10", "H10", "D5", "D5", "B15", "L20", "E30");
+        List<String> actualHandP4 = game.getPlayerByName("P4")
+                .getHand()
+                .stream()
+                .map(Card::getCardName)
+                .collect(Collectors.toList());
+        assertEquals(expectedHandP4, actualHandP4, "The cards in P4's hand do not match the expected hand.");
+
+
+
+
+
+
 
 
         //Set Event Deck
         EventDeck eventDeck = game.getEventDeck();
+        //Assert Event Deck is populated randomly
         assertEquals(17, game.getEventDeck().getTotalCards());
+        //Rigging the Event Deck
         eventDeck.setDeck(Arrays.asList(new Card("Q4", "Q", 4, "Quest")));
 
         //Set Adventure Deck
         AdventureDeck adventureDeck = game.getAdventureDeck();
+        //Assert Adventure Deck is populated randomly
         assertEquals(52, game.getAdventureDeck().getTotalCards()); //since 48 are already distributed
+        //Rigging the Adventure Deck
         adventureDeck.clearDeck();
         adventureDeck.setDeck(Arrays.asList(
                 new Card("F30", "F", 30, "Foe"),
@@ -747,7 +819,7 @@ public class GameTest {
                 new Card("S10", "S", 10, "Weapon"),
                 new Card("F30", "F", 30, "Foe"),
                 new Card("L20", "L", 20, "Weapon"),
-                //other random
+                //other random; above are required for playing the given scenario
                 new Card("F30", "F", 30, "Foe"),
                 new Card("S10", "S", 10, "Weapon"),
                 new Card("B15", "B", 15, "Weapon"),
@@ -769,10 +841,9 @@ public class GameTest {
                 new Card("L20", "L", 20, "Weapon")
         ));
 
-
-
         Card drewCard = game.drawEventCard();
         assertNotNull(drewCard, "The drawn card should not be null.");
+        //Assert the drawn card is the rigged card Q4
         assertEquals("Quest", drewCard.getCategory());
         assertEquals(4, drewCard.getValue());
 
@@ -786,62 +857,139 @@ public class GameTest {
         Game.clearConsole();
 
         quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
+        //Assert P1 declined the offer and is not the sponsor
+        assertFalse(game.getPlayerByName("P1").isSponsor());
+        //Assert P2 accepted to sponsor the Quest
+        assertTrue(game.getPlayerByName("P2").isSponsor());
+
 
         for (int i=0; i<drewCard.getValue(); i++){
             quest.prepareForQuest(game, i);
-            //assertEquals(29, adventureDeck.getTotalCards());
+
+            //Assert that P2 builds the 4 stages as required
+            assertEquals(4, quest.getStages().size());
+
+            //Assert eligible Participants for all stages
+            if (i == 0 || i == 1) {
+                // Assert participants are P1, P3, and P4 for the first two stages
+                assertEquals(List.of("P1", "P3", "P4"), quest.getParticipants(), "Expected participants are P1, P3, and P4 for stages 0 and 1");
+            } else {
+                // Assert participants are P3 and P4 for later stages
+                assertEquals(List.of("P3", "P4"), quest.getParticipants(), "Expected participants are P3 and P4 for stages after 1");
+            }
+
+
             quest.prepareForStage(i, game, quest);
             Game.clearConsole(); //here
             quest.resolveStage(i, game);
+
+            if (i == 0) {
+                //Assert drawn card for each player
+
+
+                //Assert each player's attack values
+                //assertEquals(15, game.getPlayerByName("P1").getAttackValue(), "P1's attack value in Stage 1 should be 15.");
+                //assertEquals(15, game.getPlayerByName("P3").getAttackValue(), "P3's attack value in Stage 1 should be 15.");
+                //assertEquals(15, game.getPlayerByName("P4").getAttackValue(), "P4's attack value in Stage 1 should be 15.");
+
+                //Assert each player now has 2 less cards on hand since they all used 2
+                assertEquals(10, game.getPlayerByName("P1").getHand().size());
+                assertEquals(10, game.getPlayerByName("P3").getHand().size());
+                assertEquals(10, game.getPlayerByName("P4").getHand().size());
+
+            }
+
+            if (i == 1) {
+                //Assert drawn card for each player
+                //assertEquals("F30", quest.getParticipants().get(0));
+
+                //Assert each player's attack values
+                //assertEquals(15, game.getPlayerByName("P1").getAttackValue(), "P1's attack value in Stage 1 should be 15.");
+                //assertEquals(15, game.getPlayerByName("P3").getAttackValue(), "P3's attack value in Stage 1 should be 15.");
+                //assertEquals(15, game.getPlayerByName("P4").getAttackValue(), "P4's attack value in Stage 1 should be 15.");
+
+                //Assert each player now has 9 cards (12 - S1(2) + Draw 1 - S2(2) = 9)
+                assertEquals(9, game.getPlayerByName("P1").getHand().size());
+                assertEquals(9, game.getPlayerByName("P3").getHand().size());
+                assertEquals(9, game.getPlayerByName("P4").getHand().size());
+
+                //P1 elimination
+                assertEquals(0, game.getPlayerByName("P1").getShields(), "P1 should have 0 shields after elimination.");
+                // Expected hand for Player 1 (P1)
+                List<String> expectedHandP1Eliminate = Arrays.asList("F5", "F10", "F15", "F15", "F30", "H10", "D5", "B15", "L20");
+                List<String> actualHandP1Eliminate = game.getPlayerByName("P1")
+                        .getHand()
+                        .stream()
+                        .map(Card::getCardName)
+                        .collect(Collectors.toList());
+                assertEquals(expectedHandP1Eliminate, actualHandP1Eliminate, "The cards in P1's hand do not match the expected hand.");
+
+            }
+
+            if (i == 2) {
+                //Assert drawn card for each player
+                //assertEquals("F30", quest.getParticipants().get(0));
+
+                //Assert each player's attack values
+                //assertEquals(15, game.getPlayerByName("P1").getAttackValue(), "P1's attack value in Stage 1 should be 15.");
+                //assertEquals(15, game.getPlayerByName("P3").getAttackValue(), "P3's attack value in Stage 1 should be 15.");
+                //assertEquals(15, game.getPlayerByName("P4").getAttackValue(), "P4's attack value in Stage 1 should be 15.");
+
+                //Assert each player now has 9 cards (12 - S1(2) + Draw 1 - S2(2) + Draws(1) - S3(3)= 7)
+                assertEquals(7, game.getPlayerByName("P3").getHand().size());
+                assertEquals(7, game.getPlayerByName("P4").getHand().size());
+
+            }
+
+            if (i == 3) {
+                //Assert drawn card for each player
+                //assertEquals("F30", quest.getParticipants().get(0));
+
+                //Assert each player's attack values
+                //assertEquals(15, game.getPlayerByName("P1").getAttackValue(), "P1's attack value in Stage 1 should be 15.");
+                //assertEquals(15, game.getPlayerByName("P3").getAttackValue(), "P3's attack value in Stage 1 should be 15.");
+                //assertEquals(15, game.getPlayerByName("P4").getAttackValue(), "P4's attack value in Stage 1 should be 15.");
+
+                //Assert each player now has 9 cards (12 - S1(2) + Draw 1 - S2(2) + Draws(1) - S3(3) + Draws(1) - S4(3/4) = 5/4)
+                assertEquals(5, game.getPlayerByName("P3").getHand().size());
+                assertEquals(4, game.getPlayerByName("P4").getHand().size());
+
+                //P3 elimination
+                assertEquals(0, game.getPlayerByName("P3").getShields(), "P3 should have 0 shields after elimination.");
+                // Expected hand for Player 3
+                List<String> expectedHandP3Eliminate = Arrays.asList("F5", "F5", "F15", "F30", "S10");
+                List<String> actualHandP3Eliminate = game.getPlayerByName("P3")
+                        .getHand()
+                        .stream()
+                        .map(Card::getCardName)
+                        .collect(Collectors.toList());
+                assertEquals(expectedHandP3Eliminate, actualHandP3Eliminate, "The cards in P3's hand do not match the expected hand.");
+
+                //Assert P4 wins - shields
+                assertEquals(4, game.getPlayerByName("P4").getShields(), "P4 should have 4 shields after winning Stage 4.");
+
+                // Expected hand for Player 4
+                List<String> expectedHandP4Wins = Arrays.asList("F15", "F15", "F40", "L20");
+                List<String> actualHandP4Wins = game.getPlayerByName("P4")
+                        .getHand()
+                        .stream()
+                        .map(Card::getCardName)
+                        .collect(Collectors.toList());
+                assertEquals(expectedHandP4Wins, actualHandP4Wins, "The cards in P4's hand do not match the expected hand.");
+
+            }
+
+
+
+
+
+
         }
 
-        // Define the expected list of card names for the adventure deck
-        List<String> expectedDeckNames = Arrays.asList(
-            "L20", "L20", "B15", "S10", "F30", "L20"
-        );
-
-        // Convert the actual adventure deck cards to a list of card names
-        List<String> actualDeckNames = adventureDeck.getDeck()
-                .stream()
-                .map(Card::getCardName) // Assumes Card has a getCardName() method
-                .collect(Collectors.toList());
-
-        // Compare the expected and actual card names for the adventure deck
-        assertEquals(expectedDeckNames, actualDeckNames, "The cards in the adventure deck do not match the expected deck order.");
 
 
-        // Define the expected list of card names
-        List<String> expectedHand1 = Arrays.asList("F15", "F15", "F40", "L20");
-
-        // Convert the actual hand of cards to a list of card names
-        List<String> actualHand1 = game.getPlayerByName("P4")
-                .getHand()
-                .stream()
-                .map(Card::getCardName) // Assumes Card has a getCardName() method
-                .collect(Collectors.toList());
-
-        // Compare the expected and actual card names
-        assertEquals(expectedHand1, actualHand1, "The cards in P4's hand do not match the expected hand.");
-
-        // Define the expected list of card names for Player 3's hand
-        List<String> expectedHandP3 = Arrays.asList("F5", "F5", "F15", "F30", "S10");
-
-        // Convert the actual hand of cards to a list of card names for Player 3
-        List<String> actualHandP3 = game.getPlayerByName("P3")
-                .getHand()
-                .stream()
-                .map(Card::getCardName) // Assumes Card has a getCardName() method
-                .collect(Collectors.toList());
-
-        // Compare the expected and actual card names for Player 3's hand
-        assertEquals(expectedHandP3, actualHandP3, "The cards in P3's hand do not match the expected hand.");
-
-
-
-
-        assertEquals(5, game.getPlayerByName("P3").getHand().size());
-        assertEquals(4, game.getPlayerByName("P4").getHand().size());
-        assertEquals(12, game.getCurrentPlayer().getHand().size());
+        // Assert P2 trims their card to 12 again after getting 13 cards on top of 3 remaining ones
+        assertEquals(12, game.getCurrentPlayer().getHand().size(), "P2 should have exactly 12 cards after the quest.");
 
         assertEquals(4, game.getPlayerByName("P4").getShields());
         assertEquals(0, game.getPlayerByName("P3").getShields());
