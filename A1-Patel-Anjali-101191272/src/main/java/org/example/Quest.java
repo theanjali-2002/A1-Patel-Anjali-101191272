@@ -327,6 +327,9 @@ public class Quest {
             return;
         }
 
+        boolean hasGameWinner = false;
+        List<String> gameWinners = new ArrayList<>();
+
         // Iterate over remaining participants and award them shields
         System.out.println("*********************************************");
         for (String participant : participants) {
@@ -338,37 +341,41 @@ public class Quest {
                 // Add the winner to the Quest's winners list
                 winners.add(participant);
 
-                // Optionally, check if this player has won the game (>= 7 shields)
+                // Check if this player has won the game (>= 7 shields)
                 if (winner.getShields() >= 7) {
-                    System.out.println(participant + " has accumulated 7 or more shields and is one of the game's winners!");
-                    if (winner.getShields() >= 7) {
-                        System.out.println("╔═════════════════════════════════════════════════════════════╗");
-                        System.out.println("║                                                             ║");
-                        System.out.println("║      CONGRATULATIONS, CHAMPION!                             ║");
-                        System.out.println("║                                                             ║");
-                        System.out.println("╠═════════════════════════════════════════════════════════════╣");
-                        System.out.println("║                                                             ║");
-                        System.out.printf("║   %s has reached a legendary milestone!                     ║\n", participant);
-                        System.out.println("║                                                             ║");
-                        System.out.println("║   With 7 or more shields, " + participant + " is crowned                     ║");
-                        System.out.println("║   a WINNER in this epic quest!                              ║");
-                        System.out.println("║                                                             ║");
-                        System.out.println("╚═════════════════════════════════════════════════════════════╝");
-                    }
-
-                    // End the game
-                    System.out.println("Game Over. Thank you for playing!");
-                    return;
-
+                    gameWinners.add(participant); // Collect participant's name if they are a game winner
                 }
             } else {
                 System.out.println("Error: Participant " + participant + " could not be found in the game.");
             }
         }
+
+
+
         System.out.println("*********************************************");
         // Print all winners of the quest
         System.out.println("Quest Winners: " + winners);
         System.out.println("*********************************************");
+
+        if (!gameWinners.isEmpty()) {
+            // Print a single message for all game winners
+            System.out.println("╔═════════════════════════════════════════════════════════════╗");
+            System.out.println("║                                                             ║");
+            System.out.println("║      CONGRATULATIONS, CHAMPION(s)!                          ║");
+            System.out.println("║                                                             ║");
+            System.out.println("╠═════════════════════════════════════════════════════════════╣");
+            System.out.println("║                                                             ║");
+            System.out.printf("   ~~ %s have reached a legendary milestone! ~~                    \n", String.join(", ", gameWinners));
+            System.out.println("║                                                             ║");
+            System.out.println("║   With 7 or more shields, these champions are crowned       ║");
+            System.out.println("║   WINNERS in this epic quest!                               ║");
+            System.out.println("║                                                             ║");
+            System.out.println("╚═════════════════════════════════════════════════════════════╝");
+
+            // End the game since winners have been found
+            System.out.println("Game Over. Thank you for playing!");
+            return;
+        }
 
         // Check if the game has a winner
         boolean gameWon = winners.stream()
