@@ -74,18 +74,42 @@ Feature: Quest Game
 
 
 
-#  Scenario: 2winner_game_2winner_quest
-#    Given the game is initialized with 4 players and decks are set up
-#    And hands for P1, P2, P3, and P4 are rigged with specified cards
-#    And event and Adventure decks are rigged
-#
-#    When P1 draws the rigged Quest Q4 card and decides to sponsor with input "e\ny\n"
-#    And P1 sets up the stages of quest with input ""
-#    And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
-#    And all players play stage 1 and win with attacks ""
-#    And all players play stage 2 and win with attacks ""
-#    And all players play stage 3 and win with attacks ""
-#    And all players play stage 4 and win with attacks ""
-#
-#    Then the final game state should verify
-#    And
+  Scenario: 1winner_game_with_events
+    Given the game is initialized with 4 players and decks are set up
+    And hands for all players are rigged with specified cards
+    And multiple event cards and Adventure decks are rigged
+
+    When player draws the rigged event card with input "e"
+
+    Then player "P1" becomes the sponsor with input "y\n"
+    And sponsor sets up the 4 stages of quest with input "1\nq\n1\n8\nq\n1\nq\n1\n1\nq\n"
+    And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
+
+    And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
+    And all players make attacks for Stage 1 with "9\nq\n10\nq\n7\nq\n"
+    And resolve stage 1 to check each player is left with "11,11,11" cards on their hand
+
+    And stage 2 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n"
+    And all players make attacks for Stage 2 with "7\nq\n4\nq\n5\nq\n"
+    And resolve stage 2 to check each player is left with "11,11,11" cards on their hand
+
+    And stage 3 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n"
+    And all players make attacks for Stage 3 with "10\nq\n9\nq\n8\nq\n"
+    And resolve stage 3 to check each player is left with "11,11,11" cards on their hand
+
+    And stage 4 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n"
+    And all players make attacks for Stage 4 with "12\nq\n11\n10\nq\n12\nq\n"
+    And sponsor trims their hand with "11\n12\n11\n11\n"
+    And resolve stage 4 to check each player is left with "11,10,11" cards on their hand
+
+    And the final game state should verify sponsor with trimmed hand with 12 cards
+    And player "P2" has 4 shields with hand ""
+    And player "P3" has 4 shields with hand ""
+    And player "P4" has 4 shields with hand ""
+
+#    # Event Cards Now
+#    And player draws the rigged event card with input "e"
+
+
+
+

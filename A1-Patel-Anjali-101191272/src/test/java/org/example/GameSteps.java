@@ -219,6 +219,7 @@ public class GameSteps {
         simulateInput(inputSequence);
         quest = new Quest();
         questCard = game.drawEventCard();
+        System.out.println("debug quest drawn: " + questCard);
         resetInputStreamAfterStep = true;
     }
 
@@ -345,7 +346,7 @@ public class GameSteps {
                     "The cards in " + playerName + "'s hand do not match the expected hand.");
         }
     }
-    
+
 
     // SCENARIO 2 =================================================================>
     @And("event Q2 and Adventure decks are rigged")
@@ -370,6 +371,66 @@ public class GameSteps {
                 new Card("F30", "F", 30, "Foe"),
                 new Card("S10", "S", 10, "Weapon"),
                 new Card("B15", "B", 15, "Weapon"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("E30", "E", 30, "Weapon"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("L20", "L", 20, "Weapon")
+        ));
+    }
+
+
+    // SCENARIO 3 ===============================================================>
+    @And("multiple event cards and Adventure decks are rigged")
+    public void rigEVENTDeckForGame() {
+        EventDeck eventDeck = game.getEventDeck();
+        List<Card> deck = new ArrayList<>();
+        deck.add(new Card("Q3", "Q", 3, "Quest"));
+        deck.add(new Card("Prosperity", "E", 2, "Event"));
+        deck.add(new Card("Queen's Favor", "E", 2, "Event"));
+        deck.add(new Card("Plague", "E", -2, "Event"));
+        deck.add(new Card("Q4", "Q", 4, "Quest"));
+        Collections.reverse(deck);
+        eventDeck.setDeck(deck);
+
+        AdventureDeck adventureDeck = game.getAdventureDeck();
+        adventureDeck.clearDeck();
+        adventureDeck.setDeck(Arrays.asList(
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                //above are required for playing the given quest Q4
+                new Card("F10", "F", 10, "Foe"),
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                // P1 gets above for Q4
                 new Card("F10", "F", 10, "Foe"),
                 new Card("L20", "L", 20, "Weapon"),
                 new Card("L20", "L", 20, "Weapon"),
