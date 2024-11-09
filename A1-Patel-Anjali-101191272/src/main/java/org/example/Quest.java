@@ -276,7 +276,8 @@ public class Quest {
         if (participants.isEmpty()) {
             System.out.println("No participants left. Quest ends.");
             endQuestWithoutWinners();  // End the quest if no participants remain
-            //game.nextPlayer();
+            Player sponsor = game.getCurrentPlayer();
+            sponsor.trimHandTo12Cards(sponsor);
             return;  // Exit early since there are no participants to process
         }
 

@@ -206,7 +206,7 @@ public class Game {
 
         // Keep asking until the player presses 'e'
         while (true) {
-            String input = getScannerInstance().nextLine();
+            String input = getScannerInstance().nextLine().trim();
 
             if (input.equalsIgnoreCase("e")) {
                 // Player pressed 'e', draw a random event card
