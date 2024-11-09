@@ -341,6 +341,25 @@ public class Quest {
                 // Optionally, check if this player has won the game (>= 7 shields)
                 if (winner.getShields() >= 7) {
                     System.out.println(participant + " has accumulated 7 or more shields and is one of the game's winners!");
+                    if (winner.getShields() >= 7) {
+                        System.out.println("╔═════════════════════════════════════════════════════════════╗");
+                        System.out.println("║                                                             ║");
+                        System.out.println("║      CONGRATULATIONS, CHAMPION!                             ║");
+                        System.out.println("║                                                             ║");
+                        System.out.println("╠═════════════════════════════════════════════════════════════╣");
+                        System.out.println("║                                                             ║");
+                        System.out.printf("║   %s has reached a legendary milestone!                     ║\n", participant);
+                        System.out.println("║                                                             ║");
+                        System.out.println("║   With 7 or more shields, " + participant + " is crowned                     ║");
+                        System.out.println("║   a WINNER in this epic quest!                              ║");
+                        System.out.println("║                                                             ║");
+                        System.out.println("╚═════════════════════════════════════════════════════════════╝");
+                    }
+
+                    // End the game
+                    System.out.println("Game Over. Thank you for playing!");
+                    return;
+
                 }
             } else {
                 System.out.println("Error: Participant " + participant + " could not be found in the game.");

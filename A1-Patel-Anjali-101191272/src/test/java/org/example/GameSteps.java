@@ -31,7 +31,7 @@ public class GameSteps {
 
     private Game game;
     private Quest quest;
-    Card questCard;
+    Card drawnCard;
 
     @Before // Cucumber setup
     public void cucumberSetup() {
@@ -157,7 +157,7 @@ public class GameSteps {
                 new Card("S10", "S", 10, "Weapon"),
                 new Card("S10", "S", 15, "Weapon"),
                 new Card("B15", "B", 15, "Weapon"),
-                new Card("L30", "L", 30, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
                 new Card("E30", "E", 30, "Weapon")
         ));
 
@@ -218,8 +218,8 @@ public class GameSteps {
     public void p1DrawsQCard(String inputSequence) {
         simulateInput(inputSequence);
         quest = new Quest();
-        questCard = game.drawEventCard();
-        System.out.println("debug quest drawn: " + questCard);
+        drawnCard = game.drawEventCard();
+        System.out.println("debug quest drawn: " + drawnCard);
         resetInputStreamAfterStep = true;
     }
 
@@ -244,7 +244,7 @@ public class GameSteps {
         int finalCount = 12 - count;
 
         simulateInput(inputSequence);
-        quest.setupQuest(game, questCard);
+        quest.setupQuest(game, drawnCard);
         assertEquals(game.getCurrentPlayer().getHand().size(), finalCount); //P2 uses 9 cards
         assertEquals(quest.getStages().size(), stageNumber); //total stages set up
     }
@@ -345,6 +345,7 @@ public class GameSteps {
             Assertions.assertEquals(expectedHandCards, actualHandCards,
                     "The cards in " + playerName + "'s hand do not match the expected hand.");
         }
+
     }
 
 
@@ -397,8 +398,8 @@ public class GameSteps {
         EventDeck eventDeck = game.getEventDeck();
         List<Card> deck = new ArrayList<>();
         deck.add(new Card("Q3", "Q", 3, "Quest"));
-        deck.add(new Card("Prosperity", "E", 2, "Event"));
         deck.add(new Card("Queen's Favor", "E", 2, "Event"));
+        deck.add(new Card("Prosperity", "E", 2, "Event"));
         deck.add(new Card("Plague", "E", -2, "Event"));
         deck.add(new Card("Q4", "Q", 4, "Quest"));
         Collections.reverse(deck);
@@ -449,6 +450,86 @@ public class GameSteps {
                 new Card("L20", "L", 20, "Weapon")
         ));
     }
+
+    @And("quest winners found OR no one sponsored the quest returning to next hot seat player {string}")
+    public void nextHotSeat(String input) {
+        simulateInput(input);
+        game.nextHotSeatPlayer();
+        System.out.println("Debug current hot seat: "+ game.getCurrentPlayer().getName());
+    }
+
+
+
+    @And("event card Plague is drawn by player {string} and then returns {string}")
+    public void plagueCardDrawn(String currentPlayer, String returnSign) {
+        simulateInput(returnSign);
+            int initialShields = game.getPlayerByName(currentPlayer).getShields();
+
+            // Apply Plague effect
+            game.handleECardEffects(drawnCard, game.getPlayerByName(currentPlayer));
+
+            // Assert shields decrease by 2
+            assertEquals(initialShields - 2, game.getPlayerByName(currentPlayer).getShields());
+    }
+
+    @And("event card Prosperity is drawn by player {string} and each discards and returns {string}")
+    public void prosperityCardDrawn(String currentPlayer, String input) {
+        simulateInput(input);
+            Map<String, Integer> initialHandSizes = new HashMap<>();
+
+            // Store each player's initial hand size
+            for (Player player : game.getPlayers()) {
+                initialHandSizes.put(player.getName(), player.getHand().size());
+            }
+
+            // Apply Prosperity effect
+            game.handleECardEffects(drawnCard, game.getPlayerByName(currentPlayer));
+
+            // Assert each player's hand increased by up to 2 cards, with a max of 12
+            for (Player player : game.getPlayers()) {
+                int initialHand = initialHandSizes.get(player.getName());
+                int expectedHandSize = Math.min(initialHand + 2, 12);
+                assertEquals(expectedHandSize, player.getHand().size());
+            }
+    }
+
+    @And("event card Queen's Favor is drawn by player {string} and discards and returns {string}")
+    public void queensFavorCardDrawn(String currentPlayer, String input) {
+        simulateInput(input);
+        int currentHand = game.getPlayerByName(currentPlayer).getHand().size();
+
+        // Apply Queen's Favor effect
+        game.handleECardEffects(drawnCard, game.getPlayerByName(currentPlayer));
+
+        // Assert the player’s hand increased by up to 2 cards, with a max of 12
+        int expectedHandSize = Math.min(currentHand + 2, 12);
+        assertEquals(expectedHandSize, game.getPlayerByName(currentPlayer).getHand().size());
+    }
+
+    @And("player {string} declared as game winner")
+    public void playersDeclaredAsWinners(String players) {
+        // Split the string by commas to handle multiple players
+        List<String> winners = Arrays.asList(players.split(","));
+
+        // Loop through each player to assert their winner status
+        for (String playerName : winners) {
+            playerName = playerName.trim();  // Ensure no extra whitespace
+
+            // Retrieve the player and check if they are declared as a winner
+            Player player = game.getPlayerByName(playerName);
+            assertTrue(player.getShields() >= 7, "Player's hand size should be 7 or more");
+
+            // Optional: Print out confirmation for debugging
+            System.out.println(playerName + " is declared as a winner with " + player.getShields() + " shields!");
+        }
+    }
+
+
+
+
+
+
+
 
 
 

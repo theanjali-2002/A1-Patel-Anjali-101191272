@@ -211,6 +211,7 @@ public class Game {
             if (input.equalsIgnoreCase("e")) {
                 // Player pressed 'e', draw a random event card
                 List<Card> deck = eventDeck.getDeck();  // Get the deck list
+                System.out.println("debug event deck: "+ deck);
                 Card drawnCard = null;
 
                 // Find and remove a random event card from the deck
@@ -222,6 +223,7 @@ public class Game {
                     if ("Event".equals(card.getCategory()) ||  "Quest".equals(card.getCategory())) {
                         drawnCard = card;
                         deck.remove(card);
+                        System.out.println("debug discarding drawn card: " + drawnCard.getCardName());
                     }
                 }
 
@@ -245,7 +247,7 @@ public class Game {
             case "Plague":
                 System.out.println("*********************************************");
                 System.out.println("Card Drawn: Plague card.");
-                System.out.println("Current player loses 2 shields.");
+                System.out.println("Current player " + currentPlayer.getName() + " loses 2 shields.");
                 System.out.println("*********************************************");
                 currentPlayer.loseShields(2);
                 break;
