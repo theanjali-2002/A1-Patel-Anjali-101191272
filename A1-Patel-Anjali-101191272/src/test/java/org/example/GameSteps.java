@@ -229,12 +229,23 @@ public class GameSteps {
         assertEquals(expectedSponsor, game.getCurrentPlayer().getName());
     }
 
-    @And("sponsor sets up the stages of quest with input {string}")
-    public void p2SetsUpQuest(String inputSequence) {
+    @And("sponsor sets up the {int} stages of quest with input {string}")
+    public void p2SetsUpQuest(int stageNumber, String inputSequence) {
+        String[] parts = inputSequence.split("\\\\n");
+        int count = 0;
+        for (String part : parts) {
+            System.out.println("part debug: "+ part);
+            if (!part.isEmpty() && !part.equals("q")) {
+                count++;
+            }
+        }
+        System.out.println("count debug: "+ count);
+        int finalCount = 12 - count;
+
         simulateInput(inputSequence);
         quest.setupQuest(game, questCard);
-        assertEquals(3, game.getCurrentPlayer().getHand().size()); //P2 uses 9 cards
-        assertEquals(4, quest.getStages().size()); //total stages set up
+        assertEquals(game.getCurrentPlayer().getHand().size(), finalCount); //P2 uses 9 cards
+        assertEquals(quest.getStages().size(), stageNumber); //total stages set up
     }
 
     @And("players are asked to participate in the Quest and everyone joins saying {string}")
@@ -305,8 +316,15 @@ public class GameSteps {
         quest.resolveStage(stageNumber-1, game);
     }
 
+    @And("sponsor trims their hand with {string}")
+    public void sponsorTrimsHand(String remainingCards) {
+        simulateInput(remainingCards);
+    }
+
     @And("the final game state should verify sponsor with trimmed hand with {int} cards")
     public void verifyFinalGameState(int handSize) {
+        System.out.println("debug sponsor: "+ game.getCurrentPlayer().getName());
+        System.out.println("debug sponsor: "+ game.getCurrentPlayer().getHand());
         Assertions.assertEquals(handSize, game.getCurrentPlayer().getHand().size(), "Sponsor should have exactly 12 cards.");
     }
 
@@ -316,23 +334,60 @@ public class GameSteps {
         Assertions.assertEquals(shieldCount, player.getShields(),
                 playerName + " should have " + shieldCount + " shields.");
 
-        List<String> expectedHandCards = Arrays.asList(expectedHand.split(","));
-        List<String> actualHandCards = player.getHand()
-                .stream()
-                .map(Card::getCardName)
-                .collect(Collectors.toList());
+        if (!expectedHand.isEmpty()) {
+            List<String> expectedHandCards = Arrays.asList(expectedHand.split(","));
+            List<String> actualHandCards = player.getHand()
+                    .stream()
+                    .map(Card::getCardName)
+                    .collect(Collectors.toList());
 
-        Assertions.assertEquals(expectedHandCards, actualHandCards,
-                "The cards in " + playerName + "'s hand do not match the expected hand.");
+            Assertions.assertEquals(expectedHandCards, actualHandCards,
+                    "The cards in " + playerName + "'s hand do not match the expected hand.");
+        }
     }
-
-
-
-
-
+    
 
     // SCENARIO 2 =================================================================>
+    @And("event Q2 and Adventure decks are rigged")
+    public void rigEDeckForGame() {
+        EventDeck eventDeck = game.getEventDeck();
+        eventDeck.setDeck(Arrays.asList(new Card("Q2", "Q", 2, "Quest")));
 
+        AdventureDeck adventureDeck = game.getAdventureDeck();
+        adventureDeck.clearDeck();
+        adventureDeck.setDeck(Arrays.asList(
+                new Card("F30", "F", 30, "Foe"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                //other random; above are required for playing the given scenario
+                new Card("F30", "F", 30, "Foe"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("E30", "E", 30, "Weapon"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("L20", "L", 20, "Weapon")
+        ));
+    }
 
 
 

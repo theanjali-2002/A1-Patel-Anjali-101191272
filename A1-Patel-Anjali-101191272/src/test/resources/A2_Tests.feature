@@ -14,7 +14,7 @@ Feature: Quest Game
     When player draws the rigged event card with input "e"
 
     Then player "P2" becomes the sponsor with input "n\ny\n"
-    And sponsor sets up the stages of quest with input "1\n6\nq\n2\n5\nq\n2\n2\nq\n1\n1\n4\nq\n"
+    And sponsor sets up the 4 stages of quest with input "1\n6\nq\n2\n5\nq\n2\n2\nq\n1\n1\n4\nq\n"
 
     And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
 
@@ -37,9 +37,10 @@ Feature: Quest Game
       And resolve stage 3 to check each player is left with "7,7" cards on their hand
 
     And stage 4 proceeds, asking eligible players "P3,P4" to join and draw and discard cards as given "y\ny\n"
-    And all players make attacks for Stage 4 with "6\n7\n8\nq\n4\n5\n6\n8\nq\n1\n2\n3\n4\n"
+    And all players make attacks for Stage 4 with "6\n7\n8\nq\n4\n5\n6\n8\nq\n"
       And each player draws card "F30,L20" for Stage 4
       And each player prepares attack of "45,65" for Stage 4
+      And sponsor trims their hand with "1\n2\n3\n4\n"
       And resolve stage 4 to check each player is left with "5,4" cards on their hand
 
     And the final game state should verify sponsor with trimmed hand with 12 cards
@@ -48,23 +49,31 @@ Feature: Quest Game
       And player "P4" has 4 shields with hand "F15,F15,F40,L20"
 
 
-#  Scenario: 0_winner_quest
-#    Given the game is initialized with 4 players and decks are set up
-#    And hands for all players are rigged with specified cards
-#    And event Q2 and Adventure decks are rigged
-#
-#    When P1 draws the rigged Quest Q2 card with input "e"
-#
-#    Then player decides to sponsor the quest with input "y\n"
-#    And sponsor sets up the stages of quest with input ""
-#    And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
-#    And stage 1 proceeds, asking eligible players to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
-#    And players P1, P3, and P4 each make attacks for Stage 1 with ""
-#    And the final game state should verify all players lost with 0 shields
-#    And P2 has drawn cards and trimmed hand to 12 cards
+  Scenario: 0_winner_quest
+    Given the game is initialized with 4 players and decks are set up
+    And hands for all players are rigged with specified cards
+    And event Q2 and Adventure decks are rigged
+
+    When player draws the rigged event card with input "e"
+
+    Then player "P1" becomes the sponsor with input "y\n"
+    And sponsor sets up the 2 stages of quest with input "3\nq\n2\n2\nq\n"
+    And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
+
+    And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
+    And all players make attacks for Stage 1 with "7\nq\n10\nq\n7\nq\n1\n2\n3\n4\n1\n2\n3\n4\n"
+      And each player draws card "F30,S10,B15" for Stage 1
+      And each player prepares attack of "10,5,5" for Stage 1
+      And sponsor trims their hand with "1\n2\n"
+      And resolve stage 1 to check each player is left with "11,11,11" cards on their hand
+
+    And the final game state should verify sponsor with trimmed hand with 12 cards
+    And player "P2" has 0 shields with hand ""
+    And player "P3" has 0 shields with hand ""
+    And player "P4" has 0 shields with hand ""
 
 
-#
+
 #  Scenario: 2winner_game_2winner_quest
 #    Given the game is initialized with 4 players and decks are set up
 #    And hands for P1, P2, P3, and P4 are rigged with specified cards

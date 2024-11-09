@@ -274,10 +274,8 @@ public class Quest {
 
         // First check if there are participants
         if (participants.isEmpty()) {
-            System.out.println("No participants left. Quest ends.");
+            System.out.println("No participants left. Quest ends!!!");
             endQuestWithoutWinners();  // End the quest if no participants remain
-            Player sponsor = game.getCurrentPlayer();
-            sponsor.trimHandTo12Cards(sponsor);
             return;  // Exit early since there are no participants to process
         }
 
@@ -296,7 +294,17 @@ public class Quest {
         if (participants.isEmpty()) {
             System.out.println("No participants left. Quest ends.");
             endQuestWithoutWinners();  // End the quest if no participants remain after attack resolution
-            //game.nextPlayer();
+            Player sponsor = game.getCurrentPlayer();
+
+            // Sponsor draws the same number of adventure cards + additional cards for each stage
+            int stagesCount = stages.size();
+            int questCards = cardsUsedBySponsor.size();
+            int totalCardsToDraw = questCards + stagesCount;
+            List<Card> drawnCards = game.getAdventureDeck().drawACards(totalCardsToDraw);
+            sponsor.receiveCards(drawnCards);
+            System.out.println("Calling Sponsor ... Loading ... ...");
+            System.out.println("*********************************************");
+            sponsor.trimHandTo12Cards(sponsor);
         } else if (stageIndex + 1 < stages.size()) {
             //prepareForStage(stageIndex + 1, game, quest);  // Move to the next stage if there are more stages
             System.out.println("\n");
