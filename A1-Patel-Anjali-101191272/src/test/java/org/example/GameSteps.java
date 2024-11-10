@@ -414,13 +414,51 @@ public class GameSteps {
     }
 
 
-    @And("stage {int} proceeds, asking eligible players {string} to join and draw and discard cards as given {string}")
-    public void stage1Proceeds(int stageNumber, String eligiblePlayers, String inputSequence) {
-        simulateInput(inputSequence);
-        quest.prepareForQuest(game, stageNumber-1);
-        List<String> playerList = Arrays.asList(eligiblePlayers.split(","));
-        assertEquals(playerList, quest.getParticipants());
+    @And("stage {int} proceeds with eligible players {string} where {string} declines, each discarding {string}")
+    public void stageProceeds(int stageNumber, String eligiblePlayers, String decliningPlayers, String discardCards) {
+        List<String> eligiblePlayerList = Arrays.asList(eligiblePlayers.split(","));
+        List<String> decliningPlayerList = decliningPlayers.isEmpty() ? new ArrayList<>() : Arrays.asList(decliningPlayers.split(","));
+        List<String> cardsToDiscard = discardCards.isEmpty() ? new ArrayList<>() : Arrays.asList(discardCards.split(","));
+
+        StringBuilder inputSequence = new StringBuilder();
+
+        // Simulate joining input for eligible players and declining input for others
+        for (String playerName : eligiblePlayerList) {
+            if (eligiblePlayerList.contains(playerName)) {
+                inputSequence.append("y\n");
+            } else if (decliningPlayerList.contains(playerName)) {
+                inputSequence.append("n\n");
+            }
+        }
+
+        // If there are cards to discard, find the index for each eligible player's discard card
+        if (!cardsToDiscard.isEmpty()) {
+            for (int i = 0; i < eligiblePlayerList.size(); i++) {
+                String playerName = eligiblePlayerList.get(i);
+                String cardName = cardsToDiscard.get(i);
+                Player player = game.getPlayerByName(playerName);
+
+                // Find the card in the player's hand and get its index
+                int cardIndex = -1;
+                for (int j = 0; j < player.getHand().size(); j++) {
+                    if (player.getHand().get(j).getCardName().equals(cardName)) {
+                        cardIndex = j + 1; // Convert to 1-based index
+                        break;
+                    }
+                }
+
+                if (cardIndex != -1) {
+                    inputSequence.append(cardIndex).append("\n");
+                }
+            }
+        }
+
+        simulateInput(inputSequence.toString());
+        quest.prepareForQuest(game, stageNumber - 1);
+        assertEquals(eligiblePlayerList, quest.getParticipants());
     }
+
+
 
     @And("all players make attacks for Stage {int} with {string}")
     public void playersMakeAttacksStage1(int stageNumber, String inputSequence) {
