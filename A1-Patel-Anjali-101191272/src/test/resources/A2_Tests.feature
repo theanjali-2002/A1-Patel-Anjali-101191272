@@ -13,7 +13,7 @@ Feature: Quest Game
 
     When player draws the rigged event card
 
-    Then player "P2" becomes the sponsor with input "n\ny\n"
+    Then player "P2" becomes the sponsor
     And sponsor sets up the 4 stages of quest with input "1\n6\nq\n2\n5\nq\n2\n2\nq\n1\n1\n4\nq\n"
 
     And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
@@ -58,7 +58,7 @@ Feature: Quest Game
 
     When player draws the rigged event card
 
-    Then player "P1" becomes the sponsor with input "y\n"
+    Then player "P1" becomes the sponsor
     And sponsor sets up the 4 stages of quest with input "1\n9\nq\n2\nq\n1\n6\nq\n2\n1\nq\n"
     And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
@@ -82,7 +82,7 @@ Feature: Quest Game
       And quest winners found OR no one sponsored the quest returning to next hot seat player "r\n"
 
     And player draws the rigged event card
-    And player "P3" becomes the sponsor with input "n\ny\n"
+    And player "P3" becomes the sponsor
     And sponsor sets up the 3 stages of quest with input "1\nq\n1\n3\nq\n1\n2\nq\n"
     And players are asked to participate in the Quest and everyone joins saying "n\ny\ny\n"
     And stage 1 proceeds, asking eligible players "P2,P4" to join and draw and discard cards as given "y\ny\n1\n1\n"
@@ -110,7 +110,7 @@ Feature: Quest Game
 
     When player draws the rigged event card
 
-    Then player "P1" becomes the sponsor with input "y\n"
+    Then player "P1" becomes the sponsor
     And sponsor sets up the 4 stages of quest with input "1\nq\n1\n8\nq\n1\nq\n1\n1\nq\n"
     And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
@@ -143,7 +143,7 @@ Feature: Quest Game
 
     # Back to Quest Card Q3 in this test scenario
     And player draws the rigged event card
-    And player "P1" becomes the sponsor with input "y\n"
+    And player "P1" becomes the sponsor
     And sponsor sets up the 3 stages of quest with input "2\nq\n1\n1\nq\n2\nq\n"
     And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
@@ -172,7 +172,7 @@ Feature: Quest Game
 
     When player draws the rigged event card
 
-    Then player "P1" becomes the sponsor with input "y\n"
+    Then player "P1" becomes the sponsor
     And sponsor sets up the 2 stages of quest with input "3\nq\n2\n2\nq\n"
     And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
 

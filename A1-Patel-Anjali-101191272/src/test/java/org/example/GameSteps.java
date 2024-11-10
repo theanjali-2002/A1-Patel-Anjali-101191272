@@ -224,12 +224,38 @@ public class GameSteps {
         resetInputStreamAfterStep = true;
     }
 
-    @Then("player {string} becomes the sponsor with input {string}")
-    public void playerBecomesSponsor(String expectedSponsor, String inputSequence) {
-        simulateInput(inputSequence);
+    @Then("player {string} becomes the sponsor")
+    public void playerBecomesSponsor(String expectedSponsor) {
+        List<Player> players = game.getPlayers();
+        int startingIndex = -1;
+
+        // Find the index of the starting player
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getName().equals(game.getCurrentPlayer().getName())) {
+                startingIndex = i;
+                break;
+            }
+        }
+
+        StringBuilder inputSequence = new StringBuilder();
+        int playerCount = players.size();
+
+        // Loop through players starting from the current player and wrapping around
+        for (int i = 0; i < playerCount; i++) {
+            Player player = players.get((startingIndex + i) % playerCount);
+            if (player.getName().equals(expectedSponsor)) {
+                inputSequence.append("y\n"); // Sponsor agrees
+                break;
+            } else {
+                inputSequence.append("n\n"); // Other players decline
+            }
+        }
+
+        simulateInput(inputSequence.toString());
         game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
         assertEquals(expectedSponsor, game.getCurrentPlayer().getName());
     }
+
 
     @And("sponsor sets up the {int} stages of quest with input {string}")
     public void p2SetsUpQuest(int stageNumber, String inputSequence) {
