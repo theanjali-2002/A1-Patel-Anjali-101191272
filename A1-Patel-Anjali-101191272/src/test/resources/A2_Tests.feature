@@ -16,7 +16,7 @@ Feature: Quest Game
     Then player "P2" becomes the sponsor
     And sponsor sets up the 4 stages of quest with input "1\n6\nq\n2\n5\nq\n2\n2\nq\n1\n1\n4\nq\n"
 
-    And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
+    And players are asked to participate in the Quest and declines are from ""
 
     And stage 1 proceeds, asking eligible players "P1,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
     And all players make attacks for Stage 1 with "5\n10\nq\n4\n10\nq\n6\n7\nq\n"
@@ -60,7 +60,7 @@ Feature: Quest Game
 
     Then player "P1" becomes the sponsor
     And sponsor sets up the 4 stages of quest with input "1\n9\nq\n2\nq\n1\n6\nq\n2\n1\nq\n"
-    And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
+    And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
       And all players make attacks for Stage 1 with "6\nq\n10\nq\n6\nq\n"
       And resolve stage 1 to check each player is left with "11,11,11" cards on their hand
@@ -84,7 +84,7 @@ Feature: Quest Game
     And player draws the rigged event card
     And player "P3" becomes the sponsor
     And sponsor sets up the 3 stages of quest with input "1\nq\n1\n3\nq\n1\n2\nq\n"
-    And players are asked to participate in the Quest and everyone joins saying "n\ny\ny\n"
+    And players are asked to participate in the Quest and declines are from "P1"
     And stage 1 proceeds, asking eligible players "P2,P4" to join and draw and discard cards as given "y\ny\n1\n1\n"
       And all players make attacks for Stage 1 with "10\nq\n8\nq\n"
       And resolve stage 1 to check each player is left with "11,11" cards on their hand
@@ -112,7 +112,7 @@ Feature: Quest Game
 
     Then player "P1" becomes the sponsor
     And sponsor sets up the 4 stages of quest with input "1\nq\n1\n8\nq\n1\nq\n1\n1\nq\n"
-    And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
+    And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
       And all players make attacks for Stage 1 with "9\nq\n10\nq\n7\nq\n"
       And resolve stage 1 to check each player is left with "11,11,11" cards on their hand
@@ -145,7 +145,7 @@ Feature: Quest Game
     And player draws the rigged event card
     And player "P1" becomes the sponsor
     And sponsor sets up the 3 stages of quest with input "2\nq\n1\n1\nq\n2\nq\n"
-    And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
+    And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
       And all players make attacks for Stage 1 with "9\nq\n10\nq\n4\nq\n"
       And resolve stage 1 to check each player is left with "11,11,11" cards on their hand
@@ -174,7 +174,7 @@ Feature: Quest Game
 
     Then player "P1" becomes the sponsor
     And sponsor sets up the 2 stages of quest with input "3\nq\n2\n2\nq\n"
-    And players are asked to participate in the Quest and everyone joins saying "y\ny\ny\n"
+    And players are asked to participate in the Quest and declines are from ""
 
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
     And all players make attacks for Stage 1 with "7\nq\n10\nq\n7\nq\n"

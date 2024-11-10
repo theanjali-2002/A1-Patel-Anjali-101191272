@@ -277,11 +277,30 @@ public class GameSteps {
         assertEquals(quest.getStages().size(), stageNumber); //total stages set up
     }
 
-    @And("players are asked to participate in the Quest and everyone joins saying {string}")
-    public void playersJoinQuest(String inputSequence) {
-        simulateInput(inputSequence);
-        quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
+    @And("players are asked to participate in the Quest and declines are from {string}")
+    public void playersJoinQuest(String decliningPlayers) {
+        List<String> decliners = decliningPlayers.isEmpty() ? new ArrayList<>() : Arrays.asList(decliningPlayers.split(","));
+        StringBuilder inputSequence = new StringBuilder();
+
+        Player currentPlayer = game.getCurrentPlayer();
+
+        for (Player player : game.getPlayers()) {
+            // Skip the current player (sponsor)
+            if (player.equals(currentPlayer)) {
+                continue;
+            }
+
+            if (decliners.contains(player.getName())) {
+                inputSequence.append("n\n"); // Player declines
+            } else {
+                inputSequence.append("y\n"); // Player joins
+            }
+        }
+
+        simulateInput(inputSequence.toString());
+        quest.promptParticipants(game.getPlayers(), currentPlayer);
     }
+
 
     @And("stage {int} proceeds, asking eligible players {string} to join and draw and discard cards as given {string}")
     public void stage1Proceeds(int stageNumber, String eligiblePlayers, String inputSequence) {
