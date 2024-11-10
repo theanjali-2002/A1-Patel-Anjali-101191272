@@ -1,5 +1,6 @@
 package org.example;
 
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.AfterStep;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -464,8 +465,54 @@ public class GameSteps {
     public void playersMakeAttacksStage1(int stageNumber, String inputSequence) {
         simulateInput(inputSequence);
         quest.prepareForStage(stageNumber-1, game, quest);
-        Game.clearConsole(); //here
+        Game.clearConsole();
     }
+
+
+    @And("all players make attacks for Stage {int} as given:")
+    public void playersMakeAttacksForStage(int stageNumber, DataTable dataTable) {
+        StringBuilder inputSequence = new StringBuilder();
+
+        // Convert DataTable to a list of maps where each row represents a player and their cards
+        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
+
+        for (Map<String, String> row : rows) {
+            String playerName = row.get("Player").trim();
+            String cardList = row.get("Cards").trim();
+
+            List<String> cardNames = cardList.equalsIgnoreCase("none") ? new ArrayList<>() : Arrays.asList(cardList.split(","));
+            Player player = game.getPlayerByName(playerName);
+
+            // Find the index of each card in the player's hand and add to input sequence
+            for (String cardName : cardNames) {
+                int cardIndex = -1;
+                for (int i = 0; i < player.getHand().size(); i++) {
+                    if (player.getHand().get(i).getCardName().equals(cardName.trim())) {
+                        cardIndex = i + 1; // Convert to 1-based index
+                        break;
+                    }
+                }
+                if (cardIndex != -1) {
+                    inputSequence.append(cardIndex).append("\n");
+                }
+            }
+
+            // Append "q\n" after each player's attack sequence
+            inputSequence.append("q\n");
+        }
+
+        simulateInput(inputSequence.toString());
+        quest.prepareForStage(stageNumber-1, game, quest);
+        Game.clearConsole();
+    }
+
+
+
+
+
+
+
+
 
     @And("each player draws card {string} for Stage {int}")
     public void eachPlayerDrawsCard(String cardNames, int stage) {
@@ -688,8 +735,9 @@ public class GameSteps {
         System.out.println("Debug current hot seat: "+ game.getCurrentPlayer().getName());
     }
 
-    @And("event card Plague is drawn by player {string} and then returns {string}")
-    public void plagueCardDrawn(String currentPlayer, String returnSign) {
+    @And("event card Plague is drawn by player {string}")
+    public void plagueCardDrawn(String currentPlayer) {
+        String returnSign = "r\n";
         simulateInput(returnSign);
             int initialShields = game.getPlayerByName(currentPlayer).getShields();
 
@@ -700,39 +748,113 @@ public class GameSteps {
             assertEquals(initialShields - 2, game.getPlayerByName(currentPlayer).getShields());
     }
 
-    @And("event card Prosperity is drawn by player {string} and each discards and returns {string}")
-    public void prosperityCardDrawn(String currentPlayer, String input) {
-        simulateInput(input);
-            Map<String, Integer> initialHandSizes = new HashMap<>();
+    @And("event card Prosperity is drawn by player {string} and each player discards:")
+    public void prosperityCardDrawn(String currentPlayer, DataTable dataTable) {
+        StringBuilder inputSequence = new StringBuilder();
+        Map<String, Integer> initialHandSizes = new HashMap<>();
 
-            // Store each player's initial hand size
-            for (Player player : game.getPlayers()) {
-                initialHandSizes.put(player.getName(), player.getHand().size());
+        // Store each player's initial hand size
+        for (Player player : game.getPlayers()) {
+            initialHandSizes.put(player.getName(), player.getHand().size());
+        }
+
+        // Parse the DataTable and process discards for each player
+        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
+        for (Map<String, String> row : rows) {
+            String playerName = row.get("Player").trim();
+            String cardList = row.get("Cards").trim();
+
+            List<String> cardNames = cardList.equalsIgnoreCase("none") ? new ArrayList<>() : Arrays.asList(cardList.split(","));
+            Player player = game.getPlayerByName(playerName);
+
+            // For each card, find the index in the player's hand and add to input sequence
+            for (String cardName : cardNames) {
+                int cardIndex = -1;
+                for (int i = 0; i < player.getHand().size(); i++) {
+                    if (player.getHand().get(i).getCardName().equals(cardName.trim())) {
+                        cardIndex = i + 1; // Convert to 1-based index
+                        break;
+                    }
+                }
+                if (cardIndex != -1) {
+                    inputSequence.append(cardIndex).append("\n");
+                }
             }
+        }
 
-            // Apply Prosperity effect
-            game.handleECardEffects(drawnCard, game.getPlayerByName(currentPlayer));
+        // Append "r\n" for hot seat player
+        inputSequence.append("r\n");
+        // Simulate the generated input sequence for discarding and returning
+        System.out.println("debug prosper input: "+ inputSequence.toString());
+        simulateInput(inputSequence.toString());
 
-            // Assert each player's hand increased by up to 2 cards, with a max of 12
-            for (Player player : game.getPlayers()) {
-                int initialHand = initialHandSizes.get(player.getName());
-                int expectedHandSize = Math.min(initialHand + 2, 12);
-                assertEquals(expectedHandSize, player.getHand().size());
-            }
-    }
-
-    @And("event card Queen's Favor is drawn by player {string} and discards and returns {string}")
-    public void queensFavorCardDrawn(String currentPlayer, String input) {
-        simulateInput(input);
-        int currentHand = game.getPlayerByName(currentPlayer).getHand().size();
-
-        // Apply Queen's Favor effect
+        // Apply Prosperity effect
         game.handleECardEffects(drawnCard, game.getPlayerByName(currentPlayer));
 
-        // Assert the player’s hand increased by up to 2 cards, with a max of 12
-        int expectedHandSize = Math.min(currentHand + 2, 12);
-        assertEquals(expectedHandSize, game.getPlayerByName(currentPlayer).getHand().size());
+        // Assert each player's hand size increased by up to 2 cards, capped at 12
+        for (Player player : game.getPlayers()) {
+            int initialHand = initialHandSizes.get(player.getName());
+            int expectedHandSize = Math.min(initialHand + 2, 12);
+            assertEquals(expectedHandSize, player.getHand().size());
+        }
     }
+
+
+
+
+
+
+
+
+
+
+    @And("event card Queen's Favor is drawn by player {string} who discards {string}")
+    public void queensFavorCardDrawn(String currentPlayer, String cardsToDiscard) {
+        List<String> cards = cardsToDiscard.isEmpty() ? new ArrayList<>() : Arrays.asList(cardsToDiscard.split(","));
+        StringBuilder inputSequence = new StringBuilder();
+
+        Player player = game.getPlayerByName(currentPlayer);
+        List<Card> hand = new ArrayList<>(player.getHand());  // Create a mutable copy of the player's hand
+        List<Card> aDeck = new ArrayList<>(adventureDeck.getCards().subList(0, 2));
+        hand.addAll(aDeck.subList(0, 2));
+        hand = getSortedHand(hand);
+
+        // Step 1: Find and simulate discards for specified cards, if any
+        if (!cards.isEmpty()) {
+            for (String cardName : cards) {
+                int indexToDiscard = -1;
+
+                // Find the index of the current card in the hand
+                for (int i = 0; i < hand.size(); i++) {
+                    if (hand.get(i).getCardName().equals(cardName)) {
+                        indexToDiscard = i;
+                        break;
+                    }
+                }
+
+                // If card is found, add its index to the input sequence and simulate removal
+                if (indexToDiscard != -1) {
+                    inputSequence.append(indexToDiscard + 1).append("\n");  // Convert to 1-based index
+                    hand.remove(indexToDiscard);  // Remove the card to adjust future indices
+                }
+            }
+        }
+
+        inputSequence.append("r\n");
+        // Step 2: Simulate the input sequence for discarding, if any
+        if (!inputSequence.isEmpty()) {
+            simulateInput(inputSequence.toString());
+        }
+
+        // Step 3: Apply Queen's Favor effect (draw up to 2 cards with a maximum hand size of 12)
+        int currentHandSize = player.getHand().size();
+        game.handleECardEffects(drawnCard, player);
+
+        // Step 4: Assert the player's hand size increased correctly
+        int expectedHandSize = Math.min(currentHandSize + 2, 12);
+        assertEquals(expectedHandSize, player.getHand().size());
+    }
+
 
     @And("player {string} declared as game winner")
     public void playersDeclaredAsWinners(String players) {

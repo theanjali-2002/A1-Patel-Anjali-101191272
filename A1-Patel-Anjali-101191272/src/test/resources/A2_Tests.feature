@@ -15,29 +15,51 @@ Feature: Quest Game
 
     Then player "P2" becomes the sponsor
     And sponsor sets up the 4 stages of quest with input "1\n6\nq\n2\n5\nq\n2\n2\nq\n1\n1\n4\nq\n"
-
     And players are asked to participate in the Quest and declines are from ""
 
     And stage 1 proceeds with eligible players "P1,P3,P4" where "" declines, each discarding "F5,F5,F5"
-    And all players make attacks for Stage 1 with "5\n10\nq\n4\n10\nq\n6\n7\nq\n"
-      And each player draws card "F30,S10,B15" for Stage 1
+    #And all players make attacks for Stage 1 with "5\n10\nq\n4\n10\nq\n6\n7\nq\n"
+    And all players make attacks for Stage 1 as given:
+      | Player | Cards    |
+      | P1     | D5, S10  |
+      | P3     | S10, D5  |
+      | P4     | D5, H10  |
+
+
+    And each player draws card "F30,S10,B15" for Stage 1
       And each player prepares attack of "15,15,15" for Stage 1
       And resolve stage 1 to check each player is left with "10,10,10" cards
 
     And stage 2 proceeds with eligible players "P1,P3,P4" where "" declines, each discarding ""
-    And all players make attacks for Stage 2 with "6\n7\nq\n4\n9\nq\n5\n7\nq\n"
-      And each player draws card "F10,L20,L20" for Stage 2
+    #And all players make attacks for Stage 2 with "6\n7\nq\n4\n9\nq\n5\n7\nq\n"
+    And all players make attacks for Stage 2 as given:
+      | Player | Cards    |
+      | P1     | H10, S10 |
+      | P3     | B15, S10 |
+      | P4     | H10, B15 |
+
+    And each player draws card "F10,L20,L20" for Stage 2
       And each player prepares attack of "20,25,25" for Stage 2
       And resolve stage 2 to check each player is left with "9,9,9" cards
 
     And stage 3 proceeds with eligible players "P3,P4" where "" declines, each discarding ""
-    And all players make attacks for Stage 3 with "5\n6\n9\nq\n4\n7\n8\nq\n"
+    #And all players make attacks for Stage 3 with "5\n6\n9\nq\n4\n7\n8\nq\n"
+    And all players make attacks for Stage 3 as given:
+      | Player | Cards         |
+      | P3     | L20, H10, S10 |
+      | P4     | B15, S10, L20 |
+
       And each player draws card "B15,S10" for Stage 3
       And each player prepares attack of "40,45" for Stage 3
       And resolve stage 3 to check each player is left with "7,7" cards
 
     And stage 4 proceeds with eligible players "P3,P4" where "" declines, each discarding ""
-    And all players make attacks for Stage 4 with "6\n7\n8\nq\n4\n5\n6\n8\nq\n"
+    #And all players make attacks for Stage 4 with "6\n7\n8\nq\n4\n5\n6\n8\nq\n"
+    And all players make attacks for Stage 4 as given:
+      | Player | Cards             |
+      | P3     | B15, H10, L20     |
+      | P4     | D5, S10, L20, E30 |
+
       And each player draws card "F30,L20" for Stage 4
       And each player prepares attack of "45,65" for Stage 4
       And for stage 4 sponsor trims their hand by discarding "F10,S10,L20,S10"
@@ -135,11 +157,17 @@ Feature: Quest Game
 
     # Event Cards Now
     And player draws the rigged event card
-      And event card Plague is drawn by player "P2" and then returns "r\n"
+      And event card Plague is drawn by player "P2"
     And player draws the rigged event card
-      And event card Prosperity is drawn by player "P3" and each discards and returns "14\n1\n1\n1\nr\n"
+    And event card Prosperity is drawn by player "P3" and each player discards:
+      | Player | Cards        |
+      | P1     | F5, L20      |
+      | P2     | F10          |
+      | P3     | none         |
+      | P4     | F15          |
+
     And player draws the rigged event card
-      And event card Queen's Favor is drawn by player "P4" and discards and returns "1\n2\nr\n"
+      And event card Queen's Favor is drawn by player "P4" who discards "F10,F40"
 
     # Back to Quest Card Q3 in this test scenario
     And player draws the rigged event card
