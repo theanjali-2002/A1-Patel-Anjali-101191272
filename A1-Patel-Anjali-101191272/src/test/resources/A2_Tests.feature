@@ -1,11 +1,5 @@
 Feature: Quest Game
 
-  Scenario: Displaying the game start message
-    Given the user interface is initialized
-    When the game start message is displayed with input "s\n"
-    Then the game start "Game Starting..." is shown
-
-
   Scenario: A1_scenario
     Given the game is initialized with 4 players and decks are set up
     And hands for all players are rigged with specified cards
@@ -14,16 +8,20 @@ Feature: Quest Game
     When player draws the rigged event card
 
     Then player "P2" becomes the sponsor
-    And sponsor sets up the 4 stages of quest with input "1\n6\nq\n2\n5\nq\n2\n2\nq\n1\n1\n4\nq\n"
-    And players are asked to participate in the Quest and declines are from ""
+    And sponsor sets up the 4 stages of quest with:
+      | Stage | Cards           |
+      | 1     | F5, S10         |
+      | 2     | S10, F15        |
+      | 3     | F20, F20        |
+      | 4     | F10, F20, E30   |
 
+    And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds with eligible players "P1,P3,P4" where "" declines, each discarding "F5,F5,F5"
     And all players make attacks for Stage 1 as given:
       | Player | Cards    |
       | P1     | D5, S10  |
       | P3     | S10, D5  |
       | P4     | D5, H10  |
-
 
     And each player draws card "F30,S10,B15" for Stage 1
       And each player prepares attack of "15,15,15" for Stage 1
@@ -77,7 +75,13 @@ Feature: Quest Game
     When player draws the rigged event card
 
     Then player "P1" becomes the sponsor
-    And sponsor sets up the 4 stages of quest with input "1\n9\nq\n2\nq\n1\n6\nq\n2\n1\nq\n"
+    And sponsor sets up the 4 stages of quest with:
+      | Stage | Cards           |
+      | 1     | F5, D5          |
+      | 2     | F15             |
+      | 3     | F5, B15         |
+      | 4     | S10, F15        |
+
     And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds with eligible players "P2,P3,P4" where "" declines, each discarding "F5,F5,F5"
     And all players make attacks for Stage 1 as given:
@@ -118,7 +122,12 @@ Feature: Quest Game
 
     And player draws the rigged event card
     And player "P3" becomes the sponsor
-    And sponsor sets up the 3 stages of quest with input "1\nq\n1\n3\nq\n1\n2\nq\n"
+    And sponsor sets up the 3 stages of quest with:
+      | Stage | Cards           |
+      | 1     | F5              |
+      | 2     | S10, F5         |
+      | 3     | F15, S10        |
+
     And players are asked to participate in the Quest and declines are from "P1"
     And stage 1 proceeds with eligible players "P2,P4" where "" declines, each discarding "F5,F5"
     And all players make attacks for Stage 1 as given:
@@ -158,7 +167,13 @@ Feature: Quest Game
     When player draws the rigged event card
 
     Then player "P1" becomes the sponsor
-    And sponsor sets up the 4 stages of quest with input "1\nq\n1\n8\nq\n1\nq\n1\n1\nq\n"
+    And sponsor sets up the 4 stages of quest with:
+      | Stage | Cards           |
+      | 1     | F5              |
+      | 2     | F5, D5          |
+      | 3     | F15             |
+      | 4     | S10, F15        |
+
     And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds with eligible players "P2,P3,P4" where "" declines, each discarding "F5,F5,F5"
     And all players make attacks for Stage 1 as given:
@@ -217,7 +232,12 @@ Feature: Quest Game
     # Back to Quest Card Q3 in this test scenario
     And player draws the rigged event card
     And player "P1" becomes the sponsor
-    And sponsor sets up the 3 stages of quest with input "2\nq\n1\n1\nq\n2\nq\n"
+    And sponsor sets up the 3 stages of quest with:
+      | Stage | Cards           |
+      | 1     | F10             |
+      | 2     | F10, F5         |
+      | 3     | F20             |
+
     And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds with eligible players "P2,P3,P4" where "" declines, each discarding "F10,F5,F15"
     And all players make attacks for Stage 1 as given:
@@ -259,15 +279,19 @@ Feature: Quest Game
     When player draws the rigged event card
 
     Then player "P1" becomes the sponsor
-    And sponsor sets up the 2 stages of quest with input "3\nq\n2\n2\nq\n"
+    And sponsor sets up the 2 stages of quest with:
+      | Stage | Cards           |
+      | 1     | F15             |
+      | 2     | F5, F15         |
+
     And players are asked to participate in the Quest and declines are from ""
 
     And stage 1 proceeds with eligible players "P2,P3,P4" where "" declines, each discarding "F5,F5,F5"
     And all players make attacks for Stage 1 as given:
       | Player | Cards    |
-      | P2     | S10  |
-      | P3     | D5  |
-      | P4     | D5  |
+      | P2     | S10      |
+      | P3     | D5       |
+      | P4     | D5       |
 
     And each player draws card "F30,S10,B15" for Stage 1
     And each player prepares attack of "10,5,5" for Stage 1

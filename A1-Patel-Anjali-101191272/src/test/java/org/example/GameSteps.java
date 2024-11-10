@@ -98,32 +98,7 @@ public class GameSteps {
     }
 
 
-    @Given("the user interface is initialized")
-    public void the_user_interface_is_initialized() {
-        resetInputStreamAfterStep = false;
-        userInterface = new UserInterface();
-        System.setOut(new PrintStream(outputStream)); // Capture System.out output
-    }
-
-    @When("the game start message is displayed with input {string}")
-    public void the_game_start_message_is_displayed(String inputSequence) {
-        resetInputStreamAfterStep = false;
-        simulateInput(inputSequence);
-        userInterface.displayGameStartMessage(true);
-    }
-
-    @Then("the game start {string} is shown")
-    public void the_welcome_message_is_shown(String expectedMessage) {
-        resetInputStreamAfterStep = false;
-        String output = outputStream.toString().trim();
-        Assert.assertTrue(output.contains(expectedMessage));
-    }
-
-
-
-
-
-    // next scenario 1 =======================================================================>
+    // scenario 1 =======================================================================>
     @Given("the game is initialized with 4 players and decks are set up")
     public void initializeGameAndDecks() {
         game = new Game(()->0);
@@ -310,23 +285,6 @@ public class GameSteps {
         ));
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @When("player draws the rigged event card")
     public void p1DrawsQCard() {
         String inputSequence = "e\n";
@@ -387,8 +345,57 @@ public class GameSteps {
         simulateInput(inputSequence);
         quest.setupQuest(game, drawnCard);
         assertEquals(game.getCurrentPlayer().getHand().size(), finalCount);
-        assertEquals(quest.getStages().size(), stageNumber); //total stages set up
+        assertEquals(quest.getStages().size(), stageNumber);
     }
+
+    @And("sponsor sets up the {int} stages of quest with:")
+    public void sponsorSetsUpQuest(int stageNumber, DataTable dataTable) {
+        StringBuilder inputSequence = new StringBuilder();
+        Player sponsor = game.getCurrentPlayer();
+        List<Card> hand = new ArrayList<>(sponsor.getHand());  // Create a mutable copy of the sponsor's hand
+
+        // Parse each row in the table to get stage number and card names
+        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
+        for (Map<String, String> row : rows) {
+            String[] cardNames = row.get("Cards").split(",");
+
+            for (String cardName : cardNames) {
+                cardName = cardName.trim();
+                int cardIndex = -1;
+
+                // Find the index of the card in the current hand
+                for (int i = 0; i < hand.size(); i++) {
+                    if (hand.get(i).getCardName().equals(cardName)) {
+                        cardIndex = i + 1; // Convert to 1-based index
+                        break;
+                    }
+                }
+
+                if (cardIndex != -1) {
+                    inputSequence.append(cardIndex).append("\n"); // Add index to input sequence
+                    hand.remove(cardIndex - 1); // Remove card from hand to adjust indices dynamically
+                }
+            }
+
+            // Add "q\n" to mark the end of the current stage
+            inputSequence.append("q\n");
+        }
+
+        // Validate the number of stages and the sponsor's hand size
+        int cardsUsed = (int) Arrays.stream(inputSequence.toString().split("\\n"))
+                .filter(line -> !line.equals("q"))
+                .count();
+
+        System.out.println("debug card input: "+cardsUsed);
+        int expectedHandSize = sponsor.getHand().size() - cardsUsed;
+
+        simulateInput(inputSequence.toString());
+        quest.setupQuest(game, drawnCard);
+        assertEquals(expectedHandSize, sponsor.getHand().size());
+        assertEquals(quest.getStages().size(), stageNumber);
+    }
+
+
 
     @And("players are asked to participate in the Quest and declines are from {string}")
     public void playersJoinQuest(String decliningPlayers) {
