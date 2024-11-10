@@ -22,26 +22,26 @@ Feature: Quest Game
     And all players make attacks for Stage 1 with "5\n10\nq\n4\n10\nq\n6\n7\nq\n"
       And each player draws card "F30,S10,B15" for Stage 1
       And each player prepares attack of "15,15,15" for Stage 1
-      And resolve stage 1 to check each player is left with "10,10,10" cards on their hand
+      And resolve stage 1 to check each player is left with "10,10,10" cards
 
     And stage 2 proceeds, asking eligible players "P1,P3,P4" to join and draw and discard cards as given "y\ny\ny\n"
     And all players make attacks for Stage 2 with "6\n7\nq\n4\n9\nq\n5\n7\nq\n"
       And each player draws card "F10,L20,L20" for Stage 2
       And each player prepares attack of "20,25,25" for Stage 2
-      And resolve stage 2 to check each player is left with "9,9,9" cards on their hand
+      And resolve stage 2 to check each player is left with "9,9,9" cards
 
     And stage 3 proceeds, asking eligible players "P3,P4" to join and draw and discard cards as given "y\ny\n"
     And all players make attacks for Stage 3 with "5\n6\n9\nq\n4\n7\n8\nq\n"
       And each player draws card "B15,S10" for Stage 3
       And each player prepares attack of "40,45" for Stage 3
-      And resolve stage 3 to check each player is left with "7,7" cards on their hand
+      And resolve stage 3 to check each player is left with "7,7" cards
 
     And stage 4 proceeds, asking eligible players "P3,P4" to join and draw and discard cards as given "y\ny\n"
     And all players make attacks for Stage 4 with "6\n7\n8\nq\n4\n5\n6\n8\nq\n"
       And each player draws card "F30,L20" for Stage 4
       And each player prepares attack of "45,65" for Stage 4
-      And sponsor trims their hand with "1\n2\n3\n4\n"
-      And resolve stage 4 to check each player is left with "5,4" cards on their hand
+      And for stage 4 sponsor trims their hand by discarding "F10,S10,L20,S10"
+      And resolve stage 4 to check each player is left with "5,4" cards
 
     And the final game state should verify sponsor with trimmed hand with 12 cards
       And player "P1" has 0 shields with hand "F5,F10,F15,F15,F30,H10,B15,B15,L20"
@@ -63,17 +63,17 @@ Feature: Quest Game
     And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
       And all players make attacks for Stage 1 with "6\nq\n10\nq\n6\nq\n"
-      And resolve stage 1 to check each player is left with "11,11,11" cards on their hand
+      And resolve stage 1 to check each player is left with "11,11,11" cards
     And stage 2 proceeds, asking eligible players "P2,P4" to join and draw and discard cards as given "y\ny\ny\n"
       And all players make attacks for Stage 2 with "10\nq\n9\nq\n"
-      And resolve stage 2 to check each player is left with "11,11" cards on their hand
+      And resolve stage 2 to check each player is left with "11,11" cards
     And stage 3 proceeds, asking eligible players "P2,P4" to join and draw and discard cards as given "y\ny\ny\n"
       And all players make attacks for Stage 3 with "10\nq\n10\nq\n"
-      And resolve stage 3 to check each player is left with "11,11" cards on their hand
+      And resolve stage 3 to check each player is left with "11,11" cards
     And stage 4 proceeds, asking eligible players "P2,P4" to join and draw and discard cards as given "y\ny\ny\n"
       And all players make attacks for Stage 4 with "12\nq\n12\nq\n"
-      And sponsor trims their hand with "11\n12\n11\n11\n"
-      And resolve stage 4 to check each player is left with "11,11" cards on their hand
+      And for stage 4 sponsor trims their hand by discarding "H10,D5,D5,B15"
+      And resolve stage 4 to check each player is left with "11,11" cards
 
     And the final game state should verify sponsor with trimmed hand with 12 cards
       And player "P2" has 4 shields with hand ""
@@ -87,13 +87,13 @@ Feature: Quest Game
     And players are asked to participate in the Quest and declines are from "P1"
     And stage 1 proceeds, asking eligible players "P2,P4" to join and draw and discard cards as given "y\ny\n1\n1\n"
       And all players make attacks for Stage 1 with "10\nq\n8\nq\n"
-      And resolve stage 1 to check each player is left with "11,11" cards on their hand
+      And resolve stage 1 to check each player is left with "11,11" cards
     And stage 2 proceeds, asking eligible players "P2,P4" to join and draw and discard cards as given "y\ny\n"
       And all players make attacks for Stage 2 with "11\nq\n12\nq\n"
-      And resolve stage 2 to check each player is left with "11,11" cards on their hand
+      And resolve stage 2 to check each player is left with "11,11" cards
     And stage 3 proceeds, asking eligible players "P2,P4" to join and draw and discard cards as given "y\ny\n"
       And all players make attacks for Stage 3 with "12\n10\nq\n11\n12\nq\n"
-      And resolve stage 3 to check each player is left with "10,10" cards on their hand
+      And resolve stage 3 to check each player is left with "10,10" cards
 
     And player "P2" has 7 shields with hand ""
     And player "P3" has 0 shields with hand ""
@@ -115,17 +115,17 @@ Feature: Quest Game
     And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
       And all players make attacks for Stage 1 with "9\nq\n10\nq\n7\nq\n"
-      And resolve stage 1 to check each player is left with "11,11,11" cards on their hand
+      And resolve stage 1 to check each player is left with "11,11,11" cards
     And stage 2 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n"
       And all players make attacks for Stage 2 with "7\nq\n4\nq\n5\nq\n"
-      And resolve stage 2 to check each player is left with "11,11,11" cards on their hand
+      And resolve stage 2 to check each player is left with "11,11,11" cards
     And stage 3 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n"
       And all players make attacks for Stage 3 with "10\nq\n9\nq\n8\nq\n"
-      And resolve stage 3 to check each player is left with "11,11,11" cards on their hand
+      And resolve stage 3 to check each player is left with "11,11,11" cards
     And stage 4 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n"
       And all players make attacks for Stage 4 with "12\nq\n11\n10\nq\n12\nq\n"
-      And sponsor trims their hand with "11\n12\n11\n11\n"
-      And resolve stage 4 to check each player is left with "11,10,11" cards on their hand
+      And for stage 4 sponsor trims their hand by discarding "H10,D5,B15,B15"
+      And resolve stage 4 to check each player is left with "11,10,11" cards
 
     And the final game state should verify sponsor with trimmed hand with 12 cards
     And player "P2" has 4 shields with hand ""
@@ -148,13 +148,13 @@ Feature: Quest Game
     And players are asked to participate in the Quest and declines are from ""
     And stage 1 proceeds, asking eligible players "P2,P3,P4" to join and draw and discard cards as given "y\ny\ny\n1\n1\n1\n"
       And all players make attacks for Stage 1 with "9\nq\n10\nq\n4\nq\n"
-      And resolve stage 1 to check each player is left with "11,11,11" cards on their hand
+      And resolve stage 1 to check each player is left with "11,11,11" cards
     And stage 2 proceeds, asking eligible players "P2,P3" to join and draw and discard cards as given "y\ny\n"
       And all players make attacks for Stage 2 with "10\nq\n12\nq\n"
-      And resolve stage 2 to check each player is left with "11,11" cards on their hand
+      And resolve stage 2 to check each player is left with "11,11" cards
     And stage 3 proceeds, asking eligible players "P2,P3" to join and draw and discard cards as given "y\ny\n"
       And all players make attacks for Stage 3 with "12\nq\n11\nq\n"
-      And resolve stage 3 to check each player is left with "11,10" cards on their hand
+      And resolve stage 3 to check each player is left with "11,10" cards
 
     And player "P2" has 5 shields with hand ""
     And player "P3" has 7 shields with hand ""
@@ -180,8 +180,8 @@ Feature: Quest Game
     And all players make attacks for Stage 1 with "7\nq\n10\nq\n7\nq\n"
     And each player draws card "F30,S10,B15" for Stage 1
     And each player prepares attack of "10,5,5" for Stage 1
-    And sponsor trims their hand with "1\n2\n"
-    And resolve stage 1 to check each player is left with "11,11,11" cards on their hand
+    And for stage 1 sponsor trims their hand by discarding "F5,S10"
+    And resolve stage 1 to check each player is left with "11,11,11" cards
 
     And the final game state should verify sponsor with trimmed hand with 12 cards
     And player "P2" has 0 shields with hand ""

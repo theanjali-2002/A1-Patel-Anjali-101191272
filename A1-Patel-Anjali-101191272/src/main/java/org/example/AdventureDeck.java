@@ -32,6 +32,11 @@ public class AdventureDeck {
         return deck;
     }
 
+    // Method to access the deck without removing cards
+    public List<Card> getCards() {
+        return Collections.unmodifiableList(deck);
+    }
+
     private void addFoeCards() {
         // Foe cards and their counts (values: 5, 10, 15, ..., 70)
         int[] foeValues = {5, 10, 15, 20, 25, 30, 35, 40, 50, 70};

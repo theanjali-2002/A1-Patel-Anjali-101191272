@@ -32,6 +32,8 @@ public class GameSteps {
     private Game game;
     private Quest quest;
     Card drawnCard;
+    AdventureDeck adventureDeck;
+    Player player;
 
     @Before // Cucumber setup
     public void cucumberSetup() {
@@ -59,6 +61,41 @@ public class GameSteps {
         ScannerSingleton.resetScanner(new ByteArrayInputStream(input.getBytes()));
         System.setIn(in); // Set System.in to new ByteArrayInputStream
     }
+
+    public List<Card> getSortedHand(List<Card> handToSort) {
+        // Separate foes and weapons into different lists
+        List<Card> foes = new ArrayList<>();
+        List<Card> weapons = new ArrayList<>();
+
+        for (Card card : handToSort) {
+            if (card.getCategory().equals("Foe")) {
+                foes.add(card);
+            } else if (card.getCategory().equals("Weapon")) {
+                weapons.add(card);
+            }
+        }
+
+        // Sort foes by value
+        foes.sort(Comparator.comparingInt(Card::getValue));
+
+        // Sort weapons: prioritize swords before horses, then by value
+        weapons.sort(Comparator.comparing((Card card) -> {
+            if (card.getType().equals("S")) {
+                return 0; // Swords come first
+            } else if (card.getType().equals("H")) {
+                return 1; // Horses come last
+            } else {
+                return 2; // Other weapon types
+            }
+        }).thenComparingInt(Card::getValue)); // Sort by value
+
+        // Combine sorted foes and weapons into a new sorted hand
+        List<Card> sortedHand = new ArrayList<>(foes);
+        sortedHand.addAll(weapons);
+
+        return sortedHand; // Return the sorted hand
+    }
+
 
     @Given("the user interface is initialized")
     public void the_user_interface_is_initialized() {
@@ -178,7 +215,7 @@ public class GameSteps {
         EventDeck eventDeck = game.getEventDeck();
         eventDeck.setDeck(Arrays.asList(new Card("Q4", "Q", 4, "Quest")));
 
-        AdventureDeck adventureDeck = game.getAdventureDeck();
+        adventureDeck = game.getAdventureDeck();
         adventureDeck.clearDeck();
         adventureDeck.setDeck(Arrays.asList(
                 new Card("F30", "F", 30, "Foe"),
@@ -213,6 +250,81 @@ public class GameSteps {
                 new Card("L20", "L", 20, "Weapon")
         ));
     }
+
+
+
+    // SCENARIO 2 ===============================================================>
+    @And("quest event cards and Adventure decks are rigged")
+    public void rigQuestDeckForGame() {
+        EventDeck eventDeck = game.getEventDeck();
+        List<Card> deck = new ArrayList<>();
+        deck.add(new Card("Q3", "Q", 3, "Quest"));
+        deck.add(new Card("Q4", "Q", 4, "Quest"));
+        Collections.reverse(deck);
+        eventDeck.setDeck(deck);
+
+        adventureDeck = game.getAdventureDeck();
+        adventureDeck.clearDeck();
+        adventureDeck.setDeck(Arrays.asList(
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                //above are required for playing the given quest Q4
+                new Card("F10", "F", 10, "Foe"),
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                // P1 gets above for Q4
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("E30", "E", 30, "Weapon"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("L20", "L", 20, "Weapon")
+        ));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @When("player draws the rigged event card")
     public void p1DrawsQCard() {
@@ -343,7 +455,7 @@ public class GameSteps {
         }
     }
 
-    @And("resolve stage {int} to check each player is left with {string} cards on their hand")
+    @And("resolve stage {int} to check each player is left with {string} cards")
     public void eachPlayerIsLeftWithCardsOnTheirHand(int stageNumber, String remainingCards) {
         List<Integer> cardsLeft = Arrays.stream(remainingCards.split(","))
                 .map(String::trim)
@@ -355,18 +467,57 @@ public class GameSteps {
             assertEquals(cardsLeft.get(i), game.getPlayerByName(playerName).getHand().size());
             i++;
         }
-        quest.resolveStage(stageNumber-1, game);
+        quest.resolveStage(stageNumber - 1, game);
+        System.out.println("debug sponsor hand resolve: "+ game.getCurrentPlayer().getHand());
     }
 
-    @And("sponsor trims their hand with {string}")
-    public void sponsorTrimsHand(String remainingCards) {
-        simulateInput(remainingCards);
+
+    @And("for stage {int} sponsor trims their hand by discarding {string}")
+    public void sponsorTrimsHand(int stageNumber, String cardsToDiscard) {
+        List<String> cards = Arrays.asList(cardsToDiscard.split(","));
+        StringBuilder inputSequence = new StringBuilder();
+
+        Player sponsor = game.getCurrentPlayer();  // Assuming the sponsor is the current player
+        int handsDrawn = stageNumber+(12-sponsor.getHand().size());
+        List<Card> hand = new ArrayList<>(sponsor.getHand());  // Create a mutable copy of the hand
+        List<Card> aDeck = new ArrayList<>(adventureDeck.getCards().subList(0, handsDrawn));
+        hand.addAll(aDeck.subList(0, handsDrawn));
+        hand = getSortedHand(hand);
+
+        System.out.println("debug card name: "+ sponsor.getHand());
+        System.out.println("my dummy hand: "+ hand);
+
+        for (String cardName : cards) {
+            int indexToDiscard = -1;
+
+            // Find the index of the current card in the hand
+            for (int i = 0; i < hand.size(); i++) {
+                //System.out.println("debug trim hand card name: "+ hand.get(i).getClass().getSimpleName());
+                if (hand.get(i).getCardName().equals(cardName)) {
+                    indexToDiscard = i;
+                    break;
+                }
+            }
+
+            // If card is found, add its index to the input sequence and simulate removal
+            if (indexToDiscard != -1) {
+                inputSequence.append(indexToDiscard + 1).append("\n");  // Convert to 1-based index
+                hand.remove(indexToDiscard);  // Remove the card to adjust future indices
+            }
+        }
+
+        System.out.println("debug sequence: "+ inputSequence.toString());
+        simulateInput(inputSequence.toString());
+        System.out.println("debug sponsor hand trim: "+ game.getCurrentPlayer().getHand());
+
     }
+
+
 
     @And("the final game state should verify sponsor with trimmed hand with {int} cards")
     public void verifyFinalGameState(int handSize) {
         System.out.println("debug sponsor: "+ game.getCurrentPlayer().getName());
-        System.out.println("debug sponsor: "+ game.getCurrentPlayer().getHand());
+        System.out.println("debug sponsor hand: "+ game.getCurrentPlayer().getHand());
         Assertions.assertEquals(handSize, game.getCurrentPlayer().getHand().size(), "Sponsor should have exactly 12 cards.");
     }
 
@@ -390,13 +541,13 @@ public class GameSteps {
     }
 
 
-    // SCENARIO 2 =================================================================>
+    // SCENARIO 4 =================================================================>
     @And("event Q2 and Adventure decks are rigged")
     public void rigEDeckForGame() {
         EventDeck eventDeck = game.getEventDeck();
         eventDeck.setDeck(Arrays.asList(new Card("Q2", "Q", 2, "Quest")));
 
-        AdventureDeck adventureDeck = game.getAdventureDeck();
+        adventureDeck = game.getAdventureDeck();
         adventureDeck.clearDeck();
         adventureDeck.setDeck(Arrays.asList(
                 new Card("F30", "F", 30, "Foe"),
@@ -446,7 +597,7 @@ public class GameSteps {
         Collections.reverse(deck);
         eventDeck.setDeck(deck);
 
-        AdventureDeck adventureDeck = game.getAdventureDeck();
+        adventureDeck = game.getAdventureDeck();
         adventureDeck.clearDeck();
         adventureDeck.setDeck(Arrays.asList(
                 new Card("D5", "D", 5, "Weapon"),
@@ -564,60 +715,5 @@ public class GameSteps {
     }
 
 
-    // SCENARIO 2 ===============================================================>
-    @And("quest event cards and Adventure decks are rigged")
-public void rigQuestDeckForGame() {
-        EventDeck eventDeck = game.getEventDeck();
-        List<Card> deck = new ArrayList<>();
-        deck.add(new Card("Q3", "Q", 3, "Quest"));
-        deck.add(new Card("Q4", "Q", 4, "Quest"));
-        Collections.reverse(deck);
-        eventDeck.setDeck(deck);
-
-        AdventureDeck adventureDeck = game.getAdventureDeck();
-        adventureDeck.clearDeck();
-        adventureDeck.setDeck(Arrays.asList(
-                new Card("D5", "D", 5, "Weapon"),
-                new Card("S10", "S", 10, "Weapon"),
-                new Card("B15", "B", 15, "Weapon"),
-                new Card("F10", "F", 10, "Foe"),
-                new Card("L20", "L", 20, "Weapon"),
-                new Card("L20", "L", 20, "Weapon"),
-                new Card("H10", "H", 10, "Weapon"),
-                new Card("B15", "B", 15, "Weapon"),
-                new Card("S10", "S", 10, "Weapon"),
-                new Card("D5", "D", 5, "Weapon"),
-                new Card("F30", "F", 30, "Foe"),
-                new Card("L20", "L", 20, "Weapon"),
-                //above are required for playing the given quest Q4
-                new Card("F10", "F", 10, "Foe"),
-                new Card("F5", "F", 5, "Foe"),
-                new Card("F5", "F", 5, "Foe"),
-                new Card("F15", "F", 15, "Foe"),
-                new Card("F20", "F", 20, "Foe"),
-                new Card("F20", "F", 20, "Foe"),
-                new Card("F30", "F", 30, "Foe"),
-                new Card("D5", "D", 5, "Weapon"),
-                new Card("S10", "S", 10, "Weapon"),
-                new Card("B15", "B", 15, "Weapon"),
-                // P1 gets above for Q4
-                new Card("F10", "F", 10, "Foe"),
-                new Card("L20", "L", 20, "Weapon"),
-                new Card("L20", "L", 20, "Weapon"),
-                new Card("B15", "B", 15, "Weapon"),
-                new Card("S10", "S", 10, "Weapon"),
-                new Card("F30", "F", 30, "Foe"),
-                new Card("L20", "L", 20, "Weapon"),
-                new Card("L20", "L", 20, "Weapon"),
-                new Card("E30", "E", 30, "Weapon"),
-                new Card("F10", "F", 10, "Foe"),
-                new Card("L20", "L", 20, "Weapon"),
-                new Card("L20", "L", 20, "Weapon"),
-                new Card("B15", "B", 15, "Weapon"),
-                new Card("S10", "S", 10, "Weapon"),
-                new Card("F30", "F", 30, "Foe"),
-                new Card("L20", "L", 20, "Weapon")
-        ));
-    }
 
 }
