@@ -8,7 +8,6 @@ import static org.example.ScannerSingleton.getScannerInstance;
 public class Quest {
     private String questId;
     private String questType;
-    private String sponsorId;
     private int numberOfStages;
     private List<String> participants;
     private List<String> winners;
@@ -43,13 +42,12 @@ public class Quest {
     public Quest(String questId, String questType, String sponsorId, int numberOfStages) {
         this.questId = questId;
         this.questType = questType;
-        this.sponsorId = sponsorId;
         this.numberOfStages = numberOfStages;
         this.participants = new ArrayList<>();
         this.winners = new ArrayList<>();
         this.discardedCards = new ArrayList<>();
-        this.currentStage = 0; // Starting at the first stage
-        this.status = "active"; // Default status
+        this.currentStage = 0;
+        this.status = "active";
         this.totalShieldsAwarded = 0;
         this.cardDeck = new ArrayList<>();
         this.stages = new ArrayList<>();
@@ -66,7 +64,6 @@ public class Quest {
             List<Card> cardsInStage = new ArrayList<>();
             int stageValue = 0;
 
-            // Display the current player's hand before adding to the stage
             game.displayPlayerHand(game.getCurrentPlayer());
 
             boolean validStageSetup = false;
@@ -435,14 +432,6 @@ public class Quest {
         return questType;
     }
 
-    public String getSponsorId() {
-        return sponsorId;
-    }
-
-    public int getNumberOfStages() {
-        return numberOfStages;
-    }
-
     public void setNumberOfStages(int num) {
         this.numberOfStages = num;
     }
@@ -463,25 +452,12 @@ public class Quest {
         this.totalShieldsAwarded = totalShieldsAwarded;
     }
 
-    public int getCurrentStage() {
-        return currentStage;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public List<String> getDiscardedCards() {
         return discardedCards;
-    }
-
-    public void addParticipant(String participantId) {
-        participants.add(participantId);
-    }
-
-    public void addWinner(String winnerId, int shields) {
-        winners.add(winnerId);
-        totalShieldsAwarded += shields;
     }
 
     public void setCurrentStage(int stage) {
@@ -494,20 +470,10 @@ public class Quest {
         this.status = status;
     }
 
-    public void discardQuestCard(String card) {
-        discardedCards.add(card);
-    }
-
     public List<Stage> getStages() { // Getter for stages
         return stages;
     }
 
-    // Getter for cardsUsedBySponsor
-    public List<Card> getCardsUsedBySponsor() {
-        return cardsUsedBySponsor;
-    }
-
-    // Setter for cardsUsedBySponsor
     public void setCardsUsedBySponsor(List<Card> cardsUsedBySponsor) {
         this.cardsUsedBySponsor = cardsUsedBySponsor;
     }

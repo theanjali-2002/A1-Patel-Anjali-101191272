@@ -78,7 +78,6 @@ public class Game {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         Player nextPlayer = players.get(currentPlayerIndex);
         setCurrentPlayer(currentPlayerIndex);
-        //System.out.flush();
         System.out.println("*********************************************");
         System.out.println("Hot Seat (current player): " + nextPlayer.getName());
         System.out.println("*********************************************");

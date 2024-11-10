@@ -63,6 +63,7 @@ Feature: Quest Game
       And player "P1" has 0 shields with hand "F5,F10,F15,F15,F30,H10,B15,B15,L20"
       And player "P3" has 0 shields with hand "F5,F5,F15,F30,S10"
       And player "P4" has 4 shields with hand "F15,F15,F40,L20"
+      And player "P2" has 0 shields with hand ""
 
 
 
@@ -115,6 +116,7 @@ Feature: Quest Game
       And resolve stage 4 to check each player is left with "11,11" cards
 
     And the final game state should verify sponsor with trimmed hand with 12 cards
+      And player "P1" has 0 shields with hand ""
       And player "P2" has 4 shields with hand ""
       And player "P3" has 0 shields with hand ""
       And player "P4" has 4 shields with hand ""
@@ -151,6 +153,7 @@ Feature: Quest Game
 
       And resolve stage 3 to check each player is left with "10,10" cards
 
+    And player "P1" has 0 shields with hand ""
     And player "P2" has 7 shields with hand ""
     And player "P3" has 0 shields with hand ""
     And player "P4" has 7 shields with hand ""
@@ -210,6 +213,7 @@ Feature: Quest Game
       And resolve stage 4 to check each player is left with "11,10,11" cards
 
     And the final game state should verify sponsor with trimmed hand with 12 cards
+    And player "P1" has 0 shields with hand ""
     And player "P2" has 4 shields with hand ""
     And player "P3" has 4 shields with hand ""
     And player "P4" has 4 shields with hand ""
@@ -262,6 +266,7 @@ Feature: Quest Game
 
       And resolve stage 3 to check each player is left with "10,10" cards
 
+    And player "P1" has 0 shields with hand ""
     And player "P2" has 5 shields with hand ""
     And player "P3" has 7 shields with hand ""
     And player "P4" has 4 shields with hand ""
@@ -299,6 +304,7 @@ Feature: Quest Game
     And resolve stage 1 to check each player is left with "11,11,11" cards
 
     And the final game state should verify sponsor with trimmed hand with 12 cards
+    And player "P1" has 0 shields with hand ""
     And player "P2" has 0 shields with hand ""
     And player "P3" has 0 shields with hand ""
     And player "P4" has 0 shields with hand ""
