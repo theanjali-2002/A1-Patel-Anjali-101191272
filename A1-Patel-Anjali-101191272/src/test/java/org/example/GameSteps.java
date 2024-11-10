@@ -460,15 +460,6 @@ public class GameSteps {
     }
 
 
-
-    @And("all players make attacks for Stage {int} with {string}")
-    public void playersMakeAttacksStage1(int stageNumber, String inputSequence) {
-        simulateInput(inputSequence);
-        quest.prepareForStage(stageNumber-1, game, quest);
-        Game.clearConsole();
-    }
-
-
     @And("all players make attacks for Stage {int} as given:")
     public void playersMakeAttacksForStage(int stageNumber, DataTable dataTable) {
         StringBuilder inputSequence = new StringBuilder();
