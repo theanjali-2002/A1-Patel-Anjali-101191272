@@ -214,8 +214,9 @@ public class GameSteps {
         ));
     }
 
-    @When("player draws the rigged event card with input {string}")
-    public void p1DrawsQCard(String inputSequence) {
+    @When("player draws the rigged event card")
+    public void p1DrawsQCard() {
+        String inputSequence = "e\n";
         simulateInput(inputSequence);
         quest = new Quest();
         drawnCard = game.drawEventCard();
@@ -255,12 +256,6 @@ public class GameSteps {
         simulateInput(inputSequence);
         quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
     }
-
-
-
-
-
-
 
     @And("stage {int} proceeds, asking eligible players {string} to join and draw and discard cards as given {string}")
     public void stage1Proceeds(int stageNumber, String eligiblePlayers, String inputSequence) {
@@ -459,8 +454,6 @@ public class GameSteps {
         System.out.println("Debug current hot seat: "+ game.getCurrentPlayer().getName());
     }
 
-
-
     @And("event card Plague is drawn by player {string} and then returns {string}")
     public void plagueCardDrawn(String currentPlayer, String returnSign) {
         simulateInput(returnSign);
@@ -526,7 +519,6 @@ public class GameSteps {
     }
 
 
-
     // SCENARIO 2 ===============================================================>
     @And("quest event cards and Adventure decks are rigged")
 public void rigQuestDeckForGame() {
@@ -582,12 +574,5 @@ public void rigQuestDeckForGame() {
                 new Card("L20", "L", 20, "Weapon")
         ));
     }
-
-
-
-
-
-
-
 
 }
