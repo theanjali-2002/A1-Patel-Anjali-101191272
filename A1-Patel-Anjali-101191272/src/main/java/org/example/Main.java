@@ -64,55 +64,10 @@
 
 package org.example;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class Main {
     public static void main(String[] args) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        OutputRedirector.redirectOutput();
-
-        // Start game initialization
-        executor.execute(() -> {
-            UserInterface userInterface = new UserInterface();
-            userInterface.displayGameStartMessage(true);
-
-            Game game = new Game();
-            Quest quest = new Quest();
-
-            game.initializeGameEnvironment();
-            game.initializePlayers();
-            game.distributeAdventureCards();
-
-            Card drewCard;
-            while (true) {
-                drewCard = game.drawEventCard();
-
-                if ("Event".equals(drewCard.getCategory())) {
-                    game.handleECardEffects(drewCard, game.getCurrentPlayer());
-                } else {
-                    OutputRedirector.println("It is a Quest card");
-                    Player sponsor = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
-                    if (sponsor == null) {
-                        game.nextHotSeatPlayer();
-                    } else {
-                        quest.setupQuest(game, drewCard);
-                        quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
-
-                        for (int i = 0; i < drewCard.getValue(); i++) {
-                            quest.prepareForQuest(game, i);
-                            quest.prepareForStage(i, game, quest);
-                            quest.resolveStage(i, game);
-                        }
-
-                        if (quest.getWinners() == null) {
-                            game.nextHotSeatPlayer();
-                        } else {
-                            OutputRedirector.println("Quest finished!");
-                        }
-                    }
-                }
-            }
-        });
+        GameService gameService = new GameService();
+        gameService.startGame(); // Directly call GameService for standalone testing
     }
 }
+
