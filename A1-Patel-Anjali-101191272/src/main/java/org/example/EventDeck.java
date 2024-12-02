@@ -87,7 +87,7 @@ public class EventDeck {
     // Method to discard an event card
     public void discardEventCard(Card card) {
         discardPile.add(card); // Add the card to the discard pile
-        System.out.println("Event card discarded: " + card.getCardName());
+        OutputRedirector.println("Event card discarded: " + card.getCardName());
     }
 
     // Method to get the discard pile
@@ -104,9 +104,9 @@ public class EventDeck {
             deck.addAll(discardPile);
             // Clear the discard pile after refilling the deck
             discardPile.clear();
-            System.out.println("The Event deck has been refilled from the discard pile.");
+            OutputRedirector.println("The Event deck has been refilled from the discard pile.");
         } else {
-            System.out.println("The Event discard pile is also empty. Cannot refill the deck.");
+            OutputRedirector.println("The Event discard pile is also empty. Cannot refill the deck.");
         }
     }
 

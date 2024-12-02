@@ -2,7 +2,7 @@
 //including initializing the game environment,
 //setting up decks, and controlling the flow of gameplay.
 package org.example;
-import static org.example.ScannerSingleton.getScannerInstance;
+//import static org.example.ScannerSingleton.getScannerInstance;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -59,17 +59,17 @@ public class Game {
     public void nextPlayer() {
         // End the current player's turn
         Player currentPlayer = players.get(currentPlayerIndex);
-        System.out.println(currentPlayer.getName() + ", your turn has ended. Please enter 'r' to return from the Hot Seat.");
+        OutputRedirector.println(currentPlayer.getName() + ", your turn has ended. Please enter 'r' to return from the Hot Seat.");
 
         // Check for user input (e.g., 'r') to return, and loop until the input is valid
         while (true) {
-            String input = getScannerInstance().nextLine().trim();
+            String input = ScannerSingleton.nextLine().trim();
 
             if ("r".equalsIgnoreCase(input)) {
-                System.out.println("Leaving the Hot Seat...");
+                OutputRedirector.println("Leaving the Hot Seat...");
                 break; // Exit the loop when input is valid
             } else {
-                System.out.println("Invalid input. Please enter 'r' to return from the Hot Seat.");
+                OutputRedirector.println("Invalid input. Please enter 'r' to return from the Hot Seat.");
             }
         }
 
@@ -78,26 +78,26 @@ public class Game {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         Player nextPlayer = players.get(currentPlayerIndex);
         setCurrentPlayer(currentPlayerIndex);
-        System.out.println("*********************************************");
-        System.out.println("Hot Seat (current player): " + nextPlayer.getName());
-        System.out.println("*********************************************");
+        OutputRedirector.println("*********************************************");
+        OutputRedirector.println("Hot Seat (current player): " + nextPlayer.getName());
+        OutputRedirector.println("*********************************************");
     }
 
     // Method to advance to the next hot seat player
     public void nextHotSeatPlayer() {
         // End the current player's turn
         Player currentPlayer = players.get(hotSeatIndex);
-        System.out.println(currentPlayer.getName() + ", your turn has ended. Please enter 'r' to return from the Hot Seat.");
+        OutputRedirector.println(currentPlayer.getName() + ", your turn has ended. Please enter 'r' to return from the Hot Seat.");
 
         // Check for user input (e.g., 'r') to return, and loop until the input is valid
         while (true) {
-            String input = getScannerInstance().nextLine().trim();
+            String input = ScannerSingleton.nextLine().trim();
 
             if ("r".equalsIgnoreCase(input)) {
-                System.out.println("Leaving the Hot Seat...");
+                OutputRedirector.println("Leaving the Hot Seat...");
                 break; // Exit the loop when input is valid
             } else {
-                System.out.println("Invalid input. Please enter 'r' to return from the Hot Seat.");
+                OutputRedirector.println("Invalid input. Please enter 'r' to return from the Hot Seat.");
             }
         }
 
@@ -106,9 +106,9 @@ public class Game {
         hotSeatIndex = (hotSeatIndex + 1) % players.size();
         Player nextPlayer = players.get(hotSeatIndex);
         setCurrentPlayer(hotSeatIndex);
-        System.out.println("*********************************************");
-        System.out.println("Hot Seat (current player): " + nextPlayer.getName());
-        System.out.println("*********************************************");
+        OutputRedirector.println("*********************************************");
+        OutputRedirector.println("Hot Seat (current player): " + nextPlayer.getName());
+        OutputRedirector.println("*********************************************");
 
     }
 
@@ -118,7 +118,7 @@ public class Game {
 
         // Check if the hand is empty
         if (hand.isEmpty()) {
-            System.out.println("Current player's hand is empty - something went wrong");
+            OutputRedirector.println("Current player's hand is empty - something went wrong");
             return;
         }
 
@@ -126,11 +126,11 @@ public class Game {
         List<Card> foes = new ArrayList<>();
         List<Card> weapons = new ArrayList<>();
 
-        System.out.println("Current Player " + currentPlayer.getName() + "'s Hand: ");
+        OutputRedirector.println("Current Player " + currentPlayer.getName() + "'s Hand: ");
         int placeValue = 1;
 
         for (Card card : hand) {
-            System.out.println("[" + placeValue + "] " + card.toString());
+            OutputRedirector.println("[" + placeValue + "] " + card.toString());
             placeValue++;
         }
     }
@@ -138,16 +138,16 @@ public class Game {
     public void displayPlayerHand(Player player) {
         // Check if the player's hand is empty
         if (player.getHand().isEmpty()) {
-            System.out.println(player.getName() + "'s hand is empty - something went wrong");
+            OutputRedirector.println(player.getName() + "'s hand is empty - something went wrong");
             return;
         }
 
         List<Card> hand = player.getHand();
-        System.out.println(player.getName() + "'s Hand: ");
+        OutputRedirector.println(player.getName() + "'s Hand: ");
         int placeValue = 1;
 
         for (Card card : hand) {
-            System.out.println("[" + placeValue + "] " + card.toString());
+            OutputRedirector.println("[" + placeValue + "] " + card.toString());
             placeValue++;
         }
     }
@@ -201,16 +201,16 @@ public class Game {
             eventDeck.refillDeckFromDiscard();
         }
 
-        System.out.println("Press 'e' to draw an event card OR Press 'q' to Quit Game...");
+        OutputRedirector.println("Press 'e' to draw an event card OR Press 'q' to Quit Game...");
 
         // Keep asking until the player presses 'e'
         while (true) {
-            String input = getScannerInstance().nextLine().trim();
+            String input = ScannerSingleton.nextLine().trim();
 
             if (input.equalsIgnoreCase("e")) {
                 // Player pressed 'e', draw a random event card
                 List<Card> deck = eventDeck.getDeck();  // Get the deck list
-                System.out.println("debug event deck: "+ deck);
+                OutputRedirector.println("debug event deck: "+ deck);
                 Card drawnCard = null;
 
                 // Find and remove a random event card from the deck
@@ -222,21 +222,21 @@ public class Game {
                     if ("Event".equals(card.getCategory()) ||  "Quest".equals(card.getCategory())) {
                         drawnCard = card;
                         deck.remove(card);
-                        System.out.println("debug discarding drawn card: " + drawnCard.getCardName());
+                        OutputRedirector.println("debug discarding drawn card: " + drawnCard.getCardName());
                     }
                 }
 
                 // Display the drawn card
-                System.out.println("Drawn Card: " + drawnCard.getCardName());
+                OutputRedirector.println("Drawn Card: " + drawnCard.getCardName());
                 return drawnCard;
 
             } else if (input.equalsIgnoreCase("q")) {
-                System.out.println("Game Exiting...");
+                OutputRedirector.println("Game Exiting...");
                 return null;
             }
             else {
                 // Invalid input, prompt the player again
-                System.out.println("Invalid input! Please press 'e' to draw a card OR Press 'q' to Quit Game...");
+                OutputRedirector.println("Invalid input! Please press 'e' to draw a card OR Press 'q' to Quit Game...");
             }
         }
     }
@@ -244,39 +244,39 @@ public class Game {
     public void handleECardEffects(Card drawnCard, Player currentPlayer) {
         switch (drawnCard.getCardName()) {
             case "Plague":
-                System.out.println("*********************************************");
-                System.out.println("Card Drawn: Plague card.");
-                System.out.println("Current player " + currentPlayer.getName() + " loses 2 shields.");
-                System.out.println("*********************************************");
+                OutputRedirector.println("*********************************************");
+                OutputRedirector.println("Card Drawn: Plague card.");
+                OutputRedirector.println("Current player " + currentPlayer.getName() + " loses 2 shields.");
+                OutputRedirector.println("*********************************************");
                 currentPlayer.loseShields(2);
                 break;
 
             case "Queen's Favor":
-                System.out.println("*********************************************");
-                System.out.println("Card Drawn: Queen's favor card.");
-                System.out.println("Current player will draw 2 adventure cards.");
-                System.out.println("*********************************************");
+                OutputRedirector.println("*********************************************");
+                OutputRedirector.println("Card Drawn: Queen's favor card.");
+                OutputRedirector.println("Current player will draw 2 adventure cards.");
+                OutputRedirector.println("*********************************************");
                 currentPlayer.receiveCards(adventureDeck.drawACards(2));
                 currentPlayer.trimHandTo12Cards(currentPlayer);
                 break;
 
             case "Prosperity":
-                System.out.println("*********************************************");
-                System.out.println("Card Drawn: Prosperity Card.");
-                System.out.println("All players draw 2 adventure cards.");
-                System.out.println("*********************************************");
-                System.out.println("Loading ... ...");
+                OutputRedirector.println("*********************************************");
+                OutputRedirector.println("Card Drawn: Prosperity Card.");
+                OutputRedirector.println("All players draw 2 adventure cards.");
+                OutputRedirector.println("*********************************************");
+                OutputRedirector.println("Loading ... ...");
                 for (Player player : players) {
-                    System.out.println(player.getName() + ", you have drawn 2 adventure cards.");
+                    OutputRedirector.println(player.getName() + ", you have drawn 2 adventure cards.");
                     player.receiveCards(adventureDeck.drawACards(2));
                     player.trimHandTo12Cards(player);
-                    System.out.println("Next player ... Loading ... ...");
+                    OutputRedirector.println("Next player ... Loading ... ...");
                     clearConsole();
                 }
                 break;
 
             default:
-                System.out.println("\n");
+                OutputRedirector.println("\n");
         }
 
         // Discard the drawn event card
@@ -288,15 +288,15 @@ public class Game {
     }
 
     public boolean promptToSponsor(Player currentPlayer) {
-        System.out.println(currentPlayer.getName() + ", a new quest has been drawn.");
-        System.out.print("Do you want to sponsor this quest? (y/n): ");
+        OutputRedirector.println(currentPlayer.getName() + ", a new quest has been drawn.");
+        OutputRedirector.print("Do you want to sponsor this quest? (y/n): ");
 
-        String response = getScannerInstance().nextLine().trim().toLowerCase();
+        String response = ScannerSingleton.nextLine().trim().toLowerCase();
 
         // Validate the input and handle the response
         while (!response.equalsIgnoreCase("y") && !response.equalsIgnoreCase("n")) {
-            System.out.print("Invalid input. Please enter 'y' or 'n': ");
-            response = getScannerInstance().nextLine().trim().toLowerCase();
+            OutputRedirector.print("Invalid input. Please enter 'y' or 'n': ");
+            response = ScannerSingleton.nextLine().trim().toLowerCase();
         }
 
         if (response.equalsIgnoreCase("y")) {
@@ -305,11 +305,11 @@ public class Game {
                     .count();
 
             if (foeCardCount >= 3) {
-                System.out.println(currentPlayer.getName() + " has chosen to sponsor the quest.");
-                System.out.println("*********************************************");
+                OutputRedirector.println(currentPlayer.getName() + " has chosen to sponsor the quest.");
+                OutputRedirector.println("*********************************************");
                 currentPlayer.setSponsor(true);
                 setCurrentPlayer(currentPlayerIndex);
-                //System.out.println("curent player: "+ currentPlayer.getName());
+                //OutputRedirector.println("curent player: "+ currentPlayer.getName());
                 for (Player player : players) {
                     if (player.getName() != currentPlayer.getName()) {
                         player.setSponsor(false);
@@ -317,23 +317,23 @@ public class Game {
                 }
                 return true; // Player has chosen to sponsor the quest
             } else {
-                System.out.println("*********************************************");
-                System.out.println("You do not have enough Foe cards to sponsor the quest.");
-                System.out.print("Please respond with 'n' to decline sponsorship: ");
-                String newResponse = getScannerInstance().nextLine().trim().toLowerCase();
+                OutputRedirector.println("*********************************************");
+                OutputRedirector.println("You do not have enough Foe cards to sponsor the quest.");
+                OutputRedirector.print("Please respond with 'n' to decline sponsorship: ");
+                String newResponse = ScannerSingleton.nextLine().trim().toLowerCase();
 
                 // Handle the new response
                 while (!newResponse.equalsIgnoreCase("n")) {
-                    System.out.print("Invalid input.");
-                    System.out.println("You do not have enough Foe cards to sponsor the quest.");
-                    System.out.print("Please respond with 'n' to decline sponsorship: ");
-                    newResponse = getScannerInstance().nextLine().trim().toLowerCase();
+                    OutputRedirector.print("Invalid input.");
+                    OutputRedirector.println("You do not have enough Foe cards to sponsor the quest.");
+                    OutputRedirector.print("Please respond with 'n' to decline sponsorship: ");
+                    newResponse = ScannerSingleton.nextLine().trim().toLowerCase();
                 }
-                System.out.println(currentPlayer.getName() + " has declined to sponsor the quest. (Ineligibility)");
+                OutputRedirector.println(currentPlayer.getName() + " has declined to sponsor the quest. (Ineligibility)");
                 return false; // Player has declined the sponsorship
             }
         } else {
-            System.out.println(currentPlayer.getName() + " has declined to sponsor the quest.");
+            OutputRedirector.println(currentPlayer.getName() + " has declined to sponsor the quest.");
             return false; // Player has declined the sponsorship
         }
     }
@@ -348,8 +348,8 @@ public class Game {
             Player playerToAsk = players.get((currentPlayerIndex + i) % players.size());
 
             // Prompt the player to sponsor the quest
-            System.out.println("*********************************************");
-            System.out.println("Asking " + playerToAsk.getName() + " to sponsor the quest...");
+            OutputRedirector.println("*********************************************");
+            OutputRedirector.println("Asking " + playerToAsk.getName() + " to sponsor the quest...");
             boolean sponsor = promptToSponsor(playerToAsk);
 
             //Fixing Bug - setting sponsor as current player:
@@ -358,21 +358,21 @@ public class Game {
 
             // If the player agrees to sponsor the quest, return this player
             if (sponsor) {
-                //System.out.println(playerToAsk.getName() + " has agreed to sponsor the quest.");
+                //OutputRedirector.println(playerToAsk.getName() + " has agreed to sponsor the quest.");
                 return playerToAsk;
             } else {
-                //System.out.println(playerToAsk.getName() + " has declined to sponsor the quest.");
+                //OutputRedirector.println(playerToAsk.getName() + " has declined to sponsor the quest.");
             }
             Game.clearConsole();
         }
 
         // If no player agrees to sponsor the quest, return null
-        System.out.println("All players have declined to sponsor the quest. The quest ends.");
+        OutputRedirector.println("All players have declined to sponsor the quest. The quest ends.");
         return null;
     }
 
     public static void clearConsole() {
-        System.out.print("\n".repeat(100)); // Prints 100 newlines to simulate a cleared screen
+        OutputRedirector.print("\n".repeat(100)); // Prints 100 newlines to simulate a cleared screen
         System.out.flush();
     }
 

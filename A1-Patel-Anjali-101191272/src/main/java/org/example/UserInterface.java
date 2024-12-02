@@ -1,5 +1,5 @@
 package org.example;
-import static org.example.ScannerSingleton.getScannerInstance;
+//import static org.example.ScannerSingleton.getScannerInstance;
 
 import java.util.Scanner;
 
@@ -13,34 +13,34 @@ public class UserInterface {
     // Method to display game start message and instructions
     public void displayGameStartMessage(boolean waitForInput) {
         // Display the game start message
-        System.out.println("***********************************************************");
-        System.out.println("          Welcome to the 4004 Assignment 1 Game!          ");
-        System.out.println("***********************************************************");
-        System.out.println();
-        System.out.println("Instructions:");
-        System.out.println("1. 🧙‍♂️ Accumulate 7 shields to become a knight!");
-        System.out.println("2. 🃏 Draw adventure cards to complete quests.");
-        System.out.println("3. 🎯 Successfully complete quests to earn shields.");
-        System.out.println("4. 🏆 Players with 7 or more shields at the end of a quest win!");
-        System.out.println();
-        System.out.println("✨ Good luck, and may the best knight prevail! ✨");
-        System.out.println("***********************************************************");
-        System.out.println("Press 's' to Start Game");
-        System.out.println("Press 'q' to Quit Game");
+        OutputRedirector.println("***********************************************************");
+        OutputRedirector.println("          Welcome to the 4004 Assignment 1 Game!          ");
+        OutputRedirector.println("***********************************************************");
+        OutputRedirector.println("");
+        OutputRedirector.println("Instructions:");
+        OutputRedirector.println("1. 🧙‍♂️ Accumulate 7 shields to become a knight!");
+        OutputRedirector.println("2. 🃏 Draw adventure cards to complete quests.");
+        OutputRedirector.println("3. 🎯 Successfully complete quests to earn shields.");
+        OutputRedirector.println("4. 🏆 Players with 7 or more shields at the end of a quest win!");
+        OutputRedirector.println("");
+        OutputRedirector.println("✨ Good luck, and may the best knight prevail! ✨");
+        OutputRedirector.println("***********************************************************");
+        OutputRedirector.println("Press 's' to Start Game");
+        OutputRedirector.println("Press 'q' to Quit Game");
 
         // Handle user input if specified
         if (waitForInput) {
             while (true) {
-                String userInput = getScannerInstance().nextLine().trim().toLowerCase();
+                String userInput = ScannerSingleton.nextLine().trim().toLowerCase();
 
                 if ("s".equals(userInput)) {
-                    System.out.println("Game Starting...\n");
+                    OutputRedirector.println("Game Starting...\n");
                     break; // Exit the loop if input is valid
                 } else if ("q".equals(userInput)) {
-                    System.out.println("Game Exiting...\n");
+                    OutputRedirector.println("Game Exiting...\n");
                     break; // Exit the loop if input is valid
                 } else {
-                    System.out.println("Invalid input! Please enter 's' to start or 'q' to quit.\n");
+                    OutputRedirector.println("Invalid input! Please enter 's' to start or 'q' to quit.\n");
                 }
             }
         }
@@ -48,18 +48,18 @@ public class UserInterface {
 
     // Method to display the current player's turn, their hand, and ask to draw an event card
     public void displayPlayerTurn(String CurrentplayerName) {
-        System.out.println("It is " + CurrentplayerName + "'s turn on the hotseat!");
+        OutputRedirector.println("It is " + CurrentplayerName + "'s turn on the hotseat!");
         //game.displayCurrentPlayerHand(); // Call the method from Game class to show the player's hand
-        System.out.println("Press 'e' to draw a card from the event deck...");
+        OutputRedirector.println("Press 'e' to draw a card from the event deck...");
 
         // Wait for player to press the space bar or 'e' key to draw a card
         while (true) {
-            String input = getScannerInstance().nextLine().trim();
+            String input = ScannerSingleton.nextLine().trim();
             if ("e".equalsIgnoreCase(input)) {
-                System.out.println(CurrentplayerName + " has drawn a card from the event deck!");
+                OutputRedirector.println(CurrentplayerName + " has drawn a card from the event deck!");
                 break; // Exit the loop once valid input is received
             } else {
-                System.out.println("Invalid input! Please press 'e' to draw a card.");
+                OutputRedirector.println("Invalid input! Please press 'e' to draw a card.");
             }
         }
     }

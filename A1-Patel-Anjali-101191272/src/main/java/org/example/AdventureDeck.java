@@ -46,13 +46,13 @@ public class AdventureDeck {
         for (int i = 0; i < foeValues.length; i++) {
             for (int j = 0; j < foeCounts[i]; j++) {
                 String cardName = "F" + foeValues[i]; // e.g., "F5", "F10"
-                //System.out.println(cardName);
+                //OutputRedirector.println(cardName);
                 deck.add(new Card(cardName, "F" , foeValues[i], "Foe"));
             }
         }
 
         // Print out the added Foe cards
-        //System.out.println("Foe deck: " + deck);
+        //OutputRedirector.println("Foe deck: " + deck);
     }
 
     private void addWeaponCards() {
@@ -68,7 +68,7 @@ public class AdventureDeck {
             }
         }
         // Print out the added Foe cards
-        //System.out.println("Weapon deck: " + deck);
+        //OutputRedirector.println("Weapon deck: " + deck);
     }
 
     // Method to draw cards
@@ -77,7 +77,7 @@ public class AdventureDeck {
 
         // Check if the number of cards requested exceeds the available cards
         if (numberOfCards > deck.size()) {
-            System.out.println("Requested number of cards (" + numberOfCards + ") exceeds the deck size (" + deck.size() + "). Drawing only available cards (" + deck.size() + ").");
+            OutputRedirector.println("Requested number of cards (" + numberOfCards + ") exceeds the deck size (" + deck.size() + "). Drawing only available cards (" + deck.size() + ").");
             numberOfCards = deck.size();  // Adjust the number of cards to draw
         }
 
@@ -133,9 +133,9 @@ public class AdventureDeck {
             deck.addAll(player.getDiscardPileA());
             // Clear the discard pile after refilling the deck
             player.getDiscardPileA().clear();
-            System.out.println("The Adventure deck has been refilled from the discard pile.");
+            OutputRedirector.println("The Adventure deck has been refilled from the discard pile.");
         } else {
-            System.out.println("The Adventure discard pile is also empty. Cannot refill the deck.");
+            OutputRedirector.println("The Adventure discard pile is also empty. Cannot refill the deck.");
         }
     }
 

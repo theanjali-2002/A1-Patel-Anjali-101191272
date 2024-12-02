@@ -3,7 +3,7 @@ package org.example;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.example.ScannerSingleton.getScannerInstance;
+//import static org.example.ScannerSingleton.getScannerInstance;
 
 public class Player {
     private String name;
@@ -60,9 +60,9 @@ public class Player {
 
     public List<Card> getHand() {
         List<Card> sortedHand = new ArrayList<>(hand);
-        //System.out.println("Before sorting: " + sortedHand);
+        //OutputRedirector.println("Before sorting: " + sortedHand);
         sortHand(sortedHand);
-        //System.out.println("After sorting: " + sortedHand);
+        //OutputRedirector.println("After sorting: " + sortedHand);
         return sortedHand;
     }
 
@@ -119,9 +119,9 @@ public class Player {
     public void discardACardFromHand(Card card) {
         if (hand.remove(card)) {
             discardPileA.add(card); // Add the card to the discard pile
-            System.out.println("Adventure card discarded: " + card.getCardName());
+            OutputRedirector.println("Adventure card discarded: " + card.getCardName());
         } else {
-            System.out.println("Card not found in hand: " + card.getCardName());
+            OutputRedirector.println("Card not found in hand: " + card.getCardName());
         }
     }
 
@@ -136,27 +136,27 @@ public class Player {
 
         while (hand.size() > 12) {
             int numToDiscard = hand.size() - 12;
-            System.out.println("*********************************************");
-            System.out.println("You have drawn/received new adventure cards!");
-            System.out.println("You need to discard " + numToDiscard + " card(s) to maintain the deck of 12");
+            OutputRedirector.println("*********************************************");
+            OutputRedirector.println("You have drawn/received new adventure cards!");
+            OutputRedirector.println("You need to discard " + numToDiscard + " card(s) to maintain the deck of 12");
 
             game.displayPlayerHand(player);
 
             // Prompt for a valid position to discard
             int position = -1;
             while (position < 1 || position > hand.size()) {
-                System.out.print("Enter the position of the card to discard (1-" + hand.size() + "): \n");
-                position = getScannerInstance().nextInt();
+                OutputRedirector.print("Enter the position of the card to discard (1-" + hand.size() + "): \n");
+                position = Integer.parseInt(ScannerSingleton.nextLine());
             }
 
             // Discard the card at the selected position
             Card cardToDiscard = hand.get(position - 1);
             discardACardFromHand(cardToDiscard);
-            System.out.println("Card trimmed discarding: "+ cardToDiscard.getCardName());
+            OutputRedirector.println("Card trimmed discarding: "+ cardToDiscard.getCardName());
         }
 
-        System.out.println("Hand trimmed to 12 cards.");
-        System.out.println("*********************************************");
+        OutputRedirector.println("Hand trimmed to 12 cards.");
+        OutputRedirector.println("*********************************************");
     }
 
     // Getter for shields
@@ -167,25 +167,25 @@ public class Player {
     // Method to reduce shields (ensures player doesn't go below 0 shields)
     public void loseShields(int amount) {
         shields = Math.max(shields - amount, 0);  // Player can't go below 0 shields
-        System.out.println(name + " has lost " + amount + " shields. Remaining shields: " + shields);
+        OutputRedirector.println(name + " has lost " + amount + " shields. Remaining shields: " + shields);
     }
 
     // Method to add shields
     public void gainShields(int amount) {
         shields += amount;
-        System.out.println(name + " has gained " + amount + " shields. Current shields: " + shields);
+        OutputRedirector.println(name + " has gained " + amount + " shields. Current shields: " + shields);
     }
 
     public int prepareAttackForStage(Stage stage, Player player) {
 
-        System.out.println(player.getName() + ", it's your turn to prepare ATTACK for " + stage.getStageId());
+        OutputRedirector.println(player.getName() + ", it's your turn to prepare ATTACK for " + stage.getStageId());
         game.displayPlayerHand(player);
         List<Card> hand = player.getHand();
 
         // Check if the player has any weapon cards
         boolean hasWeaponCard = hand.stream().anyMatch(card -> card.getCategory().equals("Weapon"));
         if (!hasWeaponCard) {
-            System.out.println(player.getName() + ", you have no valid (Weapon) cards to continue playing. You cannot participate in this quest.");
+            OutputRedirector.println(player.getName() + ", you have no valid (Weapon) cards to continue playing. You cannot participate in this quest.");
             quest.getParticipants().remove(player);  // Remove player from participants if they can't continue
             return 0;  // Return 0 since the player cannot attack
         }
@@ -195,14 +195,14 @@ public class Player {
 
         // Player selects cards to use for the stage
         while (true) {
-            System.out.println("*********************************************");
-            System.out.println("Enter the card number to select for attack or 'q' to finish:");
+            OutputRedirector.println("*********************************************");
+            OutputRedirector.println("Enter the card number to select for attack or 'q' to finish:");
 
-            String input = getScannerInstance().nextLine().trim();
+            String input = ScannerSingleton.nextLine().trim();
 
             if (input.equalsIgnoreCase("q")) {
                 if (selectedCards.isEmpty()) {
-                    System.out.println("You must select at least one card to attack.");
+                    OutputRedirector.println("You must select at least one card to attack.");
                 } else {
                     break;  // Finish selection when player is done
                 }
@@ -211,7 +211,7 @@ public class Player {
                     int cardIndex = Integer.parseInt(input) - 1;
                     if (cardIndex >= 0 && cardIndex < hand.size()) {
                         Card selectedCard = hand.get(cardIndex);
-                        System.out.println("Selected card: " + selectedCard);
+                        OutputRedirector.println("Selected card: " + selectedCard);
 
                         // Check if the selected card is already in selectedCards (by name)
                         boolean hasDuplicateCardName = selectedCards.stream()
@@ -221,19 +221,19 @@ public class Player {
                             if (!hasDuplicateCardName) {
                                 selectedCards.add(selectedCard);
                                 totalAttackValue += selectedCard.getValue();
-                                System.out.println("Added " + selectedCard + " to attack. Current attack value: " + totalAttackValue);
-                                System.out.println("*********************************************");
+                                OutputRedirector.println("Added " + selectedCard + " to attack. Current attack value: " + totalAttackValue);
+                                OutputRedirector.println("*********************************************");
                             } else {
-                                System.out.println("You cannot select the same weapon card more than once.");
+                                OutputRedirector.println("You cannot select the same weapon card more than once.");
                             }
                         } else {
-                            System.out.println("You can only select weapon cards for attack.");
+                            OutputRedirector.println("You can only select weapon cards for attack.");
                         }
                     } else {
-                        System.out.println("Invalid card number.");
+                        OutputRedirector.println("Invalid card number.");
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please enter a number or 'q'.");
+                    OutputRedirector.println("Invalid input. Please enter a number or 'q'.");
                 }
             }
         }
@@ -246,8 +246,8 @@ public class Player {
 
         stageAttackValues.put(stage.getStageId(), totalAttackValue);
 
-        System.out.println(player.getName() + " prepared attack with " + totalAttackValue + " attack value.");
-        System.out.println("*********************************************");
+        OutputRedirector.println(player.getName() + " prepared attack with " + totalAttackValue + " attack value.");
+        OutputRedirector.println("*********************************************");
         Game.clearConsole();
 
         return totalAttackValue;  // Return the total attack value to be recorded in the stage
