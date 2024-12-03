@@ -65,6 +65,8 @@ public class Quest {
             int stageValue = 0;
 
             game.displayPlayerHand(game.getCurrentPlayer());
+            game.setGameState("Sponsor is setting up the Quest's Stages!");
+
 
             boolean validStageSetup = false;
             boolean hasFoeCard = false;
@@ -131,7 +133,7 @@ public class Quest {
             OutputRedirector.println("Stage created: " + stage.getStageId());
             OutputRedirector.println("*********************************************");
         }
-        OutputRedirector.println("Quest setup complete with " + stages.size() + " stages.");
+        OutputRedirector.println("Quest setup completed!");
         OutputRedirector.println("*********************************************");
         OutputRedirector.println("*********************************************");
     }
@@ -169,6 +171,7 @@ public class Quest {
 
     // In general at first if they want to play the quest or not
     public void promptParticipants(List<Player> players, Player sponsor) {
+        //game.setGameState("Asking players to participate in Quest!");
         for (Player player : players) {
             if (!player.equals(sponsor)) {
                 OutputRedirector.println(player.getName() + ", do you want to participate in the quest? (y/n)");
@@ -188,6 +191,8 @@ public class Quest {
 
     //asking for each individual stage of quest if they want to continue or not
     public void promptEachStage(List<String> participants, Player sponsor, int stageNumber) {
+        game.setGameState("Asking players to participate in Stage-"+ stageNumber);
+
         Iterator<String> iterator = participants.iterator();
 
         while (iterator.hasNext()) {
@@ -262,6 +267,7 @@ public class Quest {
 
 
     public void resolveStage(int stageIndex, Game game) {
+        game.setGameState("Resolving Stage!");
         Stage stage = stages.get(stageIndex);
 
         // First check if there are participants
@@ -307,6 +313,7 @@ public class Quest {
     }
 
     public void resolveWinners(Game game) {
+        game.setGameState("Resolving Winners!");
         // The participants who have completed all stages are the winners of the quest.
         OutputRedirector.println("Resolving winners...");
         int shieldReward = stages.size(); // Each winner gets shields equal to the number of stages
@@ -342,7 +349,11 @@ public class Quest {
             }
         }
 
-
+        if (!gameWinners.isEmpty()) {
+            game.setGameState(gameWinners + " is/are the winner(s) of the Game!");
+        } else {
+            game.setGameState(winners + " is/are the winner(s) of the Quest!");
+        }
 
         OutputRedirector.println("*********************************************");
         // Print all winners of the quest

@@ -2,6 +2,8 @@ package org.example;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/game")
 public class GameController {
@@ -29,5 +31,10 @@ public class GameController {
     public String initializeGame() {
         new Thread(() -> gameService.startGame()).start(); // Start the game in a separate thread
         return OutputRedirector.getOutput(); // Return the initial output
+    }
+
+    @GetMapping("/state")
+    public Map<String, Object> getGameState() {
+        return gameService.getGameState(); // Return the current game state
     }
 }

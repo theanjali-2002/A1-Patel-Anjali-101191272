@@ -132,6 +132,7 @@ public class Player {
 
     // Method to trim the player's hand to 12 cards
     public void trimHandTo12Cards(Player player) {
+        game.setGameState(player.getName() + " is Trimming Hand to 12!");
         hand = player.getHand();
 
         while (hand.size() > 12) {
@@ -157,6 +158,7 @@ public class Player {
 
         OutputRedirector.println("Hand trimmed to 12 cards.");
         OutputRedirector.println("*********************************************");
+        game.setGameState("Game in Progress...");
     }
 
     // Getter for shields
@@ -177,6 +179,8 @@ public class Player {
     }
 
     public int prepareAttackForStage(Stage stage, Player player) {
+
+        game.setGameState(player.getName() + " is preparing Attack!");
 
         OutputRedirector.println(player.getName() + ", it's your turn to prepare ATTACK for " + stage.getStageId());
         game.displayPlayerHand(player);

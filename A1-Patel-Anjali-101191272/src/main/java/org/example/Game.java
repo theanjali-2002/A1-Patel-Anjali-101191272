@@ -13,6 +13,7 @@ public class Game {
     private int currentPlayerIndex;
     private int hotSeatIndex;
     private Supplier<Integer> randomSupplier;
+    private String gameState;
 
     public Game(Supplier<Integer> randomSupplier) {
         this.randomSupplier = randomSupplier != null ? randomSupplier : () -> new Random().nextInt();
@@ -201,6 +202,7 @@ public class Game {
     // Function to prompt player to draw a card
     public Card drawEventCard() {
 
+        setGameState(getHotSeatPlayer().getName() + " is Drawing Card!");
         if (eventDeck.countEventCards() == 0) {
             eventDeck.refillDeckFromDiscard();
         }
@@ -246,6 +248,7 @@ public class Game {
     }
 
     public void handleECardEffects(Card drawnCard, Player currentPlayer) {
+        setGameState(currentPlayer.getName() + " drew " + drawnCard);
         switch (drawnCard.getCardName()) {
             case "Plague":
                 OutputRedirector.println("*********************************************");
@@ -344,6 +347,7 @@ public class Game {
 
     public Player findSponsor(Player currentPlayer, List<Player> players) {
         // Get the index of the current player
+        setGameState("Finding Sponsor!");
         int currentPlayerIndex = players.indexOf(currentPlayer);
 
         // Start with the current player and loop through all players in order
@@ -358,7 +362,7 @@ public class Game {
 
             //Fixing Bug - setting sponsor as current player:
             setCurrentPlayer((currentPlayerIndex + i) % players.size());
-
+            setGameState(currentPlayer.getName() + " is a Sponsor now!");
 
             // If the player agrees to sponsor the quest, return this player
             if (sponsor) {
@@ -380,5 +384,12 @@ public class Game {
         System.out.flush();
     }
 
+    public String getGameState(){
+        return gameState;
+    }
+
+    public void setGameState(String progress){
+        gameState = progress;
+    }
 
 }

@@ -59,3 +59,46 @@ function appendOutput(text, isInput = false) {
 }
 
 
+// Function to update the progress bar
+function updateProgressBar(message) {
+    const progressBar = document.getElementById("progress-bar");
+    progressBar.innerText = message;
+}
+
+// Function to update player stats
+function updatePlayerStats(playerNumber, shields, hand) {
+    const shieldElement = document.getElementById(`player${playerNumber}-shields`);
+    const handElement = document.getElementById(`player${playerNumber}-hand`);
+    shieldElement.innerText = shields;
+    handElement.innerText = hand;
+}
+
+// Function to update current info
+function updateCurrentInfo(currentPlayer, hotSeatPlayer, cardDrawn, sponsor) {
+    document.querySelector(".current-info").innerHTML = `
+        <p>Hot Seat Player (drew Card): ${hotSeatPlayer}</p>
+        <p>Current Player (in general): ${currentPlayer}</p>
+        <p>Card Drawn: ${cardDrawn}</p>
+        <p>Sponsor (if any): ${sponsor}</p>
+    `;
+}
+
+function fetchGameState() {
+    fetch("/api/game/state") // Call the backend endpoint
+        .then(response => response.json())
+        .then(data => {
+            // Use the JSON data to update the UI
+            updateProgressBar(data.progressMessage);
+            updateCurrentInfo(data.currentPlayer, data.hotSeatPlayer, data.cardDrawn, data.sponsor);
+
+            // Update player stats
+            data.players.forEach((player, index) => {
+                updatePlayerStats(index + 1, player.shields, player.hand);
+            });
+        })
+        .catch(error => console.error("Error fetching game state:", error));
+}
+
+// Periodically fetch the game state every second
+setInterval(fetchGameState, 1000);
+
