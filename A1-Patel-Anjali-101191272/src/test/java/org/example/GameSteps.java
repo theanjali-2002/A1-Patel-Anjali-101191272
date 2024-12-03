@@ -43,7 +43,7 @@ public class GameSteps {
 
     private void simulateInput(String input) {
         input = input.replace("\\n", "\n");
-        ScannerSingleton.resetScanner(new ByteArrayInputStream(input.getBytes()));
+        //ScannerSingleton.resetScanner(new ByteArrayInputStream(input.getBytes()));
         System.setIn(in);
     }
 

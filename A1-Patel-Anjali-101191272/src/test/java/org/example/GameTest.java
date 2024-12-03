@@ -48,7 +48,7 @@ public class GameTest {
     }
 
     private void simulateInput(String input) {
-        ScannerSingleton.resetScanner(new ByteArrayInputStream(input.getBytes()));
+        //ScannerSingleton.resetScanner(new ByteArrayInputStream(input.getBytes()));
         System.setIn(in); // Set System.in to new ByteArrayInputStream
     }
 
