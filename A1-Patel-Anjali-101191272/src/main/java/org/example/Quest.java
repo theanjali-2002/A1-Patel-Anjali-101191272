@@ -59,7 +59,7 @@ public class Quest {
 
         for (int i = 0; i < numberOfStages; i++) {
             OutputRedirector.println("*********************************************");
-            OutputRedirector.println("You are setting up Stage " + (i + 1));
+            OutputRedirector.println("Sponsor is setting up Stage " + (i + 1));
             String stageId = "Stage-" + (i + 1);
             List<Card> cardsInStage = new ArrayList<>();
             int stageValue = 0;

@@ -152,7 +152,7 @@ public class Player {
             // Discard the card at the selected position
             Card cardToDiscard = hand.get(position - 1);
             discardACardFromHand(cardToDiscard);
-            OutputRedirector.println("Card trimmed discarding: "+ cardToDiscard.getCardName());
+            //OutputRedirector.println("Card trimmed discarding: "+ cardToDiscard.getCardName());
         }
 
         OutputRedirector.println("Hand trimmed to 12 cards.");

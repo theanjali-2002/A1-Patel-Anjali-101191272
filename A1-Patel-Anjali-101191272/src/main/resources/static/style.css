@@ -1,28 +1,71 @@
+/* General styles */
 body {
   font-family: monospace;
   background-color: #1e1e1e;
-  color: #00ff00;
+  color: #3cb043;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
+  justify-content: flex-start;
   margin: 0;
+  height: 100vh;
   font-size: 1rem;
 }
 
-.terminal {
-  width: 80%;
-  max-width: 600px;
+/* Game title */
+.game-title {
+  text-align: center;
+  padding: 5px 0;
+  color: #3cb043;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* Progress bar container */
+.progress-bar-container {
+  width: 90%;
+  max-width: 1200px;
+  background-color: #111;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.progress-bar {
+  background-color: #222;
+  color: #ff3333;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Game container */
+.game-container {
+  display: flex;
+  width: 90%;
+  max-width: 1200px;
   background-color: #000;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.5);
 }
 
+/* Game screen */
+.game-screen {
+  flex: 2;
+  margin-right: 20px;
+}
+
 #output {
-  height: 500px; /* Increased height for the output area */
+  height: 400px;
   overflow-y: auto;
   margin-bottom: 10px;
+  background-color: #111;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .input-line {
@@ -31,18 +74,78 @@ body {
 }
 
 .prompt {
-  color: #00ff00;
+  color: #ff3333;
   margin-right: 5px;
 }
 
 #commandInput {
   background: none;
   border: none;
-  color: #00ff00;
+  color: #ff3333;
   outline: none;
   width: 100%;
 }
 
-#commandInput::placeholder {
-  color: #00ff00;
+/* Info panel */
+.info-panel {
+  flex: 1;
+  background-color: #111;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.winner-section {
+  margin-top: 10px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.current-info {
+  color: #3cb043;
+  margin-bottom: 15px;
+}
+
+.current-info p {
+  margin: 5px 0;
+}
+
+/* Player info */
+.players-info {
+  margin-top: 10px;
+}
+
+.player-info {
+  background-color: #222;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-info p {
+  margin: 0;
+  font-weight: bold;
+  color: #3cb043;
+}
+
+.stats {
+  margin-top: 5px;
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
+
+.stats span {
+  font-size: 0.9rem;
+  color: #fff;
+  margin-right: 120px;
+}
+
+.stats span:last-child {
+  margin-right: 0; /* Ensure no extra margin for the last item */
+}
+
+.stats span span {
+  font-weight: bold;
+  color: #ff3333;
 }

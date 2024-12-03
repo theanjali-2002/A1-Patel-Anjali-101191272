@@ -152,6 +152,10 @@ public class Game {
         }
     }
 
+    public Player getHotSeatPlayer() {
+        return players.get(hotSeatIndex);
+    }
+
     public Player getCurrentPlayer() {
         // Check if the players list is not empty before accessing it
         if (players.isEmpty()) {
@@ -210,7 +214,7 @@ public class Game {
             if (input.equalsIgnoreCase("e")) {
                 // Player pressed 'e', draw a random event card
                 List<Card> deck = eventDeck.getDeck();  // Get the deck list
-                OutputRedirector.println("debug event deck: "+ deck);
+                //OutputRedirector.println("debug event deck: "+ deck);
                 Card drawnCard = null;
 
                 // Find and remove a random event card from the deck
@@ -222,7 +226,7 @@ public class Game {
                     if ("Event".equals(card.getCategory()) ||  "Quest".equals(card.getCategory())) {
                         drawnCard = card;
                         deck.remove(card);
-                        OutputRedirector.println("debug discarding drawn card: " + drawnCard.getCardName());
+                        //OutputRedirector.println("debug discarding drawn card: " + drawnCard.getCardName());
                     }
                 }
 
@@ -245,7 +249,7 @@ public class Game {
         switch (drawnCard.getCardName()) {
             case "Plague":
                 OutputRedirector.println("*********************************************");
-                OutputRedirector.println("Card Drawn: Plague card.");
+                //OutputRedirector.println("Card Drawn: Plague card.");
                 OutputRedirector.println("Current player " + currentPlayer.getName() + " loses 2 shields.");
                 OutputRedirector.println("*********************************************");
                 currentPlayer.loseShields(2);
@@ -253,7 +257,7 @@ public class Game {
 
             case "Queen's Favor":
                 OutputRedirector.println("*********************************************");
-                OutputRedirector.println("Card Drawn: Queen's favor card.");
+                //OutputRedirector.println("Card Drawn: Queen's favor card.");
                 OutputRedirector.println("Current player will draw 2 adventure cards.");
                 OutputRedirector.println("*********************************************");
                 currentPlayer.receiveCards(adventureDeck.drawACards(2));
@@ -262,7 +266,7 @@ public class Game {
 
             case "Prosperity":
                 OutputRedirector.println("*********************************************");
-                OutputRedirector.println("Card Drawn: Prosperity Card.");
+                //OutputRedirector.println("Card Drawn: Prosperity Card.");
                 OutputRedirector.println("All players draw 2 adventure cards.");
                 OutputRedirector.println("*********************************************");
                 OutputRedirector.println("Loading ... ...");
@@ -375,5 +379,6 @@ public class Game {
         OutputRedirector.print("\n".repeat(100)); // Prints 100 newlines to simulate a cleared screen
         System.out.flush();
     }
+
 
 }

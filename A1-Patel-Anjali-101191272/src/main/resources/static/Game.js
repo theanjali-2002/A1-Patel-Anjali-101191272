@@ -20,7 +20,7 @@ commandInput.addEventListener("keypress", function (event) {
         const command = commandInput.value.trim();
         commandInput.value = "";
 
-        appendOutput(`> ${command}`); // Display the input
+        appendOutput(`> ${command}`, true); // Display the input
 
         // Send the command to the backend
         fetch("/api/game/input", {
@@ -43,14 +43,19 @@ function fetchOutput() {
 }
 
 // Function to append text to the output area
-function appendOutput(text) {
+// Function to append text to the output area
+function appendOutput(text, isInput = false) {
   const outputDiv = document.getElementById("output");
   const lines = text.split("\n"); // Split text by newline characters
   lines.forEach((line) => {
     const newLine = document.createElement("div");
     newLine.textContent = line;
+    if (isInput) {
+      newLine.style.color = "#ff3333"; // Red for user input
+    }
     outputDiv.appendChild(newLine);
   });
   outputDiv.scrollTop = outputDiv.scrollHeight;
 }
+
 
