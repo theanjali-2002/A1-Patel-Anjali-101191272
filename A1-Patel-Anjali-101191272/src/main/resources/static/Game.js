@@ -43,7 +43,6 @@ function fetchOutput() {
 }
 
 // Function to append text to the output area
-// Function to append text to the output area
 function appendOutput(text, isInput = false) {
   const outputDiv = document.getElementById("output");
   const lines = text.split("\n"); // Split text by newline characters

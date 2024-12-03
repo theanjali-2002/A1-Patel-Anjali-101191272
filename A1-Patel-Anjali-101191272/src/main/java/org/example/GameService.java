@@ -2,9 +2,11 @@ package org.example;
 import java.util.*;
 
 public class GameService {
-    private final Game game;
-    private final Quest quest;
+    private Game game;
+    private Quest quest;
     private Card lastDrawnCard;
+    private boolean isRunning = true;
+    private Thread gameThread;
 
     public GameService() {
         game = new Game();
@@ -13,42 +15,47 @@ public class GameService {
     }
 
     public void startGame() {
-        UserInterface userInterface = new UserInterface();
-        userInterface.displayGameStartMessage(true);
+        isRunning = true;
+        gameThread = new Thread(() -> {
+            UserInterface userInterface = new UserInterface();
+            userInterface.displayGameStartMessage(true);
 
-        game.initializeGameEnvironment();
-        game.initializePlayers();
-        game.distributeAdventureCards();
+            game.initializeGameEnvironment();
+            game.initializePlayers();
+            game.distributeAdventureCards();
 
-        while (true) {
-            lastDrawnCard = game.drawEventCard();
-            if ("Event".equals(lastDrawnCard.getCategory())) {
-                game.handleECardEffects(lastDrawnCard, game.getCurrentPlayer());
-            } else {
-                OutputRedirector.println("It is a Quest card");
-                Player sponsor = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
-                if (sponsor == null) {
-                    game.nextHotSeatPlayer();
+            while (isRunning) {
+                lastDrawnCard = game.drawEventCard();
+                if ("Event".equals(lastDrawnCard.getCategory())) {
+                    game.handleECardEffects(lastDrawnCard, game.getCurrentPlayer());
                 } else {
-                    quest.setupQuest(game, lastDrawnCard);
-                    game.setGameState("Asking players to participate in Quest!");
-                    quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
-
-                    for (int i = 0; i < lastDrawnCard.getValue(); i++) {
-                        quest.prepareForQuest(game, i);
-                        quest.prepareForStage(i, game, quest);
-                        quest.resolveStage(i, game);
-                    }
-
-                    if (quest.getWinners() == null) {
+                    OutputRedirector.println("It is a Quest card");
+                    Player sponsor = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
+                    if (sponsor == null) {
                         game.nextHotSeatPlayer();
                     } else {
-                        OutputRedirector.println("Quest finished!");
+                        quest.setupQuest(game, lastDrawnCard);
+                        game.setGameState("Asking players to participate in Quest!");
+                        quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
+
+                        for (int i = 0; i < lastDrawnCard.getValue(); i++) {
+                            quest.prepareForQuest(game, i);
+                            quest.prepareForStage(i, game, quest);
+                            quest.resolveStage(i, game);
+                        }
+
+                        if (quest.getWinners() == null) {
+                            game.nextHotSeatPlayer();
+                        } else {
+                            OutputRedirector.println("Quest finished!");
+                        }
                     }
                 }
             }
-        }
+        });
+        gameThread.start();
     }
+
 
     public Map<String, Object> getGameState() {
         Map<String, Object> gameState = new HashMap<>();
@@ -86,6 +93,25 @@ public class GameService {
 
         return gameState; // This will be converted to JSON automatically by Spring Boot
     }
+
+
+
+    public void rigHandsForPlayers(List<Card> cards, String playerName) {
+        Player player = game.getPlayerByName(playerName);
+        player.setClearHand(cards);
+        player.clearReceivedCardEvents();
+    }
+
+    public void rigDecksForGame(List<Card> eDeck, List<Card> aDeck) {
+        AdventureDeck adventureDeck = game.getAdventureDeck();
+        adventureDeck.clearDeck();
+        adventureDeck.setDeck(aDeck);
+
+        EventDeck eventDeck = game.getEventDeck();
+        eventDeck.clearDeck();
+        eventDeck.setDeck(eDeck);
+    }
+
 
 
 
