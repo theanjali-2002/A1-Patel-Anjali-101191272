@@ -27,7 +27,7 @@ public class GameService {
     }
 
     private void resetGame() {
-        game = new Game();
+        game = new Game(()->0);
         quest = new Quest();
         lastDrawnCard = null;
     }
@@ -48,6 +48,15 @@ public class GameService {
     }
 
     public void startGame(List<Card> riggedAdventureDeck, List<Card> riggedEventDeck, Map<String, List<Card>> riggedHands) {
+
+        // Start the game logic
+        UserInterface userInterface = new UserInterface();
+        boolean ui = userInterface.displayGameStartMessage(true);
+        if (!ui) {
+            stopGame();
+            return;
+        }
+
         // Rigging phase: Override initialized decks and hands if rigging data is provided
         if (riggedAdventureDeck != null && riggedEventDeck != null && riggedHands != null) {
             rigDecksForGame(riggedEventDeck, riggedAdventureDeck);
@@ -58,17 +67,9 @@ public class GameService {
 
             validateRigging(riggedAdventureDeck, riggedEventDeck, riggedHands);
             System.out.println("Game rigged successfully with custom decks and hands.");
+        } else {
+            game.distributeAdventureCards();
         }
-
-        // Start the game logic
-        UserInterface userInterface = new UserInterface();
-        boolean ui = userInterface.displayGameStartMessage(true);
-        if (!ui) {
-            stopGame();
-            return;
-        }
-
-        game.distributeAdventureCards();
 
         isRunning = true;
         gameThread = new Thread(() -> {

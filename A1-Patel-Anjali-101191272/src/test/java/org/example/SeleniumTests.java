@@ -340,7 +340,7 @@ public class SeleniumTests {
 
     @AfterEach
     public void tearDown() {
-            gameService.stopGame();
+        gameService.stopGame();
 
         if (driver != null) {
             driver.quit();
