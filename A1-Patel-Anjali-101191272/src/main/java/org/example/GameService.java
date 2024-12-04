@@ -1,24 +1,52 @@
 package org.example;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Service;
+
 import java.util.*;
 
+@Service
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class GameService {
     private Game game;
     private Quest quest;
     private Card lastDrawnCard;
     private boolean isRunning = true;
     private Thread gameThread;
+    AdventureDeck adventureDeck;
+    EventDeck eventDeck;
 
     public GameService() {
+        //resetGame();
+    }
+
+    private boolean resetGame() {
         game = new Game();
         quest = new Quest();
         lastDrawnCard = null;
+        UserInterface userInterface = new UserInterface();
+        return userInterface.displayGameStartMessage(true);
+    }
+
+    public void stopGame() {
+        isRunning = false;
+        if (gameThread != null && gameThread.isAlive()) {
+            try {
+                gameThread.join(); // Wait for the thread to terminate
+            } catch (InterruptedException e) {
+                OutputRedirector.println("Error while stopping the game thread: " + e.getMessage());
+            }
+        }
     }
 
     public void startGame() {
+        if (!resetGame()) {
+            OutputRedirector.println("Game has been terminated by the user.");
+            stopGame();
+            return; // Exit if the user chooses to quit
+        }
         isRunning = true;
         gameThread = new Thread(() -> {
-            UserInterface userInterface = new UserInterface();
-            userInterface.displayGameStartMessage(true);
 
             game.initializeGameEnvironment();
             game.initializePlayers();
@@ -97,18 +125,19 @@ public class GameService {
 
 
     public void rigHandsForPlayers(List<Card> cards, String playerName) {
-        Player player = game.getPlayerByName(playerName);
-        player.setClearHand(cards);
-        player.clearReceivedCardEvents();
+        game.getPlayerByName(playerName).setClearHand(cards);
+        game.getPlayerByName(playerName).clearReceivedCardEvents();
     }
 
     public void rigDecksForGame(List<Card> eDeck, List<Card> aDeck) {
-        AdventureDeck adventureDeck = game.getAdventureDeck();
+        adventureDeck = game.getAdventureDeck();
         adventureDeck.clearDeck();
+        System.out.println("A deck after clear: "+ adventureDeck.getDeck().size());
         adventureDeck.setDeck(aDeck);
 
-        EventDeck eventDeck = game.getEventDeck();
+        eventDeck = game.getEventDeck();
         eventDeck.clearDeck();
+        System.out.println("E deck after clear: "+ eventDeck.getDeck().size());
         eventDeck.setDeck(eDeck);
     }
 

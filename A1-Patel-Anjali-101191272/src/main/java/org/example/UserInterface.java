@@ -11,7 +11,7 @@ public class UserInterface {
     }
 
     // Method to display game start message and instructions
-    public void displayGameStartMessage(boolean waitForInput) {
+    public boolean displayGameStartMessage(boolean waitForInput) {
         // Display the game start message
         OutputRedirector.println("***********************************************************");
         OutputRedirector.println("          Welcome to the 4004 Assignment 1 Game!          ");
@@ -35,15 +35,16 @@ public class UserInterface {
 
                 if ("s".equals(userInput)) {
                     OutputRedirector.println("Game Starting...\n");
-                    break; // Exit the loop if input is valid
+                    return true;
                 } else if ("q".equals(userInput)) {
                     OutputRedirector.println("Game Exiting...\n");
-                    break; // Exit the loop if input is valid
+                    return false;
                 } else {
                     OutputRedirector.println("Invalid input! Please enter 's' to start or 'q' to quit.\n");
                 }
             }
         }
+        return true;
     }
 
     // Method to display the current player's turn, their hand, and ask to draw an event card

@@ -1,5 +1,6 @@
 package org.example;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,17 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+//@CrossOrigin(origins = "http://localhost:8080/")
 @RequestMapping("/api/game")
 public class GameController {
 
-    private boolean isGameInitialized = false;
     private GameService gameService;
-
 
     public GameController() {
         this.gameService = new GameService();
     }
-
 
     @PostMapping("/input")
     public void sendCommand(@RequestBody String command) {
@@ -35,8 +34,8 @@ public class GameController {
 
     @GetMapping("/initialize")
     public String initializeGame() {
-        new Thread(() -> gameService.startGame()).start(); // Start the game in a separate thread
-        return OutputRedirector.getOutput(); // Return the initial output
+        new Thread(() -> gameService.startGame()).start();
+        return OutputRedirector.getOutput();
     }
 
     @GetMapping("/state")
