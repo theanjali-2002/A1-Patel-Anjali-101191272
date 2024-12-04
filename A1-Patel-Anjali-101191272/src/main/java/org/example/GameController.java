@@ -1,6 +1,4 @@
 package org.example;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,9 +31,19 @@ public class GameController {
     }
 
     @GetMapping("/initialize")
-    public String initializeGame() {
-        new Thread(() -> gameService.startGame()).start();
-        return OutputRedirector.getOutput();
+    public ResponseEntity<String> initializeGame() {
+        gameService.initializeGame();
+        return ResponseEntity.ok("Game initialized");
+    }
+
+    @GetMapping("/start")
+    public String startGame() {
+        try {
+            gameService.startGame();
+            return "Game started successfully.";
+        } catch (IllegalStateException e) {
+            return "Error: " + e.getMessage();
+        }
     }
 
     @GetMapping("/state")
@@ -46,6 +54,13 @@ public class GameController {
 
     @PostMapping("/scenario1")
     public ResponseEntity<String> rigScenario1() {
+        System.out.println("rigScenario1 method called");
+
+        // Ensure game is fully initialized
+        if (gameService.getGame() == null || gameService.getGame().getPlayers().isEmpty()) {
+            return ResponseEntity.status(400).body("Error: Game or players are not initialized.");
+        }
+
         List<Card> testCardsP1 = new ArrayList<>(Arrays.asList(
                 new Card("F5", "F", 5, "Foe"),
                 new Card("F5", "F", 5, "Foe"),
@@ -147,6 +162,8 @@ public class GameController {
         gameService.rigHandsForPlayers(testCardsP3, "P3");
         gameService.rigHandsForPlayers(testCardsP4, "P4");
         gameService.rigDecksForGame(eventDeckList, adventureDeckList);
+
+        System.out.println("rigScenario1 method DONE--------");
 
         return ResponseEntity.ok("Scenario 1 rigged successfully");
     }

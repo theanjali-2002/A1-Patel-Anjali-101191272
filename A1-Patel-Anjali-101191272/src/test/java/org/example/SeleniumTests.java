@@ -13,6 +13,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,10 +81,24 @@ public class SeleniumTests {
     }
 
     @Test
-    public  void A1_scenario() throws MalformedURLException, ProtocolException, IOException, InterruptedException {
-        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8080/scenario1").openConnection();
-        connection.setRequestMethod("POST");
-        connection.getResponseCode();
+    public void A1_scenario() throws MalformedURLException, ProtocolException, IOException, InterruptedException {
+        // Step 1: Initialize the game
+        HttpURLConnection initConnection = (HttpURLConnection) new URL("http://localhost:8080/api/game/initialize").openConnection();
+        initConnection.setRequestMethod("GET");
+        assertEquals(200, initConnection.getResponseCode(), "Failed to initialize game");
+        Thread.sleep(2000);
+
+        // Step 2: Rig the scenario
+        HttpURLConnection rigConnection = (HttpURLConnection) new URL("http://localhost:8080/api/game/scenario1").openConnection();
+        rigConnection.setRequestMethod("POST");
+        assertEquals(200, rigConnection.getResponseCode(), "Failed to rig scenario");
+        Thread.sleep(2000);
+
+        // Step 3: Start the game
+        HttpURLConnection startConnection = (HttpURLConnection) new URL("http://localhost:8080/api/game/start").openConnection();
+        startConnection.setRequestMethod("GET");
+        assertEquals(200, startConnection.getResponseCode(), "Failed to start game");
+        Thread.sleep(2000);
 
         driver.get("http://localhost:8080");
         Thread.sleep(5000);
@@ -124,8 +141,8 @@ public class SeleniumTests {
             gameService.stopGame(); // Call stopGame on the injected GameService
         }
 
-        if (driver != null) {
-            driver.quit();
-        }
+//        if (driver != null) {
+//            driver.quit();
+//        }
     }
 }

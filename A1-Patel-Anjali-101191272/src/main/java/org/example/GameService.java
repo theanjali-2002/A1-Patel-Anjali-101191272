@@ -4,6 +4,9 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Service
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -20,12 +23,10 @@ public class GameService {
         //resetGame();
     }
 
-    private boolean resetGame() {
+    private void resetGame() {
         game = new Game();
         quest = new Quest();
         lastDrawnCard = null;
-        UserInterface userInterface = new UserInterface();
-        return userInterface.displayGameStartMessage(true);
     }
 
     public void stopGame() {
@@ -39,19 +40,30 @@ public class GameService {
         }
     }
 
+    public Game getGame() {
+        return game;
+    }
+
+    public void initializeGame() {
+        resetGame();
+        game.initializeGameEnvironment();
+        game.initializePlayers();
+        game.distributeAdventureCards();
+        System.out.println("Game initialized with players: " + game.getPlayers());
+    }
+
+
     public void startGame() {
-        if (!resetGame()) {
-            OutputRedirector.println("Game has been terminated by the user.");
-            stopGame();
-            return; // Exit if the user chooses to quit
+        if (game == null) {
+            throw new IllegalStateException("Game is not initialized. Please initialize the game before starting.");
         }
+
+        UserInterface userInterface = new UserInterface();
+        boolean ui = userInterface.displayGameStartMessage(true);
+        if (!ui) {stopGame();}
+
         isRunning = true;
         gameThread = new Thread(() -> {
-
-            game.initializeGameEnvironment();
-            game.initializePlayers();
-            game.distributeAdventureCards();
-
             while (isRunning) {
                 lastDrawnCard = game.drawEventCard();
                 if ("Event".equals(lastDrawnCard.getCategory())) {
@@ -125,11 +137,20 @@ public class GameService {
 
 
     public void rigHandsForPlayers(List<Card> cards, String playerName) {
+        if (game == null || game.getPlayers().isEmpty()) {
+            throw new IllegalStateException("Game or players are not initialized. Cannot rig hands.");
+        }
+        System.out.println("testing player hand: "+ game.getPlayerByName("P1").getHand());
         game.getPlayerByName(playerName).setClearHand(cards);
+        System.out.println("testing 2 player hand: "+ game.getPlayerByName("P1").getHand());
         game.getPlayerByName(playerName).clearReceivedCardEvents();
+        System.out.println("testing 3 player hand: "+ game.getPlayerByName("P1").getHand());
     }
 
     public void rigDecksForGame(List<Card> eDeck, List<Card> aDeck) {
+        if (game == null) {
+            throw new IllegalStateException("Game is not initialized. Cannot rig decks.");
+        }
         adventureDeck = game.getAdventureDeck();
         adventureDeck.clearDeck();
         System.out.println("A deck after clear: "+ adventureDeck.getDeck().size());
