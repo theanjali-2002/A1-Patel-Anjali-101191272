@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SeleniumTests {
 
-    @Autowired
     private GameService gameService;
 
     private WebDriver driver;
@@ -50,14 +49,11 @@ public class SeleniumTests {
         // Set the ChromeDriver path (skip this if added to PATH)
         System.setProperty("webdriver.chrome.driver", "C:/Users/thean/OneDrive/Desktop/Anjali/Fall24/comp4004/A1-Patel-Anjali-101191272/chromedriver-win64/chromedriver.exe");
         driver = new ChromeDriver();
-        //driver.get("http://localhost:8080");
+        driver.get("http://localhost:8080");
     }
 
     @Test
     public void testGameTitle() throws InterruptedException {
-        driver.get("http://localhost:8080");
-        Thread.sleep(2000);
-
         // Verify the game title
         WebElement title = driver.findElement(By.className("game-title"));
         assertEquals("4004 Quest Game", title.getText());
@@ -65,7 +61,7 @@ public class SeleniumTests {
         WebElement commandInput = driver.findElement(By.id("commandInput"));
         commandInput.sendKeys("s");
         commandInput.sendKeys(Keys.RETURN);
-        Thread.sleep(5000);
+        Thread.sleep(1000);
 
         // Player 1
         WebElement player1Shields = driver.findElement(By.id("player1-shields"));
@@ -82,11 +78,17 @@ public class SeleniumTests {
 
     @Test
     public void A1_scenario() throws MalformedURLException, ProtocolException, IOException, InterruptedException {
-        // Step 1: Initialize the game
-        HttpURLConnection initConnection = (HttpURLConnection) new URL("http://localhost:8080/api/game/initialize").openConnection();
-        initConnection.setRequestMethod("GET");
-        assertEquals(200, initConnection.getResponseCode(), "Failed to initialize game");
-        Thread.sleep(2000);
+        // Reset the game state
+//        HttpURLConnection resetConnection = (HttpURLConnection) new URL("http://localhost:8080/api/game/reset").openConnection();
+//        resetConnection.setRequestMethod("GET");
+//        assertEquals(200, resetConnection.getResponseCode(), "Failed to reset game");
+
+//        // Initialize the game
+//        HttpURLConnection initConnection = (HttpURLConnection) new URL("http://localhost:8080/api/game/initialize").openConnection();
+//        initConnection.setRequestMethod("GET");
+//        assertEquals(200, initConnection.getResponseCode(), "Failed to initialize game");
+//        Thread.sleep(2000); // Wait for initialization to complete
+
 
         // Step 2: Rig the scenario
         HttpURLConnection rigConnection = (HttpURLConnection) new URL("http://localhost:8080/api/game/scenario1").openConnection();
@@ -98,9 +100,6 @@ public class SeleniumTests {
         HttpURLConnection startConnection = (HttpURLConnection) new URL("http://localhost:8080/api/game/start").openConnection();
         startConnection.setRequestMethod("GET");
         assertEquals(200, startConnection.getResponseCode(), "Failed to start game");
-        Thread.sleep(2000);
-
-        driver.get("http://localhost:8080");
         Thread.sleep(5000);
 
         WebElement commandInput = driver.findElement(By.id("commandInput"));
@@ -141,8 +140,8 @@ public class SeleniumTests {
             gameService.stopGame(); // Call stopGame on the injected GameService
         }
 
-//        if (driver != null) {
-//            driver.quit();
-//        }
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }

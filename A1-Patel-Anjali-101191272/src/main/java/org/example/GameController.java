@@ -1,4 +1,5 @@
 package org.example;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:8080/")
 @RequestMapping("/api/game")
+//@SessionAttributes("gameService")
 public class GameController {
 
     private GameService gameService;
@@ -49,6 +50,12 @@ public class GameController {
     @GetMapping("/state")
     public Map<String, Object> getGameState() {
         return gameService.getGameState(); // Return the current game state
+    }
+
+    @GetMapping("/reset")
+    public ResponseEntity<String> resetGame() {
+        gameService.initializeGame(); // Explicit reset for the session
+        return ResponseEntity.ok("Game reset");
     }
 
 
