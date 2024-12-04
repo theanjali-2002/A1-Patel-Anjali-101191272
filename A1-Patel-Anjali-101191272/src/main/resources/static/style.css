@@ -109,19 +109,47 @@ body {
 }
 
 .player-info {
-  background-color: #222;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
+    background-color: #222;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.inline-stats {
+    font-size: 0.9rem;
+    color: #fff; /* Default text color */
+    margin-left: 5px;
+    font-weight: normal;
+    margin-right: 40px;
+}
+
+.inline-stats span {
+    font-weight: bold;
+    color: #ff3333; /* Red color for the count values */
+}
+
+.cards {
+    margin-top: 5px; /* Reduced margin for tighter spacing */
+    color: #ffcc00;
+    font-size: 0.9rem;
+    background-color: #333;
+    padding: 5px;
+    border-radius: 5px;
+    max-height: 100px; /* Allow scrolling if needed */
+    overflow-y: auto;
 }
 
 .player-info p {
-  margin: 0;
-  font-weight: bold;
-  color: #3cb043;
+    margin: 0 0 5px 0; /* Adjust spacing */
+    font-weight: bold;
+    color: #3cb043;
+    display: flex;
+    flex-wrap: wrap; /* Ensure stats wrap properly on smaller screens */
+    gap: 10px; /* Add space between stats */
 }
+
 
 .stats {
   margin-top: 5px;
@@ -142,30 +170,4 @@ body {
 .stats span span {
   font-weight: bold;
   color: #ff3333;
-}
-
-#resetButton {
-    background-color: #4CAF50; /* Green background */
-    color: white; /* White text */
-    border: none; /* No border */
-    padding: 10px 20px; /* Padding for size */
-    text-align: center; /* Center text */
-    text-decoration: none; /* Remove underline */
-    display: inline-block; /* Inline block for proper positioning */
-    font-size: 16px; /* Font size */
-    margin: 10px 2px; /* Margin around the button */
-    cursor: pointer; /* Pointer cursor on hover */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
-}
-
-#resetButton:hover {
-    background-color: #45a049; /* Darker green on hover */
-    transform: scale(1.05); /* Slightly enlarge button on hover */
-}
-
-#resetButton:active {
-    background-color: #3e8e41; /* Even darker green on click */
-    transform: scale(0.95); /* Shrink slightly on click */
-    box-shadow: 0 5px #666; /* Add shadow for click effect */
 }

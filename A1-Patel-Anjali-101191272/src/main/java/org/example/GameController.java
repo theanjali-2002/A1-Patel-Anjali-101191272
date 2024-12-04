@@ -1,4 +1,6 @@
 package org.example;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,16 +9,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/game")
 //@SessionAttributes("gameService")
 public class GameController {
 
-    private GameService gameService;
+//    private GameService gameService;
+//
+//    public GameController() {
+//        this.gameService = new GameService();
+//    }
 
-    public GameController() {
-        this.gameService = new GameService();
+    private final GameService gameService;
+
+    @Autowired
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
     }
 
     @PostMapping("/input")
@@ -31,19 +41,13 @@ public class GameController {
         return OutputRedirector.getOutput(); // Fetch game output to send to the frontend
     }
 
-    @GetMapping("/initialize")
-    public ResponseEntity<String> initializeGame() {
-        gameService.initializeGame();
-        return ResponseEntity.ok("Game initialized");
-    }
-
     @GetMapping("/start")
-    public String startGame() {
+    public ResponseEntity<String> startGame() {
         try {
-            gameService.startGame();
-            return "Game started successfully.";
-        } catch (IllegalStateException e) {
-            return "Error: " + e.getMessage();
+            gameService.startGame(null, null, null);
+            return ResponseEntity.ok("Game started successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Error: " + e.getMessage());
         }
     }
 
@@ -52,11 +56,38 @@ public class GameController {
         return gameService.getGameState(); // Return the current game state
     }
 
-    @GetMapping("/reset")
-    public ResponseEntity<String> resetGame() {
-        gameService.initializeGame(); // Explicit reset for the session
-        return ResponseEntity.ok("Game reset");
+    @PostMapping("/rig")
+    public ResponseEntity<String> rigGame(@RequestBody Map<String, Object> rigData) {
+        List<Card> riggedAdventureDeck = parseDeck((List<Map<String, Object>>) rigData.get("adventureDeck"));
+        List<Card> riggedEventDeck = parseDeck((List<Map<String, Object>>) rigData.get("eventDeck"));
+        Map<String, List<Card>> riggedHands = parseHands((Map<String, List<Map<String, Object>>>) rigData.get("hands"));
+
+        gameService.rigDecksForGame(riggedEventDeck, riggedAdventureDeck);
+        riggedHands.forEach((player, cards) -> gameService.rigHandsForPlayers(cards, player));
+
+        return ResponseEntity.ok("Game rigged successfully");
     }
+
+    private List<Card> parseDeck(List<Map<String, Object>> rawDeck) {
+        return rawDeck.stream()
+                .map(data -> new Card(
+                        (String) data.get("cardName"),
+                        (String) data.get("type"),
+                        (Integer) data.get("value"),
+                        (String) data.get("category")
+                ))
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, List<Card>> parseHands(Map<String, List<Map<String, Object>>> rawHands) {
+        return rawHands.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> parseDeck(entry.getValue())
+                ));
+    }
+
+
 
 
     @PostMapping("/scenario1")

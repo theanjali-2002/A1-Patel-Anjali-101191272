@@ -20,7 +20,10 @@ public class GameService {
     EventDeck eventDeck;
 
     public GameService() {
-        //resetGame();
+        resetGame();
+        game.initializeGameEnvironment();
+        game.initializePlayers();
+        System.out.println("Game initialized with players: " + game.getPlayers().size());
     }
 
     private void resetGame() {
@@ -44,28 +47,34 @@ public class GameService {
         return game;
     }
 
-    public void initializeGame() {
-        resetGame();
-        game.initializeGameEnvironment();
-        game.initializePlayers();
-        game.distributeAdventureCards();
-        System.out.println("Game initialized with players: " + game.getPlayers());
-    }
+    public void startGame(List<Card> riggedAdventureDeck, List<Card> riggedEventDeck, Map<String, List<Card>> riggedHands) {
+        // Rigging phase: Override initialized decks and hands if rigging data is provided
+        if (riggedAdventureDeck != null && riggedEventDeck != null && riggedHands != null) {
+            rigDecksForGame(riggedEventDeck, riggedAdventureDeck);
 
+            for (Map.Entry<String, List<Card>> entry : riggedHands.entrySet()) {
+                rigHandsForPlayers(entry.getValue(), entry.getKey());
+            }
 
-    public void startGame() {
-        if (game == null) {
-            throw new IllegalStateException("Game is not initialized. Please initialize the game before starting.");
+            validateRigging(riggedAdventureDeck, riggedEventDeck, riggedHands);
+            System.out.println("Game rigged successfully with custom decks and hands.");
         }
 
+        // Start the game logic
         UserInterface userInterface = new UserInterface();
         boolean ui = userInterface.displayGameStartMessage(true);
-        if (!ui) {stopGame();}
+        if (!ui) {
+            stopGame();
+            return;
+        }
+
+        game.distributeAdventureCards();
 
         isRunning = true;
         gameThread = new Thread(() -> {
             while (isRunning) {
                 lastDrawnCard = game.drawEventCard();
+                System.out.println("drawn card should be Q4: "+ lastDrawnCard);
                 if ("Event".equals(lastDrawnCard.getCategory())) {
                     game.handleECardEffects(lastDrawnCard, game.getCurrentPlayer());
                 } else {
@@ -97,12 +106,12 @@ public class GameService {
     }
 
 
+
     public Map<String, Object> getGameState() {
         Map<String, Object> gameState = new HashMap<>();
 
         // Add general game info
         gameState.put("progressMessage", game.getGameState());
-        //gameState.put("currentPlayer", game.getCurrentPlayer().getName());
         gameState.put("hotSeatPlayer", game.getHotSeatPlayer().getName());
 
         if (lastDrawnCard != null) {
@@ -127,6 +136,13 @@ public class GameService {
             playerData.put("name", player.getName());
             playerData.put("shields", player.getShields());
             playerData.put("hand", player.getHand().size()); // Number of cards in hand
+
+            // Add player's cards as a list of card names
+            List<String> cardNames = player.getHand().stream()
+                    .map(Card::getCardName)
+                    .collect(Collectors.toList());
+            playerData.put("cards", cardNames);
+
             players.add(playerData);
         }
         gameState.put("players", players);
@@ -140,11 +156,9 @@ public class GameService {
         if (game == null || game.getPlayers().isEmpty()) {
             throw new IllegalStateException("Game or players are not initialized. Cannot rig hands.");
         }
-        System.out.println("testing player hand: "+ game.getPlayerByName("P1").getHand());
         game.getPlayerByName(playerName).setClearHand(cards);
-        System.out.println("testing 2 player hand: "+ game.getPlayerByName("P1").getHand());
         game.getPlayerByName(playerName).clearReceivedCardEvents();
-        System.out.println("testing 3 player hand: "+ game.getPlayerByName("P1").getHand());
+        System.out.println("testing player hand: "+ game.getPlayerByName("P1").getHand().size());
     }
 
     public void rigDecksForGame(List<Card> eDeck, List<Card> aDeck) {
@@ -155,12 +169,56 @@ public class GameService {
         adventureDeck.clearDeck();
         System.out.println("A deck after clear: "+ adventureDeck.getDeck().size());
         adventureDeck.setDeck(aDeck);
+        System.out.println("A deck after RIGGED: "+ adventureDeck.getDeck().size());
+        System.out.println("A deck after RIGGED: "+ adventureDeck.getDeck());
 
         eventDeck = game.getEventDeck();
         eventDeck.clearDeck();
         System.out.println("E deck after clear: "+ eventDeck.getDeck().size());
         eventDeck.setDeck(eDeck);
+        System.out.println("E deck after RIGGED: "+ eventDeck.getDeck().size());
     }
+
+    private void validateRigging(List<Card> riggedAdventureDeck, List<Card> riggedEventDeck, Map<String, List<Card>> riggedHands) {
+        if (riggedAdventureDeck == null || riggedAdventureDeck.isEmpty()) {
+            throw new IllegalStateException("Rigged Adventure Deck is missing or empty.");
+        }
+        if (riggedEventDeck == null || riggedEventDeck.isEmpty()) {
+            throw new IllegalStateException("Rigged Event Deck is missing or empty.");
+        }
+        if (riggedHands == null || riggedHands.isEmpty()) {
+            throw new IllegalStateException("Rigged hands are missing or not provided for players.");
+        }
+
+        // Validate Adventure Deck
+        List<Card> actualAdventureDeck = game.getAdventureDeck().getDeck();
+        if (!new HashSet<>(actualAdventureDeck).equals(new HashSet<>(riggedAdventureDeck))) {
+            throw new IllegalStateException("Mismatch in rigged Adventure Deck.");
+        }
+
+        // Validate Event Deck
+        List<Card> actualEventDeck = game.getEventDeck().getDeck();
+        if (!new HashSet<>(actualEventDeck).equals(new HashSet<>(riggedEventDeck))) {
+            throw new IllegalStateException("Mismatch in rigged Event Deck.");
+        }
+
+        // Ensure each player in the game has rigged hands and validate each card
+        for (Player player : game.getPlayers()) {
+            String playerName = player.getName();
+            if (!riggedHands.containsKey(playerName) || riggedHands.get(playerName).isEmpty()) {
+                throw new IllegalStateException("Rigged hand for player " + playerName + " is missing or empty.");
+            }
+
+            List<Card> playerHand = player.getHand();
+            List<Card> expectedHand = riggedHands.get(playerName);
+
+            if (!new HashSet<>(playerHand).equals(new HashSet<>(expectedHand))) {
+                throw new IllegalStateException("Mismatch in rigged hand for player " + playerName);
+            }
+        }
+        System.out.println("Rigged data validated successfully.");
+    }
+
 
 
 

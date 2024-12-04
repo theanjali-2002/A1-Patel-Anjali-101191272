@@ -67,7 +67,7 @@ package org.example;
 public class Main {
     public static void main(String[] args) {
         GameService gameService = new GameService();
-        gameService.startGame(); // Directly call GameService for standalone testing
+        gameService.startGame(null,null,null); // Directly call GameService for standalone testing
     }
 }
 
