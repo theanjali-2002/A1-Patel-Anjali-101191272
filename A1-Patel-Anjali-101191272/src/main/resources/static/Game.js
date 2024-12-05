@@ -2,19 +2,25 @@ const commandInput = document.getElementById("commandInput");
 const outputDiv = document.getElementById("output");
 
 // Automatically initialize the game when the page loads
+//window.onload = function () {
+//    fetch("/api/game/start", {
+//        method: "POST",
+//        headers: {
+//            "Content-Type": "application/json"
+//        },
+//        body: null // No rigging data sent from the frontend
+//    })
+//        .then((response) => response.text())
+//        .then((data) => appendOutput(data))
+//        .catch((error) => appendOutput(`Error: ${error.message}`));
+//
+//    setInterval(fetchOutput, 500);
+//};
 window.onload = function () {
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get("rigged") === "true") {
-    rigGame();
-  } else {
-    fetch("/api/game/start")
-      .then((response) => response.text())
-      .then((data) => appendOutput(data))
-      .catch((error) => appendOutput(`Error: ${error.message}`));
-  }
-
-  setInterval(fetchOutput, 500);
+    setInterval(fetchOutput, 500);
 };
+
+
 
 
 // Handle user input on pressing "Enter"
@@ -115,28 +121,3 @@ function fetchGameState() {
 
 // Periodically fetch the game state every second
 setInterval(fetchGameState, 500);
-
-function rigGame() {
-    fetch("/api/game/rig", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            adventureDeck: [{ cardName: "A1", type: "Adventure", value: 1, category: "Weapon" }],
-            eventDeck: [{ cardName: "E1", type: "Event", value: 1, category: "Quest" }],
-            hands: {
-                Player1: [{ cardName: "H1", type: "Hand", value: 1, category: "Weapon" }],
-                Player2: [{ cardName: "H2", type: "Hand", value: 2, category: "Weapon" }]
-            }
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.text();
-    })
-    .then(data => console.log(data))
-    .catch(error => console.error(error));
-}

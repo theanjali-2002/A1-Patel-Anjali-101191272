@@ -3,33 +3,45 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Service
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Scope("singleton")
 public class GameService {
     private Game game;
     private Quest quest;
     private Card lastDrawnCard;
     private boolean isRunning = true;
     private Thread gameThread;
+    private String gameId;
     AdventureDeck adventureDeck;
     EventDeck eventDeck;
+    private final Object lock = new Object();
 
-    public GameService() {
-        resetGame();
-        game.initializeGameEnvironment();
-        game.initializePlayers();
-        System.out.println("Game initialized with players: " + game.getPlayers().size());
+    @PostConstruct
+    private void init() {
+        this.gameId = UUID.randomUUID().toString();
+        System.out.println("GameService singleton initialized with ID: " + gameId);
     }
 
     private void resetGame() {
+        if (this.gameId == null) {
+            this.gameId = UUID.randomUUID().toString();
+        }
         game = new Game(()->0);
         quest = new Quest();
         lastDrawnCard = null;
+        System.out.println("Game initialized with ID: " + gameId);
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+        System.out.println("[" + timestamp + "] resetGame() gameId: " + gameId);
+
     }
 
     public void stopGame() {
@@ -47,116 +59,156 @@ public class GameService {
         return game;
     }
 
+    public String getGameId() {
+        return this.gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
     public void startGame(List<Card> riggedAdventureDeck, List<Card> riggedEventDeck, Map<String, List<Card>> riggedHands) {
+        synchronized (lock) {
+            resetGame();
+            game.initializeGameEnvironment();
+            game.initializePlayers();
+            System.out.println("Game initialized with players: " + game.getPlayers().size());
 
-        // Start the game logic
-        UserInterface userInterface = new UserInterface();
-        boolean ui = userInterface.displayGameStartMessage(true);
-        if (!ui) {
-            stopGame();
-            return;
-        }
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+            System.out.println("[" + timestamp + "] startGame() called with gameId: " + gameId);
 
-        // Rigging phase: Override initialized decks and hands if rigging data is provided
-        if (riggedAdventureDeck != null && riggedEventDeck != null && riggedHands != null) {
-            rigDecksForGame(riggedEventDeck, riggedAdventureDeck);
+            System.out.println("DEBUG [GameService] Received riggedAdventureDeck: " + (riggedAdventureDeck != null ? riggedAdventureDeck.size() : "null"));
+            System.out.println("DEBUG [GameService] Received riggedEventDeck: " + (riggedEventDeck != null ? riggedEventDeck.size() : "null"));
+            System.out.println("DEBUG [GameService] Received riggedHands: " + (riggedHands != null ? riggedHands.size() : "null"));
 
-            for (Map.Entry<String, List<Card>> entry : riggedHands.entrySet()) {
-                rigHandsForPlayers(entry.getValue(), entry.getKey());
+            // Start the game logic
+            UserInterface userInterface = new UserInterface();
+            boolean ui = userInterface.displayGameStartMessage(true);
+            if (!ui) {
+                stopGame();
+                return;
             }
 
-            validateRigging(riggedAdventureDeck, riggedEventDeck, riggedHands);
-            System.out.println("Game rigged successfully with custom decks and hands.");
-        } else {
-            game.distributeAdventureCards();
-        }
+            // Rigging phase: Override initialized decks and hands if rigging data is provided
+            if (riggedAdventureDeck != null && riggedEventDeck != null && riggedHands != null) {
+                rigDecksForGame(riggedEventDeck, riggedAdventureDeck);
 
-        isRunning = true;
-        gameThread = new Thread(() -> {
-            while (isRunning) {
-                lastDrawnCard = game.drawEventCard();
-                System.out.println("drawn card should be Q4: "+ lastDrawnCard);
-                if ("Event".equals(lastDrawnCard.getCategory())) {
-                    game.handleECardEffects(lastDrawnCard, game.getCurrentPlayer());
-                } else {
-                    OutputRedirector.println("It is a Quest card");
-                    Player sponsor = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
-                    if (sponsor == null) {
-                        game.nextHotSeatPlayer();
+                for (Map.Entry<String, List<Card>> entry : riggedHands.entrySet()) {
+                    rigHandsForPlayers(entry.getValue(), entry.getKey());
+                }
+
+                validateRigging(riggedAdventureDeck, riggedEventDeck, riggedHands);
+                System.out.println("Game rigged successfully with custom decks and hands.");
+                System.out.println("Game rigged in startGame() with ID: " + gameId);
+            } else {
+                game.distributeAdventureCards();
+                System.out.println("Game started without rigging with ID: " + gameId);
+            }
+
+            System.out.println("Game started with ID: " + gameId);
+
+            isRunning = true;
+            gameThread = new Thread(() -> {
+                while (isRunning) {
+                    lastDrawnCard = game.drawEventCard();
+                    System.out.println("drawn card should be Q4: "+ lastDrawnCard);
+                    if ("Event".equals(lastDrawnCard.getCategory())) {
+                        game.handleECardEffects(lastDrawnCard, game.getCurrentPlayer());
                     } else {
-                        quest.setupQuest(game, lastDrawnCard);
-                        game.setGameState("Asking players to participate in Quest!");
-                        quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
-
-                        for (int i = 0; i < lastDrawnCard.getValue(); i++) {
-                            quest.prepareForQuest(game, i);
-                            quest.prepareForStage(i, game, quest);
-                            quest.resolveStage(i, game);
-                        }
-
-                        if (quest.getWinners() == null) {
+                        OutputRedirector.println("It is a Quest card");
+                        Player sponsor = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
+                        if (sponsor == null) {
                             game.nextHotSeatPlayer();
                         } else {
-                            OutputRedirector.println("Quest finished!");
+                            quest.setupQuest(game, lastDrawnCard);
+                            game.setGameState("Asking players to participate in Quest!");
+                            quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
+
+                            for (int i = 0; i < lastDrawnCard.getValue(); i++) {
+                                quest.prepareForQuest(game, i);
+                                quest.prepareForStage(i, game, quest);
+                                quest.resolveStage(i, game);
+                            }
+
+                            if (quest.getWinners() == null) {
+                                game.nextHotSeatPlayer();
+                            } else {
+                                OutputRedirector.println("Quest finished!");
+                            }
                         }
                     }
                 }
-            }
-        });
-        gameThread.start();
+            });
+            gameThread.start();
+        }
     }
 
 
 
     public Map<String, Object> getGameState() {
-        Map<String, Object> gameState = new HashMap<>();
-
-        // Add general game info
-        gameState.put("progressMessage", game.getGameState());
-        gameState.put("hotSeatPlayer", game.getHotSeatPlayer().getName());
-
-        if (lastDrawnCard != null) {
-            gameState.put("cardDrawn", lastDrawnCard.getCardName()); // Use the last drawn card
-        } else {
-            gameState.put("cardDrawn", "No card drawn yet");
-        }
-
-        String sponsorName = "No Sponsor"; // Default value
-        for (Player player : game.getPlayers()) {
-            if (player.isSponsor()) {
-                sponsorName = player.getName();
-                break; // Exit the loop once the sponsor is found
+        synchronized(lock) {
+            System.out.println("Fetching game state for game ID: " + gameId);
+            Map<String, Object> gameState = new HashMap<>();
+            
+            if (game == null) {
+                gameState.put("progressMessage", "Game not initialized");
+                gameState.put("hotSeatPlayer", "None");
+                gameState.put("cardDrawn", "No card drawn yet");
+                gameState.put("sponsor", "No Sponsor");
+                gameState.put("players", Collections.emptyList());
+                return gameState;
             }
+    
+            // Add general game info
+            gameState.put("progressMessage", game.getGameState());
+            gameState.put("hotSeatPlayer", game.getHotSeatPlayer().getName());
+    
+            if (lastDrawnCard != null) {
+                gameState.put("cardDrawn", lastDrawnCard.getCardName());
+            } else {
+                gameState.put("cardDrawn", "No card drawn yet");
+            }
+    
+            String sponsorName = "No Sponsor";
+            for (Player player : game.getPlayers()) {
+                if (player.isSponsor()) {
+                    sponsorName = player.getName();
+                    break;
+                }
+            }
+            gameState.put("sponsor", sponsorName);
+    
+            // Add player stats
+            List<Map<String, Object>> players = new ArrayList<>();
+            for (Player player : game.getPlayers()) {
+                Map<String, Object> playerData = new HashMap<>();
+                playerData.put("name", player.getName());
+                playerData.put("shields", player.getShields());
+                playerData.put("hand", player.getHand().size());
+    
+                List<String> cardNames = player.getHand().stream()
+                        .map(Card::getCardName)
+                        .collect(Collectors.toList());
+                playerData.put("cards", cardNames);
+    
+                players.add(playerData);
+            }
+            gameState.put("players", players);
+    
+            return gameState;
         }
-        gameState.put("sponsor", sponsorName);
-
-        // Add player stats
-        List<Map<String, Object>> players = new ArrayList<>();
-        for (Player player : game.getPlayers()) {
-            Map<String, Object> playerData = new HashMap<>();
-            playerData.put("name", player.getName());
-            playerData.put("shields", player.getShields());
-            playerData.put("hand", player.getHand().size()); // Number of cards in hand
-
-            // Add player's cards as a list of card names
-            List<String> cardNames = player.getHand().stream()
-                    .map(Card::getCardName)
-                    .collect(Collectors.toList());
-            playerData.put("cards", cardNames);
-
-            players.add(playerData);
-        }
-        gameState.put("players", players);
-
-        return gameState; // This will be converted to JSON automatically by Spring Boot
     }
 
 
 
     public void rigHandsForPlayers(List<Card> cards, String playerName) {
+        System.out.println("Rigging hands for player: " + playerName + " in game ID: " + gameId);
         if (game == null || game.getPlayers().isEmpty()) {
             throw new IllegalStateException("Game or players are not initialized. Cannot rig hands.");
         }
+
+        System.out.println("DEBUG [GameService.rigHandsForPlayers] Setting " + cards.size() + " cards for player " + playerName);
+        System.out.println("DEBUG [GameService.rigHandsForPlayers] Player hand before rigging: " + game.getPlayerByName(playerName).getHand().size());
         game.getPlayerByName(playerName).setClearHand(cards);
         game.getPlayerByName(playerName).clearReceivedCardEvents();
         System.out.println("testing player hand: "+ game.getPlayerByName("P1").getHand().size());
@@ -166,6 +218,10 @@ public class GameService {
         if (game == null) {
             throw new IllegalStateException("Game is not initialized. Cannot rig decks.");
         }
+        System.out.println("DEBUG [GameService.rigDecksForGame] Event Deck before rigging: " + (eventDeck != null ? eventDeck.getDeck().size() : "null"));
+        System.out.println("DEBUG [GameService.rigDecksForGame] Adventure Deck before rigging: " + (adventureDeck != null ? adventureDeck.getDeck().size() : "null"));
+        
+        System.out.println("Game ID for rigging decks: " + gameId);
         adventureDeck = game.getAdventureDeck();
         adventureDeck.clearDeck();
         System.out.println("A deck after clear: "+ adventureDeck.getDeck().size());

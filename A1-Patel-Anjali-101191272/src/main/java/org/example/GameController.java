@@ -1,15 +1,17 @@
 package org.example;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/game")
@@ -41,11 +43,40 @@ public class GameController {
         return OutputRedirector.getOutput(); // Fetch game output to send to the frontend
     }
 
-    @GetMapping("/start")
-    public ResponseEntity<String> startGame() {
+    @PostMapping("/start")
+    public ResponseEntity<String> startGame(@RequestBody(required = false) Map<String, Object> rigData, HttpServletRequest request) throws IOException {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+        System.out.println("[" + timestamp + "] /start endpoint called");
+
+        if (gameService.getGame() != null) {
+            return ResponseEntity.badRequest().body("Game already running");
+        }
+
+        // Add these debug statements here
+        System.out.println("DEBUG [GameController] Request Content-Type: " + request.getContentType());
+        System.out.println("DEBUG [GameController] Received rigData: " + (rigData != null ? "not null" : "null"));
+
         try {
-            gameService.startGame(null, null, null);
-            return ResponseEntity.ok("Game started successfully.");
+            if (rigData != null) {
+                System.out.println("DEBUG [GameController] rigData content: " + new ObjectMapper().writeValueAsString(rigData));
+                // Parse the rigged data
+                List<Card> adventureDeck = parseDeck((List<Map<String, Object>>) rigData.get("adventureDeck"));
+                List<Card> eventDeck = parseDeck((List<Map<String, Object>>) rigData.get("eventDeck"));
+                Map<String, List<Card>> hands = parseHands((Map<String, List<Map<String, Object>>>) rigData.get("hands"));
+
+                System.out.println("DEBUG [GameController] Parsed Adventure Deck size: " + adventureDeck.size());
+                System.out.println("DEBUG [GameController] Parsed Event Deck size: " + eventDeck.size());
+                System.out.println("DEBUG [GameController] Parsed Hands size: " + hands.size());
+
+                // Start the game with rigged data
+                gameService.startGame(adventureDeck, eventDeck, hands);
+            } else {
+                // Start the game with default data
+                gameService.startGame(null, null, null);
+            }
+
+            // Return the game ID in the response
+            return ResponseEntity.ok("Game started successfully");
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Error: " + e.getMessage());
         }
@@ -54,18 +85,6 @@ public class GameController {
     @GetMapping("/state")
     public Map<String, Object> getGameState() {
         return gameService.getGameState(); // Return the current game state
-    }
-
-    @PostMapping("/rig")
-    public ResponseEntity<String> rigGame(@RequestBody Map<String, Object> rigData) {
-        List<Card> riggedAdventureDeck = parseDeck((List<Map<String, Object>>) rigData.get("adventureDeck"));
-        List<Card> riggedEventDeck = parseDeck((List<Map<String, Object>>) rigData.get("eventDeck"));
-        Map<String, List<Card>> riggedHands = parseHands((Map<String, List<Map<String, Object>>>) rigData.get("hands"));
-
-        gameService.rigDecksForGame(riggedEventDeck, riggedAdventureDeck);
-        riggedHands.forEach((player, cards) -> gameService.rigHandsForPlayers(cards, player));
-
-        return ResponseEntity.ok("Game rigged successfully");
     }
 
     private List<Card> parseDeck(List<Map<String, Object>> rawDeck) {

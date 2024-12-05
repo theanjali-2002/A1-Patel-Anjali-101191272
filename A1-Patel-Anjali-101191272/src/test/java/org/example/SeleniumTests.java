@@ -9,17 +9,17 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,11 +52,18 @@ public class SeleniumTests {
 
     @BeforeEach
     public void setUp() throws IOException {
-        gameService = new GameService(); // Initialize a fresh game service for each test
+        //gameService = new GameService(); // Initialize a fresh game service for each test
         // Set the ChromeDriver path (skip this if added to PATH)
         System.setProperty("webdriver.chrome.driver", "C:/Users/thean/OneDrive/Desktop/Anjali/Fall24/comp4004/A1-Patel-Anjali-101191272/chromedriver-win64/chromedriver.exe");
         driver = new ChromeDriver();
         driver.get("http://localhost:8080");
+
+        // Wait for initial page load without starting the game
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 //    @Test
@@ -87,7 +94,7 @@ public class SeleniumTests {
 
     private List<Card> getRiggedAdventureDeckScenario1() {
         return Arrays.asList(
-                new Card("F30", "F", 30, "Foe"),
+                new Card("F310", "F", 30, "Foe"),
                 new Card("S10", "S", 10, "Weapon"),
                 new Card("B15", "B", 15, "Weapon"),
                 new Card("F10", "F", 10, "Foe"),
@@ -192,38 +199,72 @@ public class SeleniumTests {
         List<Card> eventDeck = getRiggedEventDeckScenario1();
         Map<String, List<Card>> hands = getRiggedHandsScenario1();
 
-        // Call a backend endpoint to rig the game
-        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8080/api/game/rig").openConnection();
+        System.out.println("DEBUG [SeleniumTests] Adventure Deck size: " + adventureDeck.size());
+        System.out.println("DEBUG [SeleniumTests] Event Deck size: " + eventDeck.size());
+        System.out.println("DEBUG [SeleniumTests] Hands map size: " + hands.size());
+
+        System.out.println("Rigging game, preparing HTTP connection...");
+        System.out.println("DEBUG [SeleniumTests] Starting HTTP request...");
+
+        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8080/api/game/start").openConnection();
+        //connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
+        //connection.setRequestProperty("Accept", "application/json");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        //connection.setConnectTimeout(5000); // Add timeout
+        //connection.setReadTimeout(10000);  // Add timeout
         connection.setDoOutput(true);
 
-        String jsonPayload = """
-        {
-            "adventureDeck": [{"cardName": "A1", "type": "Adventure", "value": 1, "category": "Weapon"}],
-            "eventDeck": [{"cardName": "E1", "type": "Event", "value": 1, "category": "Quest"}],
-            "hands": {
-                "P1": [{"cardName": "H1", "type": "Hand", "value": 1, "category": "Weapon"}],
-                "P2": [{"cardName": "H2", "type": "Hand", "value": 2, "category": "Weapon"}]
-            }
-        }
-        """;
+        System.out.println("Preparing JSON payload...");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("adventureDeck", adventureDeck);
+        payload.put("eventDeck", eventDeck);
+        payload.put("hands", hands);
 
         try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonPayload.getBytes("utf-8");
+            byte[] input = objectMapper.writeValueAsBytes(payload);
             os.write(input, 0, input.length);
         }
 
         int responseCode = connection.getResponseCode();
-        assertEquals(200, responseCode);
+        if (responseCode != 200) {
+            throw new IOException("Failed to rig game scenario. Response code: " + responseCode);
+        }
 
+//        String jsonPayload = objectMapper.writeValueAsString(payload);
+//        System.out.println("JSON payload: " + jsonPayload);
+//
+//        System.out.println("DEBUG [SeleniumTests] JSON payload being sent: " + jsonPayload);
+//        System.out.println("DEBUG [SeleniumTests] Content-Type header: " + connection.getRequestProperty("Content-Type"));
+//
+//        try (OutputStream os = connection.getOutputStream()) {
+//            os.write(jsonPayload.getBytes(StandardCharsets.UTF_8));
+//            os.flush(); // Add this
+//            System.out.println("DEBUG [SeleniumTests] Payload written successfully");
+//        } catch (Exception e) {
+//            System.out.println("DEBUG [SeleniumTests] Error writing payload: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//
+//        // Read the response
+//        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+//            String response = br.lines().collect(Collectors.joining());
+//            System.out.println("DEBUG [SeleniumTests] Server response: " + response);
+//        }
+
+        System.out.println("DEBUG [SeleniumTests] Response Code: " + responseCode);
+        System.out.println("Game rigged successfully!");
     }
+
+
 
 
 
     @Test
     public void A1_scenario() throws MalformedURLException, ProtocolException, IOException, InterruptedException {
-        rigGameForScenario1(); // Rig the game
+        rigGameForScenario1(); // Rig the game with this ID
 
         // Find the input field and simulate user input
         WebElement commandInput = driver.findElement(By.id("commandInput"));

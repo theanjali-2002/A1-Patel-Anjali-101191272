@@ -62,12 +62,15 @@
 
 
 
-package org.example;
+// package org.example;
 
-public class Main {
-    public static void main(String[] args) {
-        GameService gameService = new GameService();
-        gameService.startGame(null,null,null); // Directly call GameService for standalone testing
-    }
-}
+// import java.util.UUID;
+
+// public class Main {
+//     public static void main(String[] args) {
+//         GameService gameService = new GameService();
+//         String gameId = UUID.randomUUID().toString();
+//         gameService.startGame(null,null,null); // Directly call GameService for standalone testing
+//     }
+// }
 
