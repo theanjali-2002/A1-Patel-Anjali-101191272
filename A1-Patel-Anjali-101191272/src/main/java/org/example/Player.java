@@ -83,32 +83,31 @@ public class Player {
 
 
     public void sortHand(List<Card> handToSort) {
-        // Separate foes and weapons into different lists
-        List<Card> foes = new ArrayList<>();
-        List<Card> weapons = new ArrayList<>();
-
-        for (Card card : handToSort) {
-            if (card.getCategory().equals("Foe")) {
-                foes.add(card);
-            } else if (card.getCategory().equals("Weapon")) {
-                weapons.add(card);
-            }
-        }
-
-        // Sort foes by value
-        foes.sort(Comparator.comparingInt(Card::getValue));
-
-        // Sort weapons: prioritize swords before horses, then by value
-        weapons.sort(Comparator.comparing((Card card) -> {
-            if (card.getType().equals("S")) {
-                return 0; // Swords come first
-            } else if (card.getType().equals("H")) {
-                return 1; // Horses come last
-            } else {
-                return 2; // Other weapon types
-            }
-        }).thenComparingInt(Card::getValue)); // Sort by value
-
+        // Separate foes and weapons
+        List<Card> foes = handToSort.stream()
+                .filter(card -> "Foe".equals(card.getCategory()))
+                .sorted(Comparator.comparingInt(Card::getValue))
+                .collect(Collectors.toList());
+    
+        List<Card> weapons = handToSort.stream()
+                .filter(card -> "Weapon".equals(card.getCategory()))
+                .sorted((c1, c2) -> {
+                    // If values are different, sort by value
+                    if (c1.getValue() != c2.getValue()) {
+                        return Integer.compare(c1.getValue(), c2.getValue());
+                    }
+                    // If values are same, sort by type (swords before horses)
+                    if (c1.getType().equals("S") && c2.getType().equals("H")) {
+                        return -1;
+                    }
+                    if (c1.getType().equals("H") && c2.getType().equals("S")) {
+                        return 1;
+                    }
+                    // For all other cases, maintain current order
+                    return 0;
+                })
+                .collect(Collectors.toList());
+    
         // Clear the original hand and add sorted cards back
         handToSort.clear();
         handToSort.addAll(foes);

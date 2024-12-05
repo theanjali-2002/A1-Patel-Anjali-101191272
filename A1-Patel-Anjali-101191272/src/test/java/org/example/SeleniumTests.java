@@ -40,12 +40,29 @@ public class SeleniumTests {
         assertEquals(expectedHand, playerHand.getText(), "Player " + playerNumber + " hand mismatch.");
     }
 
+    private void validatePlayerCards(int playerNumber, List<String> expectedCards) {
+        WebElement playerCards = driver.findElement(By.id("player" + playerNumber + "-cards"));
+        String actualCardsText = playerCards.getText();
+        
+        // Convert the actual cards text into a list of card names
+        List<String> actualCards = Arrays.stream(actualCardsText.split(","))
+                .map(String::trim)
+                .collect(Collectors.toList());
+        
+        // Sort both lists to ensure order-independent comparison
+        Collections.sort(expectedCards);
+        Collections.sort(actualCards);
+        
+        assertEquals(expectedCards, actualCards, 
+            "Player " + playerNumber + " cards mismatch. Expected: " + expectedCards + ", but got: " + actualCards);
+    }
+
     //helper method for input commands for longer games
     private void executeCommands(WebElement commandInput, String commands) throws InterruptedException {
         for (String command : commands.split("\n")) {
             commandInput.sendKeys(command);
             commandInput.sendKeys(Keys.RETURN);
-            Thread.sleep(2000); // Add delay between commands to let the UI process
+            Thread.sleep(1000); // Add delay between commands to let the UI process
         }
     }
 
@@ -94,7 +111,7 @@ public class SeleniumTests {
 
     private List<Card> getRiggedAdventureDeckScenario1() {
         return Arrays.asList(
-                new Card("F310", "F", 30, "Foe"),
+                new Card("F30", "F", 30, "Foe"),
                 new Card("S10", "S", 10, "Weapon"),
                 new Card("B15", "B", 15, "Weapon"),
                 new Card("F10", "F", 10, "Foe"),
@@ -282,13 +299,13 @@ public class SeleniumTests {
         validatePlayerState(3, "0", "12");
         validatePlayerState(4, "0", "12");
 
-        String phase8Commands = "5\n9\nq\n"; //p1 prepares attack stage 1 //either 9 or 10
+        String phase8Commands = "5\n6\nq\n"; //p1 prepares attack stage 1 //either 9 or 10
         executeCommands(commandInput, phase8Commands);
 
-        String phase9Commands = "5\n10\nq\n"; //p3 prepares attack stage 1 //either 9 or 10
+        String phase9Commands = "4\n5\nq\n"; //p3 prepares attack stage 1 //either 9 or 10
         executeCommands(commandInput, phase9Commands);
 
-        String phase10Commands = "7\n8\nq\n"; //p4 prepares attack stage 1 //6-7
+        String phase10Commands = "5\n7\nq\n"; //p4 prepares attack stage 1 //6-7
         executeCommands(commandInput, phase10Commands);
 
         String phase11Commands = "y\ny\ny\n"; //asking players to play stage 2
@@ -298,14 +315,16 @@ public class SeleniumTests {
         validatePlayerState(3, "0", "11");
         validatePlayerState(4, "0", "11");
 
-        String phase12Commands = "6\n5\nq\n"; //p1 prepares attack stage 2
+        String phase12Commands = "6\n7\nq\n"; //p1 prepares attack stage 2
         executeCommands(commandInput, phase12Commands);
 
-        String phase13Commands = "5\n9\nq\n"; //p3 prepares attack stage 2
+        String phase13Commands = "4\n9\nq\n"; //p3 prepares attack stage 2
         executeCommands(commandInput, phase13Commands);
 
-        String phase14Commands = "6\n8\nq\n"; //p4 prepares attack stage 2
+        String phase14Commands = "6\n7\nq\n"; //p4 prepares attack stage 2
         executeCommands(commandInput, phase14Commands);
+
+        validatePlayerCards(1, Arrays.asList("F5", "F10", "F15", "F15", "F30", "H10", "B15", "B15", "L20"));
 
         String phase15Commands = "y\ny\n"; //asking players to play stage 3 (p1 got out)
         executeCommands(commandInput, phase15Commands);
@@ -313,10 +332,10 @@ public class SeleniumTests {
         validatePlayerState(3, "0", "10");
         validatePlayerState(4, "0", "10");
 
-        String phase16Commands = "7\n6\n9\nq\n"; //p3 prepares attack stage 3
+        String phase16Commands = "5\n6\n9\nq\n"; //p3 prepares attack stage 3
         executeCommands(commandInput, phase16Commands);
 
-        String phase17Commands = "4\n7\n8\nq\n"; //p4 prepares attack stage 3
+        String phase17Commands = "6\n7\n8\nq\n"; //p4 prepares attack stage 3
         executeCommands(commandInput, phase17Commands);
 
         String phase18Commands = "y\ny\n"; //asking players to play stage 4
@@ -325,10 +344,10 @@ public class SeleniumTests {
         validatePlayerState(3, "0", "8");
         validatePlayerState(4, "0", "8");
 
-        String phase19Commands = "6\n7\n8\nq\n"; //p3 prepares attack stage 3
+        String phase19Commands = "6\n7\n8\nq\n"; //p3 prepares attack stage 4
         executeCommands(commandInput, phase19Commands);
 
-        String phase20Commands = "4\n5\n6\n8\nq\n"; //p4 prepares attack stage 3
+        String phase20Commands = "4\n5\n7\n8\nq\n"; //p4 prepares attack stage 4
         executeCommands(commandInput, phase20Commands);
 
         validatePlayerState(2, "0", "16");
@@ -336,12 +355,14 @@ public class SeleniumTests {
         executeCommands(commandInput, phase21Commands);
 
         //End of Scenario Assert
-        validatePlayerState(2, "0", "12"); //sponsor
+        validatePlayerState(2, "0", "12"); //sponsor p2
         validatePlayerState(1, "0", "9");
         validatePlayerState(3, "0", "5");
         validatePlayerState(4, "4", "4");
 
         //specific hand of each player to be asserted at the end of the scenario
+        validatePlayerCards(3, Arrays.asList("F5", "F5", "F15", "F30", "S10"));
+        validatePlayerCards(4, Arrays.asList("F15", "F15", "F40", "L20"));
 
 
 
@@ -357,8 +378,6 @@ public class SeleniumTests {
 
     @AfterEach
     public void tearDown() {
-        gameService.stopGame();
-
         if (driver != null) {
             driver.quit();
         }
