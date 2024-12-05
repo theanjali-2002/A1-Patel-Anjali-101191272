@@ -30,6 +30,7 @@ public class OutputRedirector {
     // Fetch the captured output
     public static String getOutput() {
         String output = outputStream.toString(); // Get the output as a string
+        System.out.println("DEBUG [OutputRedirector] Returning output length: " + output.length());
         outputStream.reset(); // Clear the output stream
         return output.trim(); // Trim extra spaces or newlines
     }

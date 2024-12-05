@@ -25,25 +25,7 @@ public class UserInterface {
         OutputRedirector.println("");
         OutputRedirector.println("✨ Good luck, and may the best knight prevail! ✨");
         OutputRedirector.println("***********************************************************");
-        OutputRedirector.println("Press 's' to Start Game");
-        OutputRedirector.println("Press 'q' to Quit Game");
 
-        // Handle user input if specified
-        if (waitForInput) {
-            while (true) {
-                String userInput = ScannerSingleton.nextLine().trim().toLowerCase();
-
-                if ("s".equals(userInput)) {
-                    OutputRedirector.println("Game Starting...\n");
-                    return true;
-                } else if ("q".equals(userInput)) {
-                    OutputRedirector.println("Game Exiting...\n");
-                    return false;
-                } else {
-                    OutputRedirector.println("Invalid input! Please enter 's' to start or 'q' to quit.\n");
-                }
-            }
-        }
         return true;
     }
 

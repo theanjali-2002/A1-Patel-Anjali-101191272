@@ -45,12 +45,18 @@ commandInput.addEventListener("keypress", function (event) {
 
 // Fetch output from the backend
 function fetchOutput() {
-  fetch("/api/game/output")
-    .then((response) => response.text())
-    .then((data) => {
-      if (data) appendOutput(data); // Only append if there's new output
-    })
-    .catch((error) => appendOutput(`Error: ${error.message}`));
+    fetch("/api/game/output")
+        .then((response) => response.text())
+        .then((data) => {
+            console.log("DEBUG [Frontend] Received output data:", data);
+            if (data && data.trim() !== '') {
+                appendOutput(data);
+            }
+        })
+        .catch((error) => {
+            console.error("DEBUG [Frontend] Output fetch error:", error);
+            appendOutput(`Error: ${error.message}`);
+        });
 }
 
 // Function to append text to the output area
@@ -105,6 +111,7 @@ function fetchGameState() {
     fetch("/api/game/state") // Call the backend endpoint
         .then(response => response.json())
         .then(data => {
+            console.log("DEBUG [Frontend] Game state received:", data);
             // Use the JSON data to update the UI
             updateProgressBar(data.progressMessage);
             updateCurrentInfo(data.hotSeatPlayer, data.cardDrawn, data.sponsor);

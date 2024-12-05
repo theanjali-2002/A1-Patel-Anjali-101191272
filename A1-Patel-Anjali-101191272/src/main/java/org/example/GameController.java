@@ -33,9 +33,11 @@ public class GameController {
 
     @PostMapping("/input")
     public void sendCommand(@RequestBody String command) {
+        System.out.println("DEBUG [GameController] Received input: " + command);
         command = command.replaceAll("\"", "").trim(); // Remove any quotes or spaces
         System.out.println("Received command: " + command);
         ScannerSingleton.getInstance().setInput(command);
+        System.out.println("DEBUG [GameController] Input processed");
     }
 
     @GetMapping("/output")

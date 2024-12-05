@@ -209,7 +209,6 @@ public class SeleniumTests {
         HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8080/api/game/start").openConnection();
         //connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod("POST");
-        //connection.setRequestProperty("Accept", "application/json");
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         //connection.setConnectTimeout(5000); // Add timeout
         //connection.setReadTimeout(10000);  // Add timeout
@@ -233,27 +232,6 @@ public class SeleniumTests {
             throw new IOException("Failed to rig game scenario. Response code: " + responseCode);
         }
 
-//        String jsonPayload = objectMapper.writeValueAsString(payload);
-//        System.out.println("JSON payload: " + jsonPayload);
-//
-//        System.out.println("DEBUG [SeleniumTests] JSON payload being sent: " + jsonPayload);
-//        System.out.println("DEBUG [SeleniumTests] Content-Type header: " + connection.getRequestProperty("Content-Type"));
-//
-//        try (OutputStream os = connection.getOutputStream()) {
-//            os.write(jsonPayload.getBytes(StandardCharsets.UTF_8));
-//            os.flush(); // Add this
-//            System.out.println("DEBUG [SeleniumTests] Payload written successfully");
-//        } catch (Exception e) {
-//            System.out.println("DEBUG [SeleniumTests] Error writing payload: " + e.getMessage());
-//            e.printStackTrace();
-//        }
-//
-//        // Read the response
-//        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-//            String response = br.lines().collect(Collectors.joining());
-//            System.out.println("DEBUG [SeleniumTests] Server response: " + response);
-//        }
-
         System.out.println("DEBUG [SeleniumTests] Response Code: " + responseCode);
         System.out.println("Game rigged successfully!");
     }
@@ -268,9 +246,7 @@ public class SeleniumTests {
 
         // Find the input field and simulate user input
         WebElement commandInput = driver.findElement(By.id("commandInput"));
-        commandInput.sendKeys("s");
-        commandInput.sendKeys(Keys.RETURN);
-        Thread.sleep(2000);
+        Thread.sleep(1000);
 
         // Validate initial state
         validatePlayerState(1, "0", "12");

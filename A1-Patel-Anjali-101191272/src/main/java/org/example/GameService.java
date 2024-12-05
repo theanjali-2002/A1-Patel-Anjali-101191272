@@ -81,14 +81,6 @@ public class GameService {
             System.out.println("DEBUG [GameService] Received riggedEventDeck: " + (riggedEventDeck != null ? riggedEventDeck.size() : "null"));
             System.out.println("DEBUG [GameService] Received riggedHands: " + (riggedHands != null ? riggedHands.size() : "null"));
 
-            // Start the game logic
-            UserInterface userInterface = new UserInterface();
-            boolean ui = userInterface.displayGameStartMessage(true);
-            if (!ui) {
-                stopGame();
-                return;
-            }
-
             // Rigging phase: Override initialized decks and hands if rigging data is provided
             if (riggedAdventureDeck != null && riggedEventDeck != null && riggedHands != null) {
                 rigDecksForGame(riggedEventDeck, riggedAdventureDeck);
@@ -107,14 +99,21 @@ public class GameService {
 
             System.out.println("Game started with ID: " + gameId);
 
+            // Start the game logic
+            UserInterface userInterface = new UserInterface();
+            userInterface.displayGameStartMessage(true);
+
             isRunning = true;
             gameThread = new Thread(() -> {
                 while (isRunning) {
+                    System.out.println("DEBUG [GameThread] Drawing event card...");
                     lastDrawnCard = game.drawEventCard();
                     System.out.println("drawn card should be Q4: "+ lastDrawnCard);
                     if ("Event".equals(lastDrawnCard.getCategory())) {
+                        System.out.println("DEBUG [GameThread] Handling event card effects");
                         game.handleECardEffects(lastDrawnCard, game.getCurrentPlayer());
                     } else {
+                        System.out.println("DEBUG [GameThread] Handling quest card");
                         OutputRedirector.println("It is a Quest card");
                         Player sponsor = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
                         if (sponsor == null) {
@@ -147,6 +146,8 @@ public class GameService {
 
     public Map<String, Object> getGameState() {
         synchronized(lock) {
+            System.out.println("DEBUG [GameService] Game object exists: " + (game != null));
+            System.out.println("DEBUG [GameService] Current game state: " + (game != null ? game.getGameState() : "null"));
             System.out.println("Fetching game state for game ID: " + gameId);
             Map<String, Object> gameState = new HashMap<>();
             
