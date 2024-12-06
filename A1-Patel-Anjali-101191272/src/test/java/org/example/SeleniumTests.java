@@ -6,6 +6,8 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,6 +21,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SeleniumTests {
 
     private GameService gameService;
-
     private WebDriver driver;
 
     //helper method to test number of shields and hand of a player
@@ -48,8 +50,6 @@ public class SeleniumTests {
         List<String> actualCards = Arrays.stream(actualCardsText.split(","))
                 .map(String::trim)
                 .collect(Collectors.toList());
-        
-        // Sort both lists to ensure order-independent comparison
         Collections.sort(expectedCards);
         Collections.sort(actualCards);
         
@@ -57,8 +57,117 @@ public class SeleniumTests {
             "Player " + playerNumber + " cards mismatch. Expected: " + expectedCards + ", but got: " + actualCards);
     }
 
+    private String generateAttackCommands(int playerNumber, List<String> cardsToPlay) {
+        // Get the player's current cards from the browser
+        WebElement playerCards = driver.findElement(By.id("player" + playerNumber + "-cards"));
+        String cardsText = playerCards.getText();
+        List<String> currentCards = Arrays.asList(cardsText.split(", "));
+        
+        StringBuilder commands = new StringBuilder();
+        
+        // For each card we want to play, find its index in the current hand
+        for (String cardToPlay : cardsToPlay) {
+            int cardIndex = -1;
+            for (int i = 0; i < currentCards.size(); i++) {
+                if (currentCards.get(i).equals(cardToPlay)) {
+                    cardIndex = i + 1; // Convert to 1-based index
+                    break;
+                }
+            }
+            if (cardIndex != -1) {
+                commands.append(cardIndex).append("\n");
+            }
+        }
+        commands.append("q\n");
+        
+        return commands.toString();
+    }
+
+    private String generateSponsorStageCommands(int sponsorNumber, Map<Integer, List<String>> stageCards) {
+        try {
+            // Wait for and get player cards
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+            WebElement playerCards = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.id("player" + sponsorNumber + "-cards")));
+            String cardsText = playerCards.getText();
+            List<String> currentCards = new ArrayList<>(Arrays.asList(cardsText.split(", ")));
+            
+            StringBuilder commands = new StringBuilder();
+            for (int stage = 1; stage <= stageCards.size(); stage++) {
+                List<String> cardsForStage = stageCards.get(stage);
+                List<String> remainingCards = new ArrayList<>(currentCards); // Copy of current cards
+                
+                for (String cardToPlay : cardsForStage) {
+                    int cardIndex = findCardIndex(remainingCards, cardToPlay);
+                    if (cardIndex != -1) {
+                        commands.append(cardIndex + 1).append("\n");
+                        // Remove the card from remaining cards to adjust indices for next selections
+                        remainingCards.remove(cardIndex);
+                    }
+                }
+                commands.append("q\n");
+                
+                // Update currentCards for next stage by removing used cards
+                for (String cardPlayed : cardsForStage) {
+                    int index = findCardIndex(currentCards, cardPlayed);
+                    if (index != -1) {
+                        currentCards.remove(index);
+                    }
+                }
+            }
+            return commands.toString();
+        } catch (Exception e) {
+            System.out.println("Error generating sponsor commands: " + e.getMessage());
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private int findCardIndex(List<String> cards, String targetCard) {
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards.get(i).trim().equals(targetCard.trim())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private String generatePlayerParticipationCommands(List<Integer> eligiblePlayers, List<Integer> participatingPlayers) {
+        StringBuilder commands = new StringBuilder();
+        for (int playerNum : eligiblePlayers) {
+            if (participatingPlayers.contains(playerNum)) {
+                commands.append("y\n");
+            } else {
+                commands.append("n\n");
+            }
+        }
+        return commands.toString();
+    }
+
+    private String generateTrimHandCommands(int playerNumber, List<String> cardsToDiscard) {
+        WebElement playerCards = driver.findElement(By.id("player" + playerNumber + "-cards"));
+        String cardsText = playerCards.getText();
+        List<String> currentCards = Arrays.asList(cardsText.split(", "));
+
+        StringBuilder commands = new StringBuilder();
+        for (String cardToDiscard : cardsToDiscard) {
+            int cardIndex = -1;
+            for (int i = 0; i < currentCards.size(); i++) {
+                if (currentCards.get(i).equals(cardToDiscard)) {
+                    cardIndex = i + 1;
+                    break;
+                }
+            }
+            if (cardIndex != -1) {
+                commands.append(cardIndex).append("\n");
+            }
+        }
+        return commands.toString();
+    }
+
     //helper method for input commands for longer games
     private void executeCommands(WebElement commandInput, String commands) throws InterruptedException {
+        Thread.sleep(1000);
         for (String command : commands.split("\n")) {
             commandInput.sendKeys(command);
             commandInput.sendKeys(Keys.RETURN);
@@ -66,11 +175,8 @@ public class SeleniumTests {
         }
     }
 
-
     @BeforeEach
     public void setUp() throws IOException {
-        //gameService = new GameService(); // Initialize a fresh game service for each test
-        // Set the ChromeDriver path (skip this if added to PATH)
         System.setProperty("webdriver.chrome.driver", "C:/Users/thean/OneDrive/Desktop/Anjali/Fall24/comp4004/A1-Patel-Anjali-101191272/chromedriver-win64/chromedriver.exe");
         driver = new ChromeDriver();
         driver.get("http://localhost:8080");
@@ -83,31 +189,12 @@ public class SeleniumTests {
         }
     }
 
-//    @Test
-//    public void testGameTitle() throws InterruptedException {
-//        // Verify the game title
-//        WebElement title = driver.findElement(By.className("game-title"));
-//        assertEquals("4004 Quest Game", title.getText());
-//
-//        WebElement commandInput = driver.findElement(By.id("commandInput"));
-//        commandInput.sendKeys("s");
-//        commandInput.sendKeys(Keys.RETURN);
-//        Thread.sleep(1000);
-//
-//        // Player 1
-//        WebElement player1Shields = driver.findElement(By.id("player1-shields"));
-//        WebElement player1Hand = driver.findElement(By.id("player1-hand"));
-//        assertEquals("0", player1Shields.getText());
-//        assertEquals("12", player1Hand.getText());
-//
-//        // Validate initial state
-//        validatePlayerState(1, "0", "12");
-//        validatePlayerState(2, "0", "12");
-//        validatePlayerState(3, "0", "12");
-//        validatePlayerState(4, "0", "12");
-//
-//        driver.quit();
-//    }
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            //driver.quit();
+        }
+    }
 
     private List<Card> getRiggedAdventureDeckScenario1() {
         return Arrays.asList(
@@ -174,7 +261,7 @@ public class SeleniumTests {
                 new Card("F20", "F", 20, "Foe"),
                 new Card("S10", "S", 10, "Weapon"),
                 new Card("S10", "S", 10, "Weapon"),
-                new Card("S10", "S", 15, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
                 new Card("B15", "B", 15, "Weapon"),
                 new Card("L20", "L", 20, "Weapon"),
                 new Card("E30", "E", 30, "Weapon")
@@ -224,11 +311,8 @@ public class SeleniumTests {
         System.out.println("DEBUG [SeleniumTests] Starting HTTP request...");
 
         HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8080/api/game/start").openConnection();
-        //connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        //connection.setConnectTimeout(5000); // Add timeout
-        //connection.setReadTimeout(10000);  // Add timeout
         connection.setDoOutput(true);
 
         System.out.println("Preparing JSON payload...");
@@ -259,9 +343,8 @@ public class SeleniumTests {
 
     @Test
     public void A1_scenario() throws MalformedURLException, ProtocolException, IOException, InterruptedException {
-        rigGameForScenario1(); // Rig the game with this ID
+        rigGameForScenario1(); // Rig the game
 
-        // Find the input field and simulate user input
         WebElement commandInput = driver.findElement(By.id("commandInput"));
         Thread.sleep(1000);
 
@@ -274,24 +357,30 @@ public class SeleniumTests {
         String phase1Commands = "e\nn\ny\n"; //p1 draws a card and declines to sponsor, p2 sponsors it
         executeCommands(commandInput, phase1Commands);
 
-        String phase2Commands = "1\n6\nq\n"; //p2 sets up the Quest Stage 1
-        executeCommands(commandInput, phase2Commands);
-        validatePlayerState(2, "0", "10");
-
-        String phase3Commands = "2\n5\nq\n"; //p2 sets up the Quest Stage 2
-        executeCommands(commandInput, phase3Commands);
-        validatePlayerState(2, "0", "8");
-
-        String phase4Commands = "2\n2\nq\n"; //p2 sets up the Quest Stage 3
-        executeCommands(commandInput, phase4Commands);
-        validatePlayerState(2, "0", "6");
-
-        String phase5Commands = "1\n1\n4\nq\n"; //p2 sets up the Quest Stage 4
-        executeCommands(commandInput, phase5Commands);
+        // Sponsor (P2) sets up all quest stages
+        Map<Integer, List<String>> stageSetup = new HashMap<>();
+        stageSetup.put(1, Arrays.asList("F5", "S10"));
+        stageSetup.put(2, Arrays.asList("S10", "F15"));
+        stageSetup.put(3, Arrays.asList("F20", "F20"));
+        stageSetup.put(4, Arrays.asList("F10", "F20", "E30"));
+        String sponsorCommands = generateSponsorStageCommands(2, stageSetup);
+        executeCommands(commandInput, sponsorCommands);
         validatePlayerState(2, "0", "3");
 
-        String phase6Commands = "y\ny\ny\ny\ny\ny\n"; //asking players to play the quest and stage1
-        executeCommands(commandInput, phase6Commands);
+        // Players decide to join quest
+        String joinQuestCommands = generatePlayerParticipationCommands(
+                Arrays.asList(1, 3, 4), // eligible players
+                Arrays.asList(1, 3, 4)  // participating players
+        );
+        executeCommands(commandInput, joinQuestCommands);
+
+        // Players decide to join STAGE 1
+        String joinStage1Commands = generatePlayerParticipationCommands(
+                Arrays.asList(1, 3, 4), // eligible players
+                Arrays.asList(1, 3, 4)  // participating players
+        );
+        executeCommands(commandInput, joinStage1Commands);
+
 
         String phase7Commands = "1\n1\n1\n"; //all 3 players discards one card since they drew one to play the quest
         executeCommands(commandInput, phase7Commands);
@@ -299,60 +388,56 @@ public class SeleniumTests {
         validatePlayerState(3, "0", "12");
         validatePlayerState(4, "0", "12");
 
-        String phase8Commands = "5\n6\nq\n"; //p1 prepares attack stage 1 //either 9 or 10
-        executeCommands(commandInput, phase8Commands);
+        // Stage 1 attacks
+        executeCommands(commandInput, generateAttackCommands(1, Arrays.asList("S10", "D5")));
+        executeCommands(commandInput, generateAttackCommands(3, Arrays.asList("S10", "D5")));
+        executeCommands(commandInput, generateAttackCommands(4, Arrays.asList("H10", "D5")));
 
-        String phase9Commands = "4\n5\nq\n"; //p3 prepares attack stage 1 //either 9 or 10
-        executeCommands(commandInput, phase9Commands);
-
-        String phase10Commands = "5\n7\nq\n"; //p4 prepares attack stage 1 //6-7
-        executeCommands(commandInput, phase10Commands);
-
-        String phase11Commands = "y\ny\ny\n"; //asking players to play stage 2
-        executeCommands(commandInput, phase11Commands);
-        // 11 because they all drew one card to play the next stage
+        // Stage 2 participation
+        executeCommands(commandInput, generatePlayerParticipationCommands(
+                Arrays.asList(1, 3, 4),
+                Arrays.asList(1, 3, 4)
+        ));
         validatePlayerState(1, "0", "11");
         validatePlayerState(3, "0", "11");
         validatePlayerState(4, "0", "11");
 
-        String phase12Commands = "6\n7\nq\n"; //p1 prepares attack stage 2
-        executeCommands(commandInput, phase12Commands);
+        // HERE ===>
 
-        String phase13Commands = "4\n9\nq\n"; //p3 prepares attack stage 2
-        executeCommands(commandInput, phase13Commands);
-
-        String phase14Commands = "6\n7\nq\n"; //p4 prepares attack stage 2
-        executeCommands(commandInput, phase14Commands);
+        // Stage 2 attacks
+        executeCommands(commandInput, generateAttackCommands(1, Arrays.asList("S10", "H10")));
+        executeCommands(commandInput, generateAttackCommands(3, Arrays.asList("S10", "B15")));
+        executeCommands(commandInput, generateAttackCommands(4, Arrays.asList("H10", "B15")));
 
         validatePlayerCards(1, Arrays.asList("F5", "F10", "F15", "F15", "F30", "H10", "B15", "B15", "L20"));
 
-        String phase15Commands = "y\ny\n"; //asking players to play stage 3 (p1 got out)
-        executeCommands(commandInput, phase15Commands);
-        // 11 because they all drew one card to play the next stage
+        // Stage 3 participation
+        executeCommands(commandInput, generatePlayerParticipationCommands(
+                Arrays.asList(3, 4),
+                Arrays.asList(3, 4)
+        ));
         validatePlayerState(3, "0", "10");
         validatePlayerState(4, "0", "10");
 
-        String phase16Commands = "5\n6\n9\nq\n"; //p3 prepares attack stage 3
-        executeCommands(commandInput, phase16Commands);
+        // Stage 3 attacks
+        executeCommands(commandInput, generateAttackCommands(3, Arrays.asList("S10", "H10", "L20")));
+        executeCommands(commandInput, generateAttackCommands(4, Arrays.asList("S10", "B15", "L20")));
 
-        String phase17Commands = "6\n7\n8\nq\n"; //p4 prepares attack stage 3
-        executeCommands(commandInput, phase17Commands);
-
-        String phase18Commands = "y\ny\n"; //asking players to play stage 4
-        executeCommands(commandInput, phase18Commands);
-        // 11 because they all drew one card to play the next stage
+        // Stage 4 participation
+        executeCommands(commandInput, generatePlayerParticipationCommands(
+                Arrays.asList(3, 4),
+                Arrays.asList(3, 4)
+        ));
         validatePlayerState(3, "0", "8");
         validatePlayerState(4, "0", "8");
 
-        String phase19Commands = "6\n7\n8\nq\n"; //p3 prepares attack stage 4
-        executeCommands(commandInput, phase19Commands);
-
-        String phase20Commands = "4\n5\n7\n8\nq\n"; //p4 prepares attack stage 4
-        executeCommands(commandInput, phase20Commands);
+        // Stage 4 attacks
+        executeCommands(commandInput, generateAttackCommands(3, Arrays.asList("B15", "H10", "L20")));
+        executeCommands(commandInput, generateAttackCommands(4, Arrays.asList("S10", "D5", "L20", "E30")));
 
         validatePlayerState(2, "0", "16");
-        String phase21Commands = "1\n3\n2\n7\nq\n"; //After Quest ends, P2 has to trim down to 12 cards, discard 4 cards.
-        executeCommands(commandInput, phase21Commands);
+        // Final hand trimming for P2
+        executeCommands(commandInput, generateTrimHandCommands(2, Arrays.asList("B15", "S10", "L20", "S10")));
 
         //End of Scenario Assert
         validatePlayerState(2, "0", "12"); //sponsor p2
@@ -364,8 +449,160 @@ public class SeleniumTests {
         validatePlayerCards(3, Arrays.asList("F5", "F5", "F15", "F30", "S10"));
         validatePlayerCards(4, Arrays.asList("F15", "F15", "F40", "L20"));
 
+    }
 
 
+
+
+    private List<Card> getRiggedAdventureDeckScenario2() {
+        return Arrays.asList(
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F40", "F", 40, "Foe"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F25", "F", 25, "Foe"),
+                new Card("F25", "F", 25, "Foe"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("F25", "F", 25, "Foe"),
+                new Card("F25", "F", 25, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F20", "F", 20, "Foe"),
+                new Card("F25", "F", 25, "Foe"),
+                new Card("F30", "F", 30, "Foe"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                //not in game below
+                new Card("F30", "F", 30, "Foe"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("B15", "B", 15, "Weapon")
+        );
+    }
+
+    private List<Card> getRiggedEventDeckScenario2() {
+        return Arrays.asList(
+                new Card("Q3", "Q", 3, "Quest"),
+                new Card("Q4", "Q", 4, "Quest")
+        );
+    }
+
+    private Map<String, List<Card>> getRiggedHandsScenario2() {
+        Map<String, List<Card>> riggedHands = new HashMap<>();
+        riggedHands.put("P1", Arrays.asList(
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("F10", "F", 10, "Foe"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("F15", "F", 15, "Foe"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("B15", "H", 15, "Weapon"),
+                new Card("B15", "D", 15, "Weapon"),
+                new Card("L20", "L", 20, "Weapon")
+        ));
+        riggedHands.put("P2", Arrays.asList(
+                new Card("F40", "F", 40, "Foe"),
+                new Card("F50", "F", 50, "Foe"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("E30", "E", 30, "Weapon")
+        ));
+        riggedHands.put("P3", Arrays.asList(
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F5", "F", 5, "Foe"),
+                new Card("F5", "F", 5, "Foe"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("D5", "D", 5, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("H10", "H", 10, "Weapon")
+        ));
+        riggedHands.put("P4", Arrays.asList(
+                new Card("F50", "F", 50, "Foe"),
+                new Card("F70", "F", 70, "Foe"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("H10", "H", 10, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("S10", "S", 10, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("B15", "B", 15, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("L20", "L", 20, "Weapon"),
+                new Card("E30", "E", 30, "Weapon")
+        ));
+
+        return riggedHands;
+    }
+
+    private void rigGameForScenario2() throws IOException {
+        List<Card> adventureDeck = getRiggedAdventureDeckScenario2();
+        List<Card> eventDeck = getRiggedEventDeckScenario2();
+        Map<String, List<Card>> hands = getRiggedHandsScenario2();
+
+        System.out.println("DEBUG [SeleniumTests 2] Adventure Deck size: " + adventureDeck.size());
+        System.out.println("DEBUG [SeleniumTests 2] Event Deck size: " + eventDeck.size());
+        System.out.println("DEBUG [SeleniumTests 2] Hands map size: " + hands.size());
+        System.out.println("Rigging game 2, preparing HTTP connection...");
+        System.out.println("DEBUG [SeleniumTests 2] Starting HTTP request...");
+
+        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8080/api/game/start").openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        connection.setDoOutput(true);
+
+        System.out.println("Preparing JSON payload 2...");
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("adventureDeck", adventureDeck);
+        payload.put("eventDeck", eventDeck);
+        payload.put("hands", hands);
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = objectMapper.writeValueAsBytes(payload);
+            os.write(input, 0, input.length);
+        }
+        int responseCode = connection.getResponseCode();
+        if (responseCode != 200) {
+            throw new IOException("Failed to rig game scenario 2. Response code: " + responseCode);
+        }
+        System.out.println("DEBUG [SeleniumTests 2] Response Code: " + responseCode);
+        System.out.println("Game 2 rigged successfully!");
     }
 
 //    @Test
@@ -375,13 +612,6 @@ public class SeleniumTests {
 //
 //        driver.quit();
 //    }
-
-    @AfterEach
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
 
 
 }
