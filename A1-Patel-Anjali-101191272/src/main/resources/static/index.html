@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="game-title">
-    <h1>4004 Quest Game</h1>
-</div>
-<div class="progress-bar-container">
-    <div class="progress-bar" id="progress-bar">Game progress will appear here...</div>
+<div class="title-progress-container">
+    <div class="game-title">
+        <h1>4004 Quest Game</h1>
+    </div>
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar">Game progress will appear here...</div>
+    </div>
 </div>
 <div class="game-container">
     <div class="game-screen">
@@ -54,6 +56,10 @@
                 <span class="inline-stats">Hand: <span id="player4-hand">0</span></span>
             </p>
             <div class="cards" id="player4-cards">No cards yet</div>
+        </div>
+        <div class="controls">
+            <button id="startButton">Start Game</button>
+            <button id="resetButton">Reset Game</button>
         </div>
         </div>
     </div>

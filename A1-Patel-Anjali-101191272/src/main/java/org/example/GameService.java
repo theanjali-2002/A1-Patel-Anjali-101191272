@@ -1,4 +1,5 @@
 package org.example;
+import jakarta.annotation.PreDestroy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,17 @@ public class GameService {
         this.gameId = UUID.randomUUID().toString();
         System.out.println("GameService singleton initialized with ID: " + gameId);
     }
+
+    @PreDestroy  // Add this method
+    public void cleanup() {
+        stopGame();  // Stop the game thread
+        game = null;
+        quest = null;
+        lastDrawnCard = null;
+        System.out.println("GameService cleaned up for session: " + gameId);
+    }
+
+    //private GameService() {}
 
     private void resetGame() {
         if (this.gameId == null) {

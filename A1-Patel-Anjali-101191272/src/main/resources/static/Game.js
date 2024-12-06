@@ -1,3 +1,6 @@
+let isGameStarted = false;
+let stateUpdateInterval = null;
+
 const commandInput = document.getElementById("commandInput");
 const outputDiv = document.getElementById("output");
 
@@ -18,6 +21,7 @@ const outputDiv = document.getElementById("output");
 //};
 window.onload = function () {
     setInterval(fetchOutput, 500);
+    document.getElementById("startButton").disabled = false;
 };
 
 
@@ -127,4 +131,76 @@ function fetchGameState() {
 }
 
 // Periodically fetch the game state every second
-setInterval(fetchGameState, 500);
+function startGameStateUpdates() {
+    isGameStarted = true;
+    stateUpdateInterval = setInterval(fetchGameState, 500);
+}
+
+function stopGameStateUpdates() {
+    isGameStarted = false;
+    if (stateUpdateInterval) {
+        clearInterval(stateUpdateInterval);
+        stateUpdateInterval = null;
+    }
+}
+
+// Function to reset game state
+function resetGame() {
+    stopGameStateUpdates();
+    return fetch("/api/game/reset", {
+        method: "POST"
+    })
+    .then(response => response.text())
+    .then(data => {
+        appendOutput("Game Reset: " + data);
+        document.getElementById("output").innerHTML = "";
+        for (let i = 1; i <= 4; i++) {
+            updatePlayerStats(i, 0, 0);
+            updatePlayerCards(i, []);
+        }
+        updateCurrentInfo("None", "No card drawn", "No Sponsor");
+        updateProgressBar("Game progress will appear here...");
+        document.getElementById("startButton").disabled = false;
+        return new Promise(resolve => setTimeout(resolve, 500));
+    })
+    .catch(error => {
+        console.error("Error resetting game:", error);
+        throw error;
+    });
+}
+
+// Reset button click handler
+document.getElementById("resetButton").addEventListener("click", function() {
+    if (confirm("Are you sure you want to reset the game? All current game state will be lost.")) {
+        resetGame();
+    }
+});
+
+function startGame() {
+    fetch("/api/game/start", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: null  // Send null instead of empty arrays
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(text || 'Failed to start game');
+            });
+        }
+        return response.text();
+    })
+    .then(data => {
+        startGameStateUpdates();
+        document.getElementById("startButton").disabled = true;
+        appendOutput("Game started successfully!");
+    })
+    .catch(error => {
+        console.error("Error starting game:", error);
+        appendOutput("Failed to start game: " + error.message);
+    });
+}
+
+document.getElementById("startButton").addEventListener("click", startGame);

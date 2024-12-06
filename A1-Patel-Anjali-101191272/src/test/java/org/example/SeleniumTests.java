@@ -1,15 +1,13 @@
 package org.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +25,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 public class SeleniumTests {
 
     private GameService gameService;
@@ -191,8 +190,41 @@ public class SeleniumTests {
 
     @AfterEach
     public void tearDown() {
-        if (driver != null) {
-            //driver.quit();
+        try {
+            if (driver != null) {
+                // Find and click the reset button
+                WebElement resetButton = new WebDriverWait(driver, Duration.ofSeconds(5))
+                        .until(ExpectedConditions.elementToBeClickable(By.id("resetButton")));
+                resetButton.click();
+
+                // Wait for and accept confirmation dialog
+                Alert alert = new WebDriverWait(driver, Duration.ofSeconds(5))
+                        .until(ExpectedConditions.alertIsPresent());
+                alert.accept();
+
+                // Wait for reset to complete
+                new WebDriverWait(driver, Duration.ofSeconds(5))
+                        .until(ExpectedConditions.textToBe(
+                                By.className("progress-bar"),
+                                "Game progress will appear here..."
+                        ));
+
+                // Additional wait to ensure all state is cleared
+                Thread.sleep(1000);
+
+                // Verify reset state
+                String progressText = driver.findElement(By.className("progress-bar")).getText();
+                if (!progressText.equals("Game progress will appear here...")) {
+                    throw new AssertionError("Reset failed. Progress text: " + progressText);
+                }
+
+                driver.quit();
+            }
+        } catch (Exception e) {
+            System.out.println("Error during teardown: " + e.getMessage());
+            if (driver != null) {
+                driver.quit();
+            }
         }
     }
 

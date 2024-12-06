@@ -12,22 +12,32 @@ body {
   font-size: 1rem;
 }
 
-/* Game title */
+/* Title and Progress Bar Container */
+.title-progress-container {
+  display: flex;
+  justify-content: space-between; /* Align items on the left and right */
+  align-items: center; /* Center items vertically */
+  width: 90%;
+  max-width: 1200px;
+  margin: 5px auto; /* Equal top and bottom spacing */
+  padding: 0 10px;
+}
+
+/* Game Title */
 .game-title {
-  text-align: center;
-  padding: 5px 0;
+  text-align: left; /* Align text to the left */
+  padding: 10px 0;
   color: #3cb043;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 
-/* Progress bar container */
+/* Progress Bar Container */
 .progress-bar-container {
-  width: 90%;
-  max-width: 1200px;
+  flex: 1; /* Allow the progress bar to take up remaining space */
+  margin-left: 20px; /* Add spacing between the title and progress bar */
   background-color: #111;
   padding: 10px;
-  margin-bottom: 20px;
   border-radius: 5px;
   text-align: center;
 }
@@ -41,6 +51,7 @@ body {
   font-weight: bold;
   text-align: center;
 }
+
 
 /* Game container */
 .game-container {
@@ -60,13 +71,30 @@ body {
 }
 
 #output {
-  height: 400px;
-  overflow-y: auto;
-  margin-bottom: 10px;
   background-color: #111;
   padding: 10px;
   border-radius: 5px;
+  overflow-y: auto; /* Enable scrolling for overflow content */
+  height: calc(100vh - 300px); /* Adjust dynamically: subtract surrounding elements */
+  max-height: 70vh; /* Limit height to 70% of the viewport */
+  min-height: 200px; /* Ensure a minimum height */
 }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  #output {
+    height: calc(100vh - 250px); /* Adjust height for tablets */
+    max-height: 60vh; /* Lower height for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  #output {
+    height: calc(100vh - 200px); /* Adjust height further for phones */
+    max-height: 50vh; /* Further limit height for very small screens */
+  }
+}
+
 
 .input-line {
   display: flex;
@@ -170,4 +198,38 @@ body {
 .stats span span {
   font-weight: bold;
   color: #ff3333;
+}
+
+/* Button Styles */
+button {
+  font-family: monospace;
+  background-color: #3cb043; /* Green background */
+  color: #black; /* White text */
+  border: 2px solid #3cb043; /* Matching border */
+  border-radius: 5px;
+  padding: 5px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase; /* Make button text uppercase */
+}
+
+button:hover {
+  background-color: #fff; /* Invert colors on hover */
+  color: #3cb043;
+  border-color: #fff;
+}
+
+button:active {
+  background-color: #2e8b2e; /* Darker green when clicked */
+  border-color: #2e8b2e;
+  color: #fff;
+  transform: scale(0.98); /* Slightly reduce size on click */
+}
+
+button:disabled {
+  background-color: #555; /* Gray background for disabled buttons */
+  color: #999; /* Lighter text */
+  border-color: #555;
+  cursor: not-allowed; /* Disable pointer */
 }
