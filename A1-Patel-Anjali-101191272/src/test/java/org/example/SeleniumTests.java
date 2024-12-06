@@ -1312,4 +1312,79 @@ public class SeleniumTests {
     }
 
 
+
+    @Test
+    public void scenario4_0winner_QUEST() throws IOException, InterruptedException {
+        rigGameForScenario4(); // Rig the game
+        WebElement commandInput = driver.findElement(By.id("commandInput"));
+        Thread.sleep(1000);
+
+        // Validate initial state
+        validatePlayerState(1, "0", "12");
+        validatePlayerState(2, "0", "12");
+        validatePlayerState(3, "0", "12");
+        validatePlayerState(4, "0", "12");
+
+        String phase1Commands = "e\ny\n"; //p1 draws a card and sponsors it
+        executeCommands(commandInput, phase1Commands);
+
+        // Sponsor (P1) sets up all Q2 quest stages
+        Map<Integer, List<String>> stageSetup = new HashMap<>();
+        stageSetup.put(1, Arrays.asList("F50", "D5", "S10", "H10", "B15", "L20"));
+        stageSetup.put(2, Arrays.asList("F70", "D5", "S10", "H10", "B15", "L20"));
+        String sponsorCommands = generateSponsorStageCommands(1, stageSetup);
+        executeCommands(commandInput, sponsorCommands);
+        validatePlayerState(1, "0", "0");
+
+        // Players decide to join quest
+        String joinQuestCommands = generatePlayerParticipationCommands(
+                Arrays.asList(2, 3, 4), // eligible players
+                Arrays.asList(2, 3, 4)  // participating players
+        );
+        executeCommands(commandInput, joinQuestCommands);
+
+        // Players decide to join STAGE 1
+        String joinStage1Commands = generatePlayerParticipationCommands(
+                Arrays.asList(2, 3, 4), // eligible players
+                Arrays.asList(2, 3, 4)  // participating players
+        );
+        executeCommands(commandInput, joinStage1Commands);
+
+        //trimming hands before quest play
+        executeCommands(commandInput, generateTrimHandCommands(2, Arrays.asList("F5")));
+        executeCommands(commandInput, generateTrimHandCommands(3, Arrays.asList("F15")));
+        executeCommands(commandInput, generateTrimHandCommands(4, Arrays.asList("F10")));
+        validatePlayerState(2, "0", "12");
+        validatePlayerState(3, "0", "12");
+        validatePlayerState(4, "0", "12");
+
+        // Stage 1 attacks
+        executeCommands(commandInput, generateAttackCommands(2, Arrays.asList("E30")));
+        executeCommands(commandInput, generateAttackCommands(3, Arrays.asList("")));
+        executeCommands(commandInput, generateAttackCommands(4, Arrays.asList("")));
+        validatePlayerState(2, "0", "11");
+        validatePlayerState(3, "0", "12");
+        validatePlayerState(4, "0", "12");
+        Thread.sleep(2000);
+
+        validatePlayerState(1, "0", "14");
+        // Final hand trimming for P1
+        executeCommands(commandInput, generateTrimHandCommands(1, Arrays.asList("F5")));
+        executeCommands(commandInput, generateTrimHandCommands(1, Arrays.asList("F10")));
+
+        //End of Scenario Assert
+        validatePlayerState(1, "0", "12"); //sponsor p1
+        validatePlayerState(2, "0", "11");
+        validatePlayerState(3, "0", "12");
+        validatePlayerState(4, "0", "12");
+
+        //specific hand of each player to be asserted at the end of the scenario
+        validatePlayerCards(1, Arrays.asList("F15", "D5", "D5", "D5", "D5", "H10", "H10", "H10", "H10", "S10", "S10", "S10"));
+        validatePlayerCards(2, Arrays.asList("F5", "F5", "F10", "F15", "F15", "F20", "F20", "F25", "F30", "F30", "F40"));
+        validatePlayerCards(3, Arrays.asList("F5", "F5", "F10", "F15", "F15", "F20", "F20", "F25", "F25", "F30", "F40", "L20"));
+        validatePlayerCards(4, Arrays.asList("F5", "F5", "F10", "F15", "F15", "F20", "F20", "F25", "F25", "F30", "F50", "E30"));
+    }
+
+
+
 }

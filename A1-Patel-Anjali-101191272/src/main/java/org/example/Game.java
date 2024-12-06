@@ -294,7 +294,7 @@ public class Game {
         nextHotSeatPlayer();
     }
 
-    public boolean promptToSponsor(Player currentPlayer) {
+    public boolean promptToSponsor(Player currentPlayer, int stageCount) {
         OutputRedirector.println(currentPlayer.getName() + ", a new quest has been drawn.");
         OutputRedirector.print("Do you want to sponsor this quest? (y/n): ");
 
@@ -311,7 +311,7 @@ public class Game {
                     .filter(card -> card.getCategory().equals("Foe")) // Assuming card has a getCategory() method
                     .count();
 
-            if (foeCardCount >= 3) {
+            if (foeCardCount >= stageCount) {
                 OutputRedirector.println(currentPlayer.getName() + " has chosen to sponsor the quest.");
                 OutputRedirector.println("*********************************************");
                 currentPlayer.setSponsor(true);
@@ -345,7 +345,7 @@ public class Game {
         }
     }
 
-    public Player findSponsor(Player currentPlayer, List<Player> players) {
+    public Player findSponsor(Player currentPlayer, List<Player> players, int stageCount) {
         // Get the index of the current player
         setGameState("Finding Sponsor!");
         int currentPlayerIndex = players.indexOf(currentPlayer);
@@ -358,7 +358,7 @@ public class Game {
             // Prompt the player to sponsor the quest
             OutputRedirector.println("*********************************************");
             OutputRedirector.println("Asking " + playerToAsk.getName() + " to sponsor the quest...");
-            boolean sponsor = promptToSponsor(playerToAsk);
+            boolean sponsor = promptToSponsor(playerToAsk, stageCount);
 
             //Fixing Bug - setting sponsor as current player:
             setCurrentPlayer((currentPlayerIndex + i) % players.size());

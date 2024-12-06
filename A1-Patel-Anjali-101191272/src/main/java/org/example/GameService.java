@@ -117,7 +117,7 @@ public class GameService {
                         System.out.println("DEBUG [GameThread] Handling quest card");
                         OutputRedirector.println("It is a Quest card");
 
-                        Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
+                        Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers(), lastDrawnCard.getValue());
                         Player sponsor = new Player();
                         for (Player player : game.getPlayers()){
                             if (player.isSponsor()) {

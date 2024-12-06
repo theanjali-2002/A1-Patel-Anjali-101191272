@@ -22,7 +22,7 @@ public class Main {
                 //next hot seat player here - DONE
             } else {
                 OutputRedirector.println("it is a Quest card");
-                Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
+                Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers(), drewCard.getValue());
                 Player sponsor = new Player();
                 for (Player player : game.getPlayers()){
                     if (player.isSponsor()) {
