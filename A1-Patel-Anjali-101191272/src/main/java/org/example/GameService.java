@@ -108,31 +108,53 @@ public class GameService {
                 while (isRunning) {
                     System.out.println("DEBUG [GameThread] Drawing event card...");
                     lastDrawnCard = game.drawEventCard();
-                    System.out.println("drawn card should be Q4: "+ lastDrawnCard);
+
                     if ("Event".equals(lastDrawnCard.getCategory())) {
                         System.out.println("DEBUG [GameThread] Handling event card effects");
                         game.handleECardEffects(lastDrawnCard, game.getCurrentPlayer());
+
                     } else {
                         System.out.println("DEBUG [GameThread] Handling quest card");
                         OutputRedirector.println("It is a Quest card");
-                        Player sponsor = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
-                        if (sponsor == null) {
+
+                        Player value = game.findSponsor(game.getCurrentPlayer(), game.getPlayers());
+                        Player sponsor = new Player();
+                        for (Player player : game.getPlayers()){
+                            if (player.isSponsor()) {
+                                sponsor = player;
+                            }
+                        }
+                        if (value == null) {
                             game.nextHotSeatPlayer();
                         } else {
                             quest.setupQuest(game, lastDrawnCard);
                             game.setGameState("Asking players to participate in Quest!");
                             quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
 
+                            System.out.println("DEBUG [GameService] Starting quest stages loop. Total stages: " + lastDrawnCard.getValue());
                             for (int i = 0; i < lastDrawnCard.getValue(); i++) {
+
+                                System.out.println("\nDEBUG [GameService] ========= STAGE " + (i + 1) + " START =========");
+                                System.out.println("DEBUG [GameService] Current participants before prepareForQuest: " + quest.getParticipants());
+                                System.out.println("DEBUG [GameService] Calling prepareForQuest for stage " + (i + 1));
                                 quest.prepareForQuest(game, i);
+                                System.out.println("DEBUG [GameService] Completed prepareForQuest for stage " + (i + 1));
+                                System.out.println("DEBUG [GameService] Participants after prepareForQuest: " + quest.getParticipants());
+
+                                System.out.println("DEBUG [GameService] Calling prepareForStage for stage " + (i + 1));
                                 quest.prepareForStage(i, game, quest);
+                                System.out.println("DEBUG [GameService] Completed prepareForStage for stage " + (i + 1));
+
                                 quest.resolveStage(i, game);
+                                System.out.println("DEBUG [GameService] Completed resolveStage for stage " + (i + 1));
+                                System.out.println("DEBUG [GameService] ========= STAGE " + (i + 1) + " END =========\n");
                             }
 
-                            if (quest.getWinners() == null) {
+                            if (!(quest.getWinners()== null)) {
+                                //OutputRedirector.println("Are there Winners?: "+ quest.getWinners());
                                 game.nextHotSeatPlayer();
                             } else {
-                                OutputRedirector.println("Quest finished!");
+                                OutputRedirector.println("!!!");
                             }
                         }
                     }

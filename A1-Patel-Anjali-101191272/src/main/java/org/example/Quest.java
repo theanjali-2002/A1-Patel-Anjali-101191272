@@ -55,6 +55,17 @@ public class Quest {
     }
 
     public void setupQuest(Game game, Card drawnQcard) {
+        // Clear previous quest data
+        System.out.println("DEBUG [Quest.setupQuest] Before clearing - Participants: " + participants);
+        System.out.println("DEBUG [Quest.setupQuest] Before clearing - Stages: " + stages.size());
+
+        this.participants.clear();
+        this.stages.clear();
+        this.winners.clear();
+        this.cardsUsedBySponsor.clear();
+
+        System.out.println("DEBUG [Quest.setupQuest] After clearing - Participants: " + participants);
+        System.out.println("DEBUG [Quest.setupQuest] After clearing - Stages: " + stages.size());
         setNumberOfStages(drawnQcard.getValue());
 
         for (int i = 0; i < numberOfStages; i++) {
@@ -289,6 +300,9 @@ public class Quest {
         OutputRedirector.println("*********************************************");
 
         // Check if participants remain after processing
+        System.out.println("DEBUG: Participants when resolving stage: " + participants);
+        OutputRedirector.println("DEBUG: Participants when resolving stage: " + participants);
+
         if (participants.isEmpty()) {
             OutputRedirector.println("No participants left. Quest ends.");
             endQuestWithoutWinners();  // End the quest if no participants remain after attack resolution
@@ -306,7 +320,10 @@ public class Quest {
         } else if (stageIndex + 1 < stages.size()) {
             //prepareForStage(stageIndex + 1, game, quest);  // Move to the next stage if there are more stages
             OutputRedirector.println("\n");
+            //OutputRedirector.println("DEBUG: Participants when resolving stage lastly???????: " + stageIndex+1 + " ...stage size: " + stages.size());
         } else {
+            //OutputRedirector.println("DEBUG: resolving winners called======================>" + participants);
+            System.out.println("DEBUG: resolving winners called======================>");
             resolveWinners(game);  // If final stage is completed, resolve the winners
         }
 
@@ -360,49 +377,44 @@ public class Quest {
         OutputRedirector.println("Quest Winners: " + winners);
         OutputRedirector.println("*********************************************");
 
+        // Sponsor discards all cards used to build the quest
+        Player sponsor = game.getCurrentPlayer();
+        int questCards = cardsUsedBySponsor.size();
+
+        // Sponsor draws the same number of adventure cards + additional cards for each stage
+        int stagesCount = stages.size();
+        int totalCardsToDraw = questCards + stagesCount;
+        List<Card> drawnCards = game.getAdventureDeck().drawACards(totalCardsToDraw);
+        sponsor.receiveCards(drawnCards);
+        OutputRedirector.println("Calling Sponsor ... Loading ... ...");
+
+        OutputRedirector.println("*********************************************");
+        OutputRedirector.println(sponsor.getName() + " draws " + totalCardsToDraw + " adventure cards as the sponsor!\n");
+
+        // If necessary, the sponsor trims their hand to 12 cards
+        OutputRedirector.println(sponsor.getName() + ", your hand has to be reduced to 12 cards!");
+        sponsor.trimHandTo12Cards(sponsor);
+        Game.clearConsole();
+
+
         if (!gameWinners.isEmpty()) {
             // Print a single message for all game winners
             OutputRedirector.println("╔═════════════════════════════════════════════════════════════╗");
-            OutputRedirector.println("║                                                             ║");
-            OutputRedirector.println("║      CONGRATULATIONS, CHAMPION(s)!                          ║");
-            OutputRedirector.println("║                                                             ║");
+            OutputRedirector.println("║                                                             ");
+            OutputRedirector.println("║      CONGRATULATIONS, CHAMPION(s)!                          ");
+            OutputRedirector.println("║                                                             ");
             OutputRedirector.println("╠═════════════════════════════════════════════════════════════╣");
-            OutputRedirector.println("║                                                             ║");
+            OutputRedirector.println("║                                                             ");
             OutputRedirector.printf("   ~~ %s have reached a legendary milestone! ~~                    \n", String.join(", ", gameWinners));
-            OutputRedirector.println("║                                                             ║");
-            OutputRedirector.println("║   With 7 or more shields, these champions are crowned       ║");
-            OutputRedirector.println("║   WINNERS in this epic quest!                               ║");
-            OutputRedirector.println("║                                                             ║");
+            OutputRedirector.println("║                                                             ");
+            OutputRedirector.println("║   With 7 or more shields, these champions are crowned       ");
+            OutputRedirector.println("║   WINNERS in this epic quest!                               ");
+            OutputRedirector.println("║                                                             ");
             OutputRedirector.println("╚═════════════════════════════════════════════════════════════╝");
 
             // End the game since winners have been found
             OutputRedirector.println("Game Over. Thank you for playing!");
             return;
-        }
-
-        // Check if the game has a winner
-        boolean gameWon = winners.stream()
-                .anyMatch(winner -> game.getPlayerByName(winner).getShields() >= 7);
-
-        if (!gameWon) {
-            // Sponsor discards all cards used to build the quest
-            Player sponsor = game.getCurrentPlayer();
-            int questCards = cardsUsedBySponsor.size();
-
-            // Sponsor draws the same number of adventure cards + additional cards for each stage
-            int stagesCount = stages.size();
-            int totalCardsToDraw = questCards + stagesCount;
-            List<Card> drawnCards = game.getAdventureDeck().drawACards(totalCardsToDraw);
-            sponsor.receiveCards(drawnCards);
-            OutputRedirector.println("Calling Sponsor ... Loading ... ...");
-
-            OutputRedirector.println("*********************************************");
-            OutputRedirector.println(sponsor.getName() + " draws " + totalCardsToDraw + " adventure cards as the sponsor!\n");
-
-            // If necessary, the sponsor trims their hand to 12 cards
-            OutputRedirector.println(sponsor.getName() + ", your hand has to be reduced to 12 cards!");
-            sponsor.trimHandTo12Cards(sponsor);
-            Game.clearConsole();
         }
 
         // The quest ends after resolving the winners

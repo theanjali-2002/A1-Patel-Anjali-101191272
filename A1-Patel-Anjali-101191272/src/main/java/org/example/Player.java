@@ -204,11 +204,7 @@ public class Player {
             String input = ScannerSingleton.nextLine().trim();
 
             if (input.equalsIgnoreCase("q")) {
-                if (selectedCards.isEmpty()) {
-                    OutputRedirector.println("You must select at least one card to attack.");
-                } else {
-                    break;  // Finish selection when player is done
-                }
+                break;  // Allow player to finish even with no cards selected
             } else {
                 try {
                     int cardIndex = Integer.parseInt(input) - 1;
