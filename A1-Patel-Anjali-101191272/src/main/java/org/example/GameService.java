@@ -1,5 +1,7 @@
 package org.example;
 import jakarta.annotation.PreDestroy;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,11 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Service
-//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Scope("singleton")
 public class GameService {
+    @Value("${test.mode:default}")
+    private String testMode;
+
     private Game game;
     private Quest quest;
     private Card lastDrawnCard;
@@ -26,9 +30,15 @@ public class GameService {
     EventDeck eventDeck;
     private final Object lock = new Object();
 
+    public void setTestMode(String mode) {
+        this.testMode = mode;
+        System.out.println("DEBUG: Test mode set to: " + testMode);
+    }
+
     @PostConstruct
     private void init() {
         this.gameId = UUID.randomUUID().toString();
+        System.out.println("DEBUG: GameService initialized with test mode: " + testMode);
         System.out.println("GameService singleton initialized with ID: " + gameId);
     }
 
@@ -41,13 +51,19 @@ public class GameService {
         System.out.println("GameService cleaned up for session: " + gameId);
     }
 
-    //private GameService() {}
-
     private void resetGame() {
         if (this.gameId == null) {
             this.gameId = UUID.randomUUID().toString();
         }
-        game = new Game(()->0);
+        System.out.println("DEBUG: Test mode in resetGame is: " + testMode);
+        if ("selenium".equals(testMode)) {
+            System.out.println("DEBUG: Creating Game with test lambda");
+            game = new Game(()->0);
+        } else {
+            System.out.println("DEBUG: Creating normal Game instance");
+            game = new Game();
+        }
+
         quest = new Quest();
         lastDrawnCard = null;
         System.out.println("Game initialized with ID: " + gameId);
@@ -71,24 +87,14 @@ public class GameService {
         return game;
     }
 
-    public String getGameId() {
-        return this.gameId;
-    }
-
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
-    }
-
     public void startGame(List<Card> riggedAdventureDeck, List<Card> riggedEventDeck, Map<String, List<Card>> riggedHands) {
         synchronized (lock) {
             resetGame();
             game.initializeGameEnvironment();
             game.initializePlayers();
-            System.out.println("Game initialized with players: " + game.getPlayers().size());
 
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
             System.out.println("[" + timestamp + "] startGame() called with gameId: " + gameId);
-
             System.out.println("DEBUG [GameService] Received riggedAdventureDeck: " + (riggedAdventureDeck != null ? riggedAdventureDeck.size() : "null"));
             System.out.println("DEBUG [GameService] Received riggedEventDeck: " + (riggedEventDeck != null ? riggedEventDeck.size() : "null"));
             System.out.println("DEBUG [GameService] Received riggedHands: " + (riggedHands != null ? riggedHands.size() : "null"));
@@ -108,8 +114,6 @@ public class GameService {
                 game.distributeAdventureCards();
                 System.out.println("Game started without rigging with ID: " + gameId);
             }
-
-            System.out.println("Game started with ID: " + gameId);
 
             // Start the game logic
             UserInterface userInterface = new UserInterface();
@@ -143,27 +147,29 @@ public class GameService {
                             game.setGameState("Asking players to participate in Quest!");
                             quest.promptParticipants(game.getPlayers(), game.getCurrentPlayer());
 
-                            System.out.println("DEBUG [GameService] Starting quest stages loop. Total stages: " + lastDrawnCard.getValue());
                             for (int i = 0; i < lastDrawnCard.getValue(); i++) {
 
                                 System.out.println("\nDEBUG [GameService] ========= STAGE " + (i + 1) + " START =========");
                                 System.out.println("DEBUG [GameService] Current participants before prepareForQuest: " + quest.getParticipants());
                                 System.out.println("DEBUG [GameService] Calling prepareForQuest for stage " + (i + 1));
+
                                 quest.prepareForQuest(game, i);
+
                                 System.out.println("DEBUG [GameService] Completed prepareForQuest for stage " + (i + 1));
                                 System.out.println("DEBUG [GameService] Participants after prepareForQuest: " + quest.getParticipants());
-
                                 System.out.println("DEBUG [GameService] Calling prepareForStage for stage " + (i + 1));
+
                                 quest.prepareForStage(i, game, quest);
+
                                 System.out.println("DEBUG [GameService] Completed prepareForStage for stage " + (i + 1));
 
                                 quest.resolveStage(i, game);
+
                                 System.out.println("DEBUG [GameService] Completed resolveStage for stage " + (i + 1));
                                 System.out.println("DEBUG [GameService] ========= STAGE " + (i + 1) + " END =========\n");
                             }
 
                             if (!(quest.getWinners()== null)) {
-                                //OutputRedirector.println("Are there Winners?: "+ quest.getWinners());
                                 game.nextHotSeatPlayer();
                             } else {
                                 OutputRedirector.println("!!!");
@@ -182,9 +188,8 @@ public class GameService {
         synchronized(lock) {
             System.out.println("DEBUG [GameService] Game object exists: " + (game != null));
             System.out.println("DEBUG [GameService] Current game state: " + (game != null ? game.getGameState() : "null"));
-            System.out.println("Fetching game state for game ID: " + gameId);
+
             Map<String, Object> gameState = new HashMap<>();
-            
             if (game == null) {
                 gameState.put("progressMessage", "Game not initialized");
                 gameState.put("hotSeatPlayer", "None");
@@ -225,11 +230,9 @@ public class GameService {
                         .map(Card::getCardName)
                         .collect(Collectors.toList());
                 playerData.put("cards", cardNames);
-    
                 players.add(playerData);
             }
             gameState.put("players", players);
-    
             return gameState;
         }
     }
@@ -237,16 +240,15 @@ public class GameService {
 
 
     public void rigHandsForPlayers(List<Card> cards, String playerName) {
-        System.out.println("Rigging hands for player: " + playerName + " in game ID: " + gameId);
         if (game == null || game.getPlayers().isEmpty()) {
             throw new IllegalStateException("Game or players are not initialized. Cannot rig hands.");
         }
 
         System.out.println("DEBUG [GameService.rigHandsForPlayers] Setting " + cards.size() + " cards for player " + playerName);
         System.out.println("DEBUG [GameService.rigHandsForPlayers] Player hand before rigging: " + game.getPlayerByName(playerName).getHand().size());
+
         game.getPlayerByName(playerName).setClearHand(cards);
         game.getPlayerByName(playerName).clearReceivedCardEvents();
-        System.out.println("testing player hand: "+ game.getPlayerByName("P1").getHand().size());
     }
 
     public void rigDecksForGame(List<Card> eDeck, List<Card> aDeck) {
@@ -255,20 +257,14 @@ public class GameService {
         }
         System.out.println("DEBUG [GameService.rigDecksForGame] Event Deck before rigging: " + (eventDeck != null ? eventDeck.getDeck().size() : "null"));
         System.out.println("DEBUG [GameService.rigDecksForGame] Adventure Deck before rigging: " + (adventureDeck != null ? adventureDeck.getDeck().size() : "null"));
-        
-        System.out.println("Game ID for rigging decks: " + gameId);
+
         adventureDeck = game.getAdventureDeck();
         adventureDeck.clearDeck();
-        System.out.println("A deck after clear: "+ adventureDeck.getDeck().size());
         adventureDeck.setDeck(aDeck);
-        System.out.println("A deck after RIGGED: "+ adventureDeck.getDeck().size());
-        System.out.println("A deck after RIGGED: "+ adventureDeck.getDeck());
 
         eventDeck = game.getEventDeck();
         eventDeck.clearDeck();
-        System.out.println("E deck after clear: "+ eventDeck.getDeck().size());
         eventDeck.setDeck(eDeck);
-        System.out.println("E deck after RIGGED: "+ eventDeck.getDeck().size());
     }
 
     private void validateRigging(List<Card> riggedAdventureDeck, List<Card> riggedEventDeck, Map<String, List<Card>> riggedHands) {
@@ -310,10 +306,6 @@ public class GameService {
         }
         System.out.println("Rigged data validated successfully.");
     }
-
-
-
-
 
 
 }

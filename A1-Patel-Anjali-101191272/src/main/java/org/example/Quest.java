@@ -301,7 +301,6 @@ public class Quest {
 
         // Check if participants remain after processing
         System.out.println("DEBUG: Participants when resolving stage: " + participants);
-        OutputRedirector.println("DEBUG: Participants when resolving stage: " + participants);
 
         if (participants.isEmpty()) {
             OutputRedirector.println("No participants left. Quest ends.");

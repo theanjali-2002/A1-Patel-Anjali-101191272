@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(properties = "test.mode=selenium")
 public class SeleniumTests {
-
+    @Autowired
     private GameService gameService;
     private WebDriver driver;
 
@@ -78,7 +78,6 @@ public class SeleniumTests {
             }
         }
         commands.append("q\n");
-        
         return commands.toString();
     }
 
@@ -189,42 +188,10 @@ public class SeleniumTests {
     }
 
     @AfterEach
-    public void tearDown() {
-        try {
-            if (driver != null) {
-                // Find and click the reset button
-                WebElement resetButton = new WebDriverWait(driver, Duration.ofSeconds(5))
-                        .until(ExpectedConditions.elementToBeClickable(By.id("resetButton")));
-                resetButton.click();
-
-                // Wait for and accept confirmation dialog
-                Alert alert = new WebDriverWait(driver, Duration.ofSeconds(5))
-                        .until(ExpectedConditions.alertIsPresent());
-                alert.accept();
-
-                // Wait for reset to complete
-                new WebDriverWait(driver, Duration.ofSeconds(5))
-                        .until(ExpectedConditions.textToBe(
-                                By.className("progress-bar"),
-                                "Game progress will appear here..."
-                        ));
-
-                // Additional wait to ensure all state is cleared
-                Thread.sleep(1000);
-
-                // Verify reset state
-                String progressText = driver.findElement(By.className("progress-bar")).getText();
-                if (!progressText.equals("Game progress will appear here...")) {
-                    throw new AssertionError("Reset failed. Progress text: " + progressText);
-                }
-
-                driver.quit();
-            }
-        } catch (Exception e) {
-            System.out.println("Error during teardown: " + e.getMessage());
-            if (driver != null) {
-                driver.quit();
-            }
+    public void tearDown() throws InterruptedException {
+        Thread.sleep(5000);
+        if (driver != null) {
+            driver.quit();
         }
     }
 
@@ -330,7 +297,7 @@ public class SeleniumTests {
         return riggedHands;
     }
 
-    private void rigGameForScenario1() throws IOException {
+    private void rigGameForScenario1() throws IOException, InterruptedException {
         List<Card> adventureDeck = getRiggedAdventureDeckScenario1();
         List<Card> eventDeck = getRiggedEventDeckScenario1();
         Map<String, List<Card>> hands = getRiggedHandsScenario1();

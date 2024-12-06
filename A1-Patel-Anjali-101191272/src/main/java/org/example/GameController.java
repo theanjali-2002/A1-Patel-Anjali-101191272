@@ -15,14 +15,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/game")
-//@SessionAttributes("gameService")
 public class GameController {
-
-//    private GameService gameService;
-//
-//    public GameController() {
-//        this.gameService = new GameService();
-//    }
 
     private final GameService gameService;
 
@@ -35,7 +28,6 @@ public class GameController {
     public void sendCommand(@RequestBody String command) {
         System.out.println("DEBUG [GameController] Received input: " + command);
         command = command.replaceAll("\"", "").trim(); // Remove any quotes or spaces
-        System.out.println("Received command: " + command);
         ScannerSingleton.getInstance().setInput(command);
         System.out.println("DEBUG [GameController] Input processed");
     }
@@ -54,12 +46,13 @@ public class GameController {
             return ResponseEntity.badRequest().body("Game already running");
         }
 
-        // Add these debug statements here
+        // debug statements here
         System.out.println("DEBUG [GameController] Request Content-Type: " + request.getContentType());
         System.out.println("DEBUG [GameController] Received rigData: " + (rigData != null ? "not null" : "null"));
 
         try {
             if (rigData != null) {
+                gameService.setTestMode("selenium");
                 System.out.println("DEBUG [GameController] rigData content: " + new ObjectMapper().writeValueAsString(rigData));
                 // Parse the rigged data
                 List<Card> adventureDeck = parseDeck((List<Map<String, Object>>) rigData.get("adventureDeck"));
@@ -73,11 +66,11 @@ public class GameController {
                 // Start the game with rigged data
                 gameService.startGame(adventureDeck, eventDeck, hands);
             } else {
+                gameService.setTestMode("default");
                 // Start the game with default data
                 gameService.startGame(null, null, null);
             }
 
-            // Return the game ID in the response
             return ResponseEntity.ok("Game started successfully");
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Error: " + e.getMessage());
@@ -87,23 +80,6 @@ public class GameController {
     @GetMapping("/state")
     public Map<String, Object> getGameState() {
         return gameService.getGameState(); // Return the current game state
-    }
-
-    @PostMapping("/reset")
-    public ResponseEntity<String> resetGame() {
-        // Stop current game and clean up
-        gameService.cleanup();
-
-        // Generate new game ID
-        gameService.setGameId(UUID.randomUUID().toString());
-
-        // Log the new game instance
-        System.out.println("=== NEW GAME INSTANCE ===");
-        System.out.println("GameService reset with new ID: " + gameService.getGameId());
-        System.out.println("Timestamp: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
-        System.out.println("======================");
-
-        return ResponseEntity.ok("Game reset with new ID: " + gameService.getGameId());
     }
 
     private List<Card> parseDeck(List<Map<String, Object>> rawDeck) {

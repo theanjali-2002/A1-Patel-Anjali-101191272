@@ -47,4 +47,6 @@ public class ScannerSingleton {
     public static String nextLine() {
         return ScannerSingleton.getInstance().getInput(); // Fetch input from the Singleton
     }
+
+
 }

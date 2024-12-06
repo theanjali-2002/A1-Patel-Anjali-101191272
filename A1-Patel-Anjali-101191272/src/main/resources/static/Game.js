@@ -4,27 +4,11 @@ let stateUpdateInterval = null;
 const commandInput = document.getElementById("commandInput");
 const outputDiv = document.getElementById("output");
 
-// Automatically initialize the game when the page loads
-//window.onload = function () {
-//    fetch("/api/game/start", {
-//        method: "POST",
-//        headers: {
-//            "Content-Type": "application/json"
-//        },
-//        body: null // No rigging data sent from the frontend
-//    })
-//        .then((response) => response.text())
-//        .then((data) => appendOutput(data))
-//        .catch((error) => appendOutput(`Error: ${error.message}`));
-//
-//    setInterval(fetchOutput, 500);
-//};
 window.onload = function () {
     setInterval(fetchOutput, 500);
     document.getElementById("startButton").disabled = false;
+    startGameStateUpdates();
 };
-
-
 
 
 // Handle user input on pressing "Enter"
@@ -143,38 +127,6 @@ function stopGameStateUpdates() {
         stateUpdateInterval = null;
     }
 }
-
-// Function to reset game state
-function resetGame() {
-    stopGameStateUpdates();
-    return fetch("/api/game/reset", {
-        method: "POST"
-    })
-    .then(response => response.text())
-    .then(data => {
-        appendOutput("Game Reset: " + data);
-        document.getElementById("output").innerHTML = "";
-        for (let i = 1; i <= 4; i++) {
-            updatePlayerStats(i, 0, 0);
-            updatePlayerCards(i, []);
-        }
-        updateCurrentInfo("None", "No card drawn", "No Sponsor");
-        updateProgressBar("Game progress will appear here...");
-        document.getElementById("startButton").disabled = false;
-        return new Promise(resolve => setTimeout(resolve, 500));
-    })
-    .catch(error => {
-        console.error("Error resetting game:", error);
-        throw error;
-    });
-}
-
-// Reset button click handler
-document.getElementById("resetButton").addEventListener("click", function() {
-    if (confirm("Are you sure you want to reset the game? All current game state will be lost.")) {
-        resetGame();
-    }
-});
 
 function startGame() {
     fetch("/api/game/start", {
